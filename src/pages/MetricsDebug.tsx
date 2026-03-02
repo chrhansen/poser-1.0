@@ -5,6 +5,7 @@ import { PageLoader } from "@/components/shared/PageLoader";
 import { PageError } from "@/components/shared/PageError";
 import { metricsService } from "@/services/metrics.service";
 import { ConfirmActionDialog } from "@/components/dialogs/ConfirmActionDialog";
+import { FramePreview } from "@/components/metrics/FramePreview";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -223,9 +224,14 @@ export default function MetricsDebugPage() {
                       Frame {currentFrame + 1} / {totalFrames} — Similarity: {Math.round((lookupResult.edgeSimilarity![currentFrame]) * 100)}%
                     </p>
 
-                    {/* Media panel placeholder */}
-                    <div className="mt-3 flex h-32 items-center justify-center rounded-lg bg-secondary text-xs text-muted-foreground">
-                      Frame {currentFrame + 1} preview (TODO_BACKEND_HOOKUP)
+                    {/* Mock frame preview */}
+                    <div className="mt-3 h-40">
+                      <FramePreview
+                        frameIndex={currentFrame}
+                        totalFrames={totalFrames}
+                        similarity={lookupResult.edgeSimilarity![currentFrame]}
+                        className="h-full w-full"
+                      />
                     </div>
                   </div>
                 )}

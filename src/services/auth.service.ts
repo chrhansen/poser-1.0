@@ -3,9 +3,24 @@ import { mockUser } from "./mock-data";
 
 const delay = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-// In-memory auth state for mock mode
+const STORAGE_KEY = "poser_mock_auth";
+
+// In-memory auth state for mock mode — hydrated from sessionStorage
 let _currentUser: User | null = null;
 let _authListeners: Array<(user: User | null) => void> = [];
+
+// Hydrate from sessionStorage on module load
+try {
+  const stored = sessionStorage.getItem(STORAGE_KEY);
+  if (stored) _currentUser = JSON.parse(stored);
+} catch { /* ignore */ }
+
+function persist(user: User | null) {
+  try {
+    if (user) sessionStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+    else sessionStorage.removeItem(STORAGE_KEY);
+  } catch { /* ignore */ }
+}
 
 function notifyListeners() {
   _authListeners.forEach((fn) => fn(_currentUser));
@@ -22,6 +37,7 @@ export const authService = {
     // TODO_BACKEND_HOOKUP
     await delay(600);
     _currentUser = { ...mockUser, email };
+    persist(_currentUser);
     notifyListeners();
     return _currentUser;
   },
@@ -36,6 +52,7 @@ export const authService = {
     // TODO_BACKEND_HOOKUP
     await delay(200);
     _currentUser = null;
+    persist(null);
     notifyListeners();
   },
 
@@ -43,6 +60,7 @@ export const authService = {
     // TODO_BACKEND_HOOKUP
     await delay(500);
     _currentUser = { ...mockUser };
+    persist(_currentUser);
     notifyListeners();
     return true;
   },
@@ -57,6 +75,7 @@ export const authService = {
   /** Mock helper: instantly set signed-in state for dev */
   _mockSignIn: () => {
     _currentUser = { ...mockUser };
+    persist(_currentUser);
     notifyListeners();
   },
 };

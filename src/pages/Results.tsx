@@ -7,6 +7,7 @@ import { PageError } from "@/components/shared/PageError";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ConfirmActionDialog } from "@/components/dialogs/ConfirmActionDialog";
 import { ContactSupportDialog } from "@/components/dialogs/ContactSupportDialog";
+import { ModelViewer } from "@/components/results/ModelViewer";
 import { analysisService } from "@/services/analysis.service";
 import type { AnalysisResult } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -119,6 +120,9 @@ export default function ResultsPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval>>();
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoTime, setVideoTime] = useState(0);
+  const [videoPlaying, setVideoPlaying] = useState(false);
 
   const loadData = useCallback(async () => {
     try {
@@ -260,6 +264,19 @@ export default function ResultsPage() {
   }
 
   // ── Complete state ──
+
+  const handleVideoTimeUpdate = () => {
+    if (videoRef.current) setVideoTime(videoRef.current.currentTime);
+  };
+  const handleVideoPlay = () => setVideoPlaying(true);
+  const handleVideoPause = () => setVideoPlaying(false);
+  const handleModelSeek = (time: number) => {
+    if (videoRef.current) {
+      videoRef.current.currentTime = time;
+      setVideoTime(time);
+    }
+  };
+
   const metricsCards = [
     { label: "Overall", value: result.scores.overall },
     { label: "Stance", value: result.scores.stance },
@@ -301,7 +318,15 @@ export default function ResultsPage() {
               <div className={cn("mt-6 grid gap-4", theater ? "md:grid-cols-2" : "grid-cols-1")}>
                 <div className="overflow-hidden rounded-xl border border-border bg-secondary">
                   {result.videoUrl ? (
-                    <video src={result.videoUrl} controls className="w-full" />
+                    <video
+                      ref={videoRef}
+                      src={result.videoUrl}
+                      controls
+                      className="w-full"
+                      onTimeUpdate={handleVideoTimeUpdate}
+                      onPlay={handleVideoPlay}
+                      onPause={handleVideoPause}
+                    />
                   ) : (
                     <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
                       Video preview unavailable
@@ -309,17 +334,13 @@ export default function ResultsPage() {
                   )}
                 </div>
                 {theater && (
-                  <div className="overflow-hidden rounded-xl border border-border bg-secondary">
-                    {result.modelUrl ? (
-                      <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
-                        3D model viewer (TODO_BACKEND_HOOKUP)
-                      </div>
-                    ) : (
-                      <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
-                        3D model not available for this analysis
-                      </div>
-                    )}
-                  </div>
+                  <ModelViewer
+                    duration={result.duration ?? 10}
+                    currentTime={videoTime}
+                    onSeek={handleModelSeek}
+                    isPlaying={videoPlaying}
+                    modelUrl={result.modelUrl}
+                  />
                 )}
               </div>
 

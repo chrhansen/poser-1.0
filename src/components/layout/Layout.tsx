@@ -1,6 +1,6 @@
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { AppSidebar } from "./AppSidebar";
+import { AppSidebar, SidebarProvider } from "./AppSidebar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -10,6 +10,7 @@ interface LayoutProps {
 
 interface AppLayoutProps {
   children: React.ReactNode;
+  sidebarExtra?: React.ReactNode;
 }
 
 export function Layout({ children, hideHeader, hideFooter }: LayoutProps) {
@@ -23,14 +24,16 @@ export function Layout({ children, hideHeader, hideFooter }: LayoutProps) {
 }
 
 /** Layout for authenticated app pages with sidebar */
-export function AppLayout({ children }: AppLayoutProps) {
+export function AppLayout({ children, sidebarExtra }: AppLayoutProps) {
   return (
-    <div className="flex min-h-screen flex-col">
-      <Header />
-      <div className="flex flex-1">
-        <AppSidebar />
-        <main className="flex-1 overflow-auto">{children}</main>
+    <SidebarProvider>
+      <div className="flex min-h-screen flex-col">
+        <Header />
+        <div className="flex flex-1 overflow-hidden">
+          <AppSidebar extraContent={sidebarExtra} />
+          <main className="flex-1 overflow-auto">{children}</main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 }

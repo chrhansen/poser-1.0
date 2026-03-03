@@ -6,7 +6,7 @@ import { analysisService } from "@/services/analysis.service";
 import type { AnalysisResult } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
-function ScoreCard({ label, value }: { label: string; value: number }) {
+function ScoreCard({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="flex flex-col items-center gap-0.5">
       <span className="text-2xl font-bold text-foreground">{value}</span>
@@ -35,6 +35,8 @@ export default function EmbedResultsPage() {
   if (loading) return <div className="flex min-h-screen items-center justify-center bg-background"><PageLoader /></div>;
   if (error || !result) return <div className="flex min-h-screen items-center justify-center bg-background"><PageError message="Result not found or link expired." /></div>;
 
+  const m = result.metrics;
+
   return (
     <div className="min-h-screen bg-background p-6">
       <div className="mx-auto max-w-lg">
@@ -50,7 +52,6 @@ export default function EmbedResultsPage() {
           </span>
         </div>
 
-        {/* Video preview */}
         {result.videoUrl ? (
           <div className="mt-4 overflow-hidden rounded-lg border border-border">
             <video src={result.videoUrl} controls className="w-full" />
@@ -61,32 +62,11 @@ export default function EmbedResultsPage() {
           </div>
         )}
 
-        {/* Scores */}
-        {result.status === "complete" && (
+        {result.status === "complete" && m && (
           <div className="mt-4 flex flex-wrap justify-center gap-4 rounded-xl border border-border p-4">
-            {Object.entries(result.scores).map(([key, val]) => (
-              <ScoreCard key={key} label={key} value={val} />
-            ))}
-          </div>
-        )}
-
-        {/* Feedback */}
-        {result.feedback.length > 0 && (
-          <div className="mt-4 space-y-3">
-            {result.feedback.map((f) => (
-              <div key={f.id} className="rounded-lg border border-border p-3">
-                <div className="flex items-center gap-2">
-                  <span className={cn(
-                    "inline-block h-1.5 w-1.5 rounded-full",
-                    f.severity === "critical" && "bg-destructive",
-                    f.severity === "warning" && "bg-accent",
-                    f.severity === "info" && "bg-muted-foreground"
-                  )} />
-                  <p className="text-sm font-medium text-foreground">{f.title}</p>
-                </div>
-                <p className="mt-1 text-xs text-muted-foreground">{f.description}</p>
-              </div>
-            ))}
+            <ScoreCard label="Edge Score" value={m.edgeSimilarity.overall} />
+            <ScoreCard label="Cadence" value={`${m.turnCadence.tpmMedian} tpm`} />
+            <ScoreCard label="Turns" value={m.turnSegments.length} />
           </div>
         )}
 

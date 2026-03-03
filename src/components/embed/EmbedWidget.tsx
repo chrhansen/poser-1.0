@@ -9,17 +9,6 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { AnalysisResult } from "@/lib/types";
 
-/**
- * Embed Widget — multi-step flow for partner-embedded analysis.
- * Flow: upload → skier-select → email → awaiting_confirmation → processing → results
- *
- * Props:
- *  - partnerSlug: identifies the partner context
- *  - partnerDomain: domain for config init
- *  - maxFileSizeMB: override default upload limit (default 100)
- *  - onComplete: callback when analysis completes
- */
-
 export type EmbedWidgetStep =
   | "upload"
   | "skier-select"
@@ -69,11 +58,9 @@ export function EmbedWidget({
     }
   }, [partnerSlug, partnerDomain]);
 
-  // Polling while processing
   useEffect(() => {
     if (step !== "processing" || !analysisId) return;
     pollRef.current = setInterval(async () => {
-      // TODO_BACKEND_HOOKUP: Poll real analysis status
       const updated = await analysisService.pollResult(analysisId);
       if (updated) {
         setUploadProgress(updated.progress ?? 0);
@@ -94,69 +81,38 @@ export function EmbedWidget({
 
   const handleFileSelect = useCallback((f: File) => {
     const validation = analysisService.validateFile(f);
-    if (!validation.valid) {
-      setErrorMsg(validation.error!);
-      setStep("error");
-      return;
-    }
-    if (f.size > maxFileSizeMB * 1024 * 1024) {
-      setErrorMsg(`File must be under ${maxFileSizeMB}MB.`);
-      setStep("error");
-      return;
-    }
-    setFile(f);
-    setErrorMsg("");
-    setStep("skier-select");
+    if (!validation.valid) { setErrorMsg(validation.error!); setStep("error"); return; }
+    if (f.size > maxFileSizeMB * 1024 * 1024) { setErrorMsg(`File must be under ${maxFileSizeMB}MB.`); setStep("error"); return; }
+    setFile(f); setErrorMsg(""); setStep("skier-select");
   }, [maxFileSizeMB]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragOver(false);
-    const f = e.dataTransfer.files[0];
-    if (f) handleFileSelect(f);
+    e.preventDefault(); setDragOver(false);
+    const f = e.dataTransfer.files[0]; if (f) handleFileSelect(f);
   }, [handleFileSelect]);
 
   const handleEmailSubmit = async () => {
     const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
-      setEmailError("Please enter a valid email address.");
-      return;
-    }
+    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setEmailError("Please enter a valid email address."); return; }
     setEmailError("");
-    // TODO_BACKEND_HOOKUP: Send confirmation email to user
     setStep("awaiting_confirmation");
     toast.success("Check your inbox for confirmation.");
-
-    // Mock: auto-confirm after 3s
-    setTimeout(() => {
-      handleStartUpload();
-    }, 3000);
+    setTimeout(() => { handleStartUpload(); }, 3000);
   };
 
   const handleStartUpload = async () => {
     if (!file) return;
-    setStep("processing");
-    setUploadProgress(0);
+    setStep("processing"); setUploadProgress(0);
     try {
-      // TODO_BACKEND_HOOKUP: Upload file with partner context
       const res = await analysisService.uploadClip(file, skierPos, (pct) => setUploadProgress(pct));
       setAnalysisId(res.id);
-      // Polling will take over from here
     } catch (err: any) {
-      setErrorMsg(err?.message ?? "Upload failed.");
-      setStep("error");
+      setErrorMsg(err?.message ?? "Upload failed."); setStep("error");
     }
   };
 
   const reset = () => {
-    setFile(null);
-    setStep("upload");
-    setUploadProgress(0);
-    setErrorMsg("");
-    setEmail("");
-    setEmailError("");
-    setResult(null);
-    setAnalysisId(null);
+    setFile(null); setStep("upload"); setUploadProgress(0); setErrorMsg(""); setEmail(""); setEmailError(""); setResult(null); setAnalysisId(null);
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -164,44 +120,22 @@ export function EmbedWidget({
 
   return (
     <div className="mx-auto max-w-md rounded-2xl border border-border bg-background p-6">
-      {partnerSlug && (
-        <p className="mb-4 text-center text-xs text-muted-foreground">
-          Powered by Poser · {partnerSlug}
-        </p>
-      )}
-
+      {partnerSlug && <p className="mb-4 text-center text-xs text-muted-foreground">Powered by Poser · {partnerSlug}</p>}
       <AnimatePresence mode="wait">
-        {/* ── Upload ── */}
         {(step === "upload" || step === "error") && (
           <motion.div key="upload" {...transition}>
-            <div
-              className={cn(
-                "flex flex-col items-center rounded-xl border-2 border-dashed p-8 text-center transition-colors",
-                dragOver ? "border-foreground bg-secondary" : "border-border",
-                step === "error" && "border-destructive/50"
-              )}
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
-              onDragLeave={() => setDragOver(false)}
-              onDrop={handleDrop}
-            >
+            <div className={cn("flex flex-col items-center rounded-xl border-2 border-dashed p-8 text-center transition-colors", dragOver ? "border-foreground bg-secondary" : "border-border", step === "error" && "border-destructive/50")}
+              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={handleDrop}>
               <Upload className="h-6 w-6 text-muted-foreground" />
               <p className="mt-2 text-sm font-medium text-foreground">Drop your ski clip here</p>
               <p className="mt-1 text-xs text-muted-foreground">MP4, MOV, WebM · up to {maxFileSizeMB}MB</p>
-              <Button variant="outline" size="sm" className="mt-3" onClick={() => inputRef.current?.click()}>
-                Browse files
-              </Button>
+              <Button variant="outline" size="sm" className="mt-3" onClick={() => inputRef.current?.click()}>Browse files</Button>
               <input ref={inputRef} type="file" accept="video/mp4,video/quicktime,video/webm" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }} />
-              {step === "error" && errorMsg && (
-                <div className="mt-3 flex items-center gap-2 text-xs text-destructive">
-                  <AlertCircle className="h-3 w-3 shrink-0" />
-                  <span>{errorMsg}</span>
-                </div>
-              )}
+              {step === "error" && errorMsg && <div className="mt-3 flex items-center gap-2 text-xs text-destructive"><AlertCircle className="h-3 w-3 shrink-0" /><span>{errorMsg}</span></div>}
             </div>
           </motion.div>
         )}
 
-        {/* ── Skier Select ── */}
         {step === "skier-select" && file && (
           <motion.div key="skier" {...transition}>
             <div className="flex items-center justify-between">
@@ -212,28 +146,16 @@ export function EmbedWidget({
             <p className="mt-4 text-sm font-medium text-foreground">Where is the skier?</p>
             <div className="mt-2 grid grid-cols-3 gap-2">
               {skierPositions.map((pos) => (
-                <button
-                  key={pos.value}
-                  onClick={() => setSkierPos(pos.value)}
-                  className={cn(
-                    "rounded-lg border p-2 text-sm transition-colors",
-                    skierPos === pos.value ? "border-foreground bg-secondary font-medium" : "border-border hover:border-muted-foreground"
-                  )}
-                >
-                  {pos.label}
-                </button>
+                <button key={pos.value} onClick={() => setSkierPos(pos.value)} className={cn("rounded-lg border p-2 text-sm transition-colors", skierPos === pos.value ? "border-foreground bg-secondary font-medium" : "border-border hover:border-muted-foreground")}>{pos.label}</button>
               ))}
             </div>
             <div className="mt-4 flex gap-2">
               <Button variant="outline" size="sm" onClick={reset}><ArrowLeft className="mr-1 h-3 w-3" />Back</Button>
-              <Button size="sm" className="flex-1" onClick={() => setStep("email")}>
-                Continue <ArrowRight className="ml-1 h-3 w-3" />
-              </Button>
+              <Button size="sm" className="flex-1" onClick={() => setStep("email")}>Continue <ArrowRight className="ml-1 h-3 w-3" /></Button>
             </div>
           </motion.div>
         )}
 
-        {/* ── Email ── */}
         {step === "email" && (
           <motion.div key="email" {...transition}>
             <div className="flex flex-col items-center text-center">
@@ -242,13 +164,7 @@ export function EmbedWidget({
               <p className="mt-1 text-xs text-muted-foreground">We'll send a confirmation link first.</p>
             </div>
             <div className="mt-4">
-              <Input
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()}
-              />
+              <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()} />
               {emailError && <p className="mt-1 text-xs text-destructive">{emailError}</p>}
             </div>
             <div className="mt-4 flex gap-2">
@@ -258,7 +174,6 @@ export function EmbedWidget({
           </motion.div>
         )}
 
-        {/* ── Awaiting Confirmation ── */}
         {step === "awaiting_confirmation" && (
           <motion.div key="awaiting" {...transition}>
             <div className="flex flex-col items-center text-center py-6">
@@ -271,7 +186,6 @@ export function EmbedWidget({
           </motion.div>
         )}
 
-        {/* ── Processing ── */}
         {step === "processing" && (
           <motion.div key="processing" {...transition}>
             <div className="flex flex-col items-center py-6 text-center">
@@ -286,29 +200,24 @@ export function EmbedWidget({
           </motion.div>
         )}
 
-        {/* ── Results ── */}
         {step === "results" && result && (
           <motion.div key="results" {...transition}>
             <div className="flex flex-col items-center text-center">
               <CheckCircle className="h-8 w-8 text-foreground" />
-              <p className="mt-3 text-lg font-bold text-foreground">Score: {result.scores.overall}</p>
-              <div className="mt-4 grid w-full grid-cols-2 gap-2">
-                {(["stance", "balance", "edging", "rotation"] as const).map((k) => (
-                  <div key={k} className="rounded-lg border border-border p-2 text-center">
-                    <p className="text-lg font-bold text-foreground">{result.scores[k]}</p>
-                    <p className="text-[10px] capitalize text-muted-foreground">{k}</p>
-                  </div>
-                ))}
-              </div>
-              {result.feedback.length > 0 && (
-                <div className="mt-4 w-full space-y-2 text-left">
-                  {result.feedback.slice(0, 3).map((fb) => (
-                    <div key={fb.id} className="rounded-lg border border-border p-2">
-                      <p className="text-xs font-medium text-foreground">{fb.title}</p>
-                      <p className="text-[10px] text-muted-foreground">{fb.description}</p>
+              {result.metrics && (
+                <>
+                  <p className="mt-3 text-lg font-bold text-foreground">Edge Score: {result.metrics.edgeSimilarity.overall}</p>
+                  <div className="mt-4 grid w-full grid-cols-2 gap-2">
+                    <div className="rounded-lg border border-border p-2 text-center">
+                      <p className="text-lg font-bold text-foreground">{result.metrics.turnCadence.tpmMedian}</p>
+                      <p className="text-[10px] text-muted-foreground">TPM Median</p>
                     </div>
-                  ))}
-                </div>
+                    <div className="rounded-lg border border-border p-2 text-center">
+                      <p className="text-lg font-bold text-foreground">{result.metrics.turnSegments.length}</p>
+                      <p className="text-[10px] text-muted-foreground">Turns</p>
+                    </div>
+                  </div>
+                </>
               )}
               <Button className="mt-6 w-full" onClick={reset}>
                 <RotateCcw className="mr-2 h-3 w-3" /> Analyze another video

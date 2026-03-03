@@ -20,6 +20,7 @@ const statusConfig: Record<AnalysisResult["status"], { icon: typeof Clock; label
 
 function ResultCard({ r }: { r: AnalysisResult }) {
   const { icon: Icon, label, cls } = statusConfig[r.status];
+  const edgeScore = r.metrics?.edgeSimilarity?.overall;
   return (
     <Link
       to={`/results/${r.id}`}
@@ -29,7 +30,7 @@ function ResultCard({ r }: { r: AnalysisResult }) {
         <Icon className={cn("h-5 w-5 shrink-0", cls, r.status === "processing" && "animate-spin")} />
         <div>
           <p className="text-sm font-medium text-foreground">
-            {r.status === "complete" ? `Score: ${r.scores.overall}` : label}
+            {r.status === "complete" && edgeScore != null ? `Edge: ${edgeScore}` : label}
           </p>
           <p className="text-xs text-muted-foreground">
             {new Date(r.createdAt).toLocaleDateString()}
@@ -44,6 +45,8 @@ function ResultCard({ r }: { r: AnalysisResult }) {
 
 function ResultTableRow({ r }: { r: AnalysisResult }) {
   const { icon: Icon, label, cls } = statusConfig[r.status];
+  const edgeScore = r.metrics?.edgeSimilarity?.overall;
+  const turnCount = r.metrics?.turnSegments?.length ?? 0;
   return (
     <Link
       to={`/results/${r.id}`}
@@ -54,9 +57,9 @@ function ResultTableRow({ r }: { r: AnalysisResult }) {
         <Icon className={cn("h-3.5 w-3.5", cls, r.status === "processing" && "animate-spin")} />
         <span className={cls}>{label}</span>
       </span>
-      <span className="text-foreground">{r.status === "complete" ? r.scores.overall : "—"}</span>
+      <span className="text-foreground">{r.status === "complete" && edgeScore != null ? edgeScore : "—"}</span>
       <span className="text-muted-foreground">{r.duration ? `${r.duration}s` : "—"}</span>
-      <span className="text-muted-foreground">{r.feedback.length > 0 ? `${r.feedback.length} items` : "—"}</span>
+      <span className="text-muted-foreground">{turnCount > 0 ? `${turnCount} turns` : "—"}</span>
     </Link>
   );
 }
@@ -114,9 +117,9 @@ export default function DashboardPage() {
                 <div className="grid grid-cols-5 gap-4 border-b border-border bg-secondary/50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                   <span>Date</span>
                   <span>Status</span>
-                  <span>Score</span>
+                  <span>Edge Score</span>
                   <span>Duration</span>
-                  <span>Feedback</span>
+                  <span>Turns</span>
                 </div>
                 {results.map((r) => <ResultTableRow key={r.id} r={r} />)}
               </div>

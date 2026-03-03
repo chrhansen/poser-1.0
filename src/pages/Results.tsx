@@ -60,7 +60,7 @@ const METRICS: MetricDef[] = [
 // ─── Metric sidebar nav (desktop) ───────────────────────────────────────────
 function MetricNav({ selected, onSelect }: { selected: MetricKey; onSelect: (k: MetricKey) => void }) {
   return (
-    <nav className="hidden w-56 shrink-0 space-y-0.5 lg:block">
+    <nav className="hidden w-56 shrink-0 space-y-1 lg:block">
       <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Metrics</p>
       {METRICS.map((m) => {
         const Icon = m.icon;
@@ -70,15 +70,15 @@ function MetricNav({ selected, onSelect }: { selected: MetricKey; onSelect: (k: 
             key={m.key}
             onClick={() => onSelect(m.key)}
             className={cn(
-              "flex w-full items-start gap-2.5 rounded-lg px-3 py-2.5 text-left transition-colors",
+              "group flex w-full items-start gap-2.5 rounded-xl px-3 py-3 text-left transition-all duration-200",
               active
-                ? "border-l-2 border-accent bg-secondary"
-                : "border-l-2 border-transparent hover:bg-secondary/50"
+                ? "bg-gradient-to-r from-warm/10 to-warm-glow/5 shadow-[inset_3px_0_0_hsl(var(--warm))]"
+                : "hover:bg-warm-muted/40"
             )}
           >
-            <Icon className={cn("mt-0.5 h-4 w-4 shrink-0", active ? "text-accent" : "text-muted-foreground")} />
+            <Icon className={cn("mt-0.5 h-4 w-4 shrink-0 transition-colors", active ? "text-warm" : "text-muted-foreground group-hover:text-warm/60")} />
             <div>
-              <p className={cn("text-sm font-medium", active ? "text-foreground" : "text-muted-foreground")}>{m.label}</p>
+              <p className={cn("text-sm font-medium transition-colors", active ? "text-foreground" : "text-muted-foreground group-hover:text-foreground")}>{m.label}</p>
               <p className="text-[11px] text-muted-foreground">{m.sub}</p>
             </div>
           </button>
@@ -95,9 +95,9 @@ function MetricDropdown({ selected, onSelect }: { selected: MetricKey; onSelect:
   return (
     <div className="lg:hidden">
       <Select value={selected} onValueChange={(v) => onSelect(v as MetricKey)}>
-        <SelectTrigger className="w-full">
+        <SelectTrigger className="w-full border-warm/20 bg-warm/5">
           <div className="flex items-center gap-2">
-            <Icon className="h-4 w-4 text-accent" />
+            <Icon className="h-4 w-4 text-warm" />
             <SelectValue />
           </div>
         </SelectTrigger>
@@ -122,9 +122,9 @@ function MetricDropdown({ selected, onSelect }: { selected: MetricKey; onSelect:
 // ─── Overview stat card ─────────────────────────────────────────────────────
 function StatCard({ label, value, sub }: { label: string; value: string | number; sub?: string }) {
   return (
-    <div className="flex flex-col items-center rounded-lg border border-border p-3 text-center">
+    <div className="flex flex-col items-center rounded-xl border border-warm/10 bg-gradient-to-b from-warm/[0.04] to-transparent p-4 text-center transition-shadow hover:shadow-[var(--shadow-warm)]">
       <span className="text-2xl font-bold text-foreground">{value}</span>
-      <span className="text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
+      <span className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">{label}</span>
       {sub && <span className="text-[10px] text-muted-foreground">{sub}</span>}
     </div>
   );
@@ -200,8 +200,8 @@ function COMPanel({ m }: { m: AnalysisMetrics }) {
           <XAxis dataKey="frame" tick={{ fontSize: 9 }} />
           <YAxis tick={{ fontSize: 9 }} />
           <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid hsl(var(--border))" }} />
-          <Line type="monotone" dataKey="x" stroke="hsl(var(--accent))" strokeWidth={1.5} dot={false} name="X (lateral)" />
-          <Line type="monotone" dataKey="y" stroke="hsl(var(--foreground))" strokeWidth={1.5} dot={false} strokeDasharray="4 4" name="Y (vertical)" />
+          <Line type="monotone" dataKey="x" stroke="hsl(var(--warm))" strokeWidth={1.5} dot={false} name="X (lateral)" />
+          <Line type="monotone" dataKey="y" stroke="hsl(var(--warm-glow))" strokeWidth={1.5} dot={false} strokeDasharray="4 4" name="Y (vertical)" />
         </LineChart>
       </MetricChart>
     </div>
@@ -220,7 +220,7 @@ function AngulationPanel({ m }: { m: AnalysisMetrics }) {
           <p className="text-lg font-bold text-foreground">Upper vs Lower Body</p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-accent">{avgAbs}°</p>
+          <p className="text-2xl font-bold text-warm">{avgAbs}°</p>
           <p className="text-[10px] text-muted-foreground">avg separation</p>
         </div>
       </div>
@@ -231,7 +231,7 @@ function AngulationPanel({ m }: { m: AnalysisMetrics }) {
           <YAxis tick={{ fontSize: 9 }} />
           <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid hsl(var(--border))" }}
             formatter={(val: number) => [`${val}°`, "Angulation"]} />
-          <Area type="monotone" dataKey="degrees" stroke="hsl(var(--accent))" fill="hsl(var(--accent))" fillOpacity={0.1} strokeWidth={2} />
+          <Area type="monotone" dataKey="degrees" stroke="hsl(var(--warm))" fill="hsl(var(--warm))" fillOpacity={0.08} strokeWidth={2} />
         </AreaChart>
       </MetricChart>
     </div>
@@ -251,7 +251,7 @@ function CounterPanel({ m }: { m: AnalysisMetrics }) {
           <p className="text-lg font-bold text-foreground">Torso–Pelvis Yaw</p>
         </div>
         <div className="text-right">
-          <p className="text-2xl font-bold text-accent">{avgAbs}°</p>
+          <p className="text-2xl font-bold text-warm">{avgAbs}°</p>
           <p className="text-[10px] text-muted-foreground">avg counter</p>
         </div>
       </div>
@@ -262,8 +262,8 @@ function CounterPanel({ m }: { m: AnalysisMetrics }) {
           <YAxis tick={{ fontSize: 9 }} />
           <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid hsl(var(--border))" }}
             formatter={(val: number, name: string) => [`${val}°`, name === "signed" ? "Signed" : "Absolute"]} />
-          <Line type="monotone" dataKey="signed" stroke="hsl(var(--accent))" strokeWidth={2} dot={false} name="signed" />
-          <Line type="monotone" dataKey="absolute" stroke="hsl(var(--foreground))" strokeWidth={1.5} dot={false} strokeDasharray="4 4" name="absolute" />
+          <Line type="monotone" dataKey="signed" stroke="hsl(var(--warm))" strokeWidth={2} dot={false} name="signed" />
+          <Line type="monotone" dataKey="absolute" stroke="hsl(var(--warm-glow))" strokeWidth={1.5} dot={false} strokeDasharray="4 4" name="absolute" />
         </LineChart>
       </MetricChart>
       <div className="mt-4 grid grid-cols-2 gap-3">
@@ -287,7 +287,7 @@ function EdgeSimilarityPanel({ m }: { m: AnalysisMetrics }) {
     <div>
       <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Edge Similarity</p>
       <div className="flex items-baseline gap-6">
-        <p className="text-4xl font-bold text-foreground">{e.overall}</p>
+        <p className="text-5xl font-bold text-warm">{e.overall}</p>
         <div className="flex gap-6">
           <div className="text-center">
             <p className="text-xl font-bold text-foreground">{e.left}</p>
@@ -310,7 +310,7 @@ function EdgeSimilarityPanel({ m }: { m: AnalysisMetrics }) {
               <YAxis domain={[0, 100]} tick={{ fontSize: 9 }} />
               <Tooltip contentStyle={{ fontSize: 11, borderRadius: 8, border: "1px solid hsl(var(--border))" }}
                 formatter={(val: number) => [`${val}/100`, "Edge Score"]} />
-              <Bar dataKey="score" fill="hsl(var(--accent))" radius={[3, 3, 0, 0]} />
+              <Bar dataKey="score" fill="hsl(var(--warm))" radius={[4, 4, 0, 0]} />
             </BarChart>
           </MetricChart>
         </>
@@ -324,10 +324,10 @@ function TurnCadencePanel({ m }: { m: AnalysisMetrics }) {
   const cvLabel = c.turnDurationCv < 0.2 ? "Consistent" : c.turnDurationCv < 0.35 ? "Moderate" : "Variable";
   return (
     <div>
-      <div className="rounded-lg border border-border bg-secondary/50 p-6 text-center">
+      <div className="rounded-2xl bg-gradient-to-br from-warm/10 via-warm-glow/5 to-transparent p-8 text-center">
         <p className="text-[10px] uppercase tracking-widest text-muted-foreground">Turn Cadence</p>
-        <p className="mt-2 text-4xl font-bold text-accent">{c.tpmMedian}</p>
-        <p className="text-sm text-muted-foreground">median turns per minute</p>
+        <p className="mt-3 text-5xl font-bold text-warm">{c.tpmMedian}</p>
+        <p className="mt-1 text-sm text-muted-foreground">median turns per minute</p>
       </div>
       <div className="mt-4 grid grid-cols-3 gap-3">
         <StatCard label="TPM Peak (6)" value={c.tpmPeak6} sub="tpm" />
@@ -539,7 +539,7 @@ export default function ResultsPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   {m && (
-                    <span className="rounded-full border border-border px-3 py-1 text-sm font-bold text-foreground">
+                    <span className="rounded-full bg-gradient-to-r from-warm to-warm-glow px-4 py-1.5 text-sm font-bold text-warm-foreground shadow-[var(--shadow-warm)]">
                       Score {m.edgeSimilarity.overall}
                     </span>
                   )}
@@ -563,7 +563,7 @@ export default function ResultsPage() {
               {m && (
                 <div className="mt-6 flex gap-6">
                   <MetricNav selected={selectedMetric} onSelect={setSelectedMetric} />
-                  <div className="min-w-0 flex-1 rounded-xl border border-border p-5">
+                  <div className="min-w-0 flex-1 rounded-2xl border border-border/60 bg-gradient-to-b from-card to-background p-6 shadow-md">
                     <MetricContent
                       metricKey={selectedMetric}
                       m={m}

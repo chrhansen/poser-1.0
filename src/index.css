@@ -29,6 +29,11 @@
     --accent: 217 91% 60%;
     --accent-foreground: 0 0% 100%;
 
+    --warm: 28 92% 58%;
+    --warm-foreground: 0 0% 100%;
+    --warm-muted: 30 60% 94%;
+    --warm-glow: 24 100% 65%;
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
@@ -46,6 +51,7 @@
     --shadow-md: 0 4px 16px -2px hsl(0 0% 0% / 0.06);
     --shadow-lg: 0 12px 40px -8px hsl(0 0% 0% / 0.1);
     --shadow-xl: 0 24px 64px -16px hsl(0 0% 0% / 0.12);
+    --shadow-warm: 0 8px 32px -8px hsl(28 92% 58% / 0.15);
     --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
     --transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -82,6 +88,11 @@
     --ring: 217 91% 60%;
     --surface-elevated: 0 0% 8%;
     --surface-sunken: 0 0% 3%;
+    --warm: 28 80% 55%;
+    --warm-foreground: 0 0% 100%;
+    --warm-muted: 30 30% 15%;
+    --warm-glow: 24 90% 60%;
+    --shadow-warm: 0 8px 32px -8px hsl(28 80% 55% / 0.2);
   }
 }
 

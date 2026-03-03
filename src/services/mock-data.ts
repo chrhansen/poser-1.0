@@ -9,6 +9,7 @@ import type {
   BillingInfo,
   SettingsProfile,
 } from "@/lib/types";
+import { generateMockMetrics } from "./mock-metrics";
 
 export const serviceConfig = {
   useMockData: true,
@@ -30,6 +31,7 @@ export const mockUser: User = {
 };
 
 // ─── Analysis Results ───────────────────────────────────────────────────────
+// Frame counts derived from duration * 30fps
 export const mockResults: AnalysisResult[] = [
   {
     id: "res_1",
@@ -39,15 +41,8 @@ export const mockResults: AnalysisResult[] = [
     status: "complete",
     createdAt: "2026-02-28T10:00:00Z",
     duration: 14,
-    scores: { overall: 78, stance: 82, balance: 74, edging: 80, rotation: 71 },
-    feedback: [
-      { id: "f1", category: "stance", severity: "warning", title: "Slightly narrow stance", description: "Widen your stance to hip-width for better stability at higher speeds.", timestamp: 3.2 },
-      { id: "f2", category: "balance", severity: "critical", title: "Weight too far back", description: "Shift weight forward over the center of your boots, especially during turn initiation.", timestamp: 5.8 },
-      { id: "f3", category: "edging", severity: "info", title: "Good edge engagement", description: "Solid edge angles on carving turns. Maintain this pressure through the turn finish.", timestamp: 8.1 },
-      { id: "f4", category: "rotation", severity: "warning", title: "Upper body rotation", description: "Keep your shoulders facing downhill. Your upper body is rotating with the turn.", timestamp: 11.0 },
-    ],
+    metrics: generateMockMetrics(14 * 30, 42),
     embedToken: "tok_abc123",
-    edgeSimilarity: [0.65, 0.72, 0.78, 0.81, 0.85, 0.88, 0.82, 0.79, 0.84, 0.90, 0.87, 0.83, 0.80, 0.76],
   },
   {
     id: "res_2",
@@ -58,8 +53,6 @@ export const mockResults: AnalysisResult[] = [
     createdAt: "2026-03-01T14:30:00Z",
     duration: 22,
     progress: 42,
-    scores: { overall: 0, stance: 0, balance: 0, edging: 0, rotation: 0 },
-    feedback: [],
   },
   {
     id: "res_3",
@@ -70,8 +63,6 @@ export const mockResults: AnalysisResult[] = [
     createdAt: "2026-02-25T09:15:00Z",
     duration: 8,
     failedReason: "Video quality too low for reliable analysis. Please upload a higher resolution clip.",
-    scores: { overall: 0, stance: 0, balance: 0, edging: 0, rotation: 0 },
-    feedback: [],
   },
   {
     id: "res_4",
@@ -80,8 +71,6 @@ export const mockResults: AnalysisResult[] = [
     thumbnailUrl: "",
     status: "pending",
     createdAt: "2026-03-02T08:00:00Z",
-    scores: { overall: 0, stance: 0, balance: 0, edging: 0, rotation: 0 },
-    feedback: [],
   },
   {
     id: "res_5",
@@ -91,12 +80,8 @@ export const mockResults: AnalysisResult[] = [
     status: "complete",
     createdAt: "2026-02-20T16:45:00Z",
     duration: 18,
-    scores: { overall: 85, stance: 88, balance: 82, edging: 86, rotation: 80 },
-    feedback: [
-      { id: "f5", category: "balance", severity: "info", title: "Excellent balance", description: "Great centered position throughout most turns." },
-    ],
+    metrics: generateMockMetrics(18 * 30, 99),
     embedToken: "tok_def456",
-    edgeSimilarity: [0.70, 0.75, 0.82, 0.88, 0.91, 0.93, 0.90, 0.87, 0.89, 0.92, 0.94, 0.91, 0.88, 0.85, 0.82, 0.80, 0.78, 0.75],
   },
 ];
 

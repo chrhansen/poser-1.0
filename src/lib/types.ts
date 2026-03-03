@@ -10,6 +10,80 @@ export interface User {
   emailConfirmed?: boolean;
 }
 
+// ─── Per-frame metric types ─────────────────────────────────────────────────
+
+export interface ShinParallelFrame {
+  frame: number;
+  shinAngle: number;       // degrees between left/right shin
+  parallelismScore: number; // 0–100
+}
+
+export interface COMFrame {
+  frame: number;
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface AngulationFrame {
+  frame: number;
+  absolute: number; // degrees
+  signed: number;   // degrees (positive = one direction)
+}
+
+export interface CounterFrame {
+  frame: number;
+  absolute: number; // degrees
+  signed: number;   // degrees
+}
+
+export interface AngulationVsInclinationFrame {
+  frame: number;
+  lowerBodyLean: number;  // degrees
+  upperBodyLean: number;  // degrees
+  difference: number;     // degrees
+  ratio: number;
+}
+
+// ─── Segment / aggregate metric types ───────────────────────────────────────
+
+export interface TurnSegment {
+  id: string;
+  direction: "left" | "right";
+  startFrame: number;
+  endFrame: number;
+  apexFrame: number;
+  durationMs: number;
+}
+
+export interface EdgeSimilarityData {
+  overall: number;  // 0–100
+  left: number;     // 0–100
+  right: number;    // 0–100
+  perTurn: { turnId: string; score: number }[];
+}
+
+export interface TurnCadenceData {
+  tpmMedian: number;       // turns per minute median
+  tpmPeak6: number;        // peak 6-turn tempo
+  turnDurationCv: number;  // coefficient of variation (0–1)
+}
+
+// ─── Analysis metrics container ─────────────────────────────────────────────
+
+export interface AnalysisMetrics {
+  shinParallel: ShinParallelFrame[];
+  com: COMFrame[];
+  angulation: AngulationFrame[];
+  counter: CounterFrame[];
+  angulationVsInclination: AngulationVsInclinationFrame[];
+  turnSegments: TurnSegment[];
+  edgeSimilarity: EdgeSimilarityData;
+  turnCadence: TurnCadenceData;
+}
+
+// ─── Analysis Result ────────────────────────────────────────────────────────
+
 export interface AnalysisResult {
   id: string;
   userId: string;
@@ -21,25 +95,8 @@ export interface AnalysisResult {
   progress?: number; // 0-100 for processing
   failedReason?: string;
   modelUrl?: string; // optional 3D model
-  scores: {
-    overall: number;
-    stance: number;
-    balance: number;
-    edging: number;
-    rotation: number;
-  };
-  feedback: FeedbackItem[];
+  metrics?: AnalysisMetrics;
   embedToken?: string;
-  edgeSimilarity?: number[]; // frame-level edge similarity data
-}
-
-export interface FeedbackItem {
-  id: string;
-  category: "stance" | "balance" | "edging" | "rotation" | "timing";
-  severity: "info" | "warning" | "critical";
-  title: string;
-  description: string;
-  timestamp?: number;
 }
 
 export interface PricingPlan {

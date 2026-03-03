@@ -24,17 +24,14 @@ export default function MetricsDebugPage() {
   const [metrics, setMetrics] = useState<MetricsData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Analysis lookup
   const [analysisId, setAnalysisId] = useState("");
   const [embedToken, setEmbedToken] = useState("");
   const [lookupResult, setLookupResult] = useState<AnalysisResult | null>(null);
   const [lookupLoading, setLookupLoading] = useState(false);
 
-  // Frame scrubber
   const [currentFrame, setCurrentFrame] = useState(0);
-  const totalFrames = lookupResult?.edgeSimilarity?.length ?? 0;
+  const totalFrames = lookupResult?.metrics?.shinParallel?.length ?? 0;
 
-  // Rerun modal
   const [rerunOpen, setRerunOpen] = useState(false);
   const [rerunning, setRerunning] = useState(false);
 
@@ -74,7 +71,6 @@ export default function MetricsDebugPage() {
     toast.success("Analysis re-run triggered.");
   };
 
-  // Keyboard shortcuts for frame scrubber
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (totalFrames === 0) return;
     if (e.key === "ArrowLeft") setCurrentFrame((f) => Math.max(0, f - 1));
@@ -99,6 +95,8 @@ export default function MetricsDebugPage() {
   const dauData = metrics.dailyActiveUsers.map((v, i) => ({ day: `D${i + 1}`, users: v }));
   const apdData = metrics.analysesPerDay.map((v, i) => ({ day: `D${i + 1}`, analyses: v }));
 
+  const currentShinScore = lookupResult?.metrics?.shinParallel?.[currentFrame]?.parallelismScore;
+
   return (
     <AppLayout>
       <Section>
@@ -107,7 +105,6 @@ export default function MetricsDebugPage() {
             Metrics <span className="text-sm font-normal text-muted-foreground">(internal)</span>
           </h1>
 
-          {/* Stats grid */}
           <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
             {stats.map((s) => (
               <div key={s.label} className="rounded-xl border border-border p-4 text-center">
@@ -117,7 +114,6 @@ export default function MetricsDebugPage() {
             ))}
           </div>
 
-          {/* Charts */}
           <div className="mt-8 grid gap-6 md:grid-cols-2">
             <div className="rounded-xl border border-border p-4">
               <h2 className="text-sm font-semibold text-foreground">Daily Active Users</h2>
@@ -149,7 +145,6 @@ export default function MetricsDebugPage() {
             </div>
           </div>
 
-          {/* Analysis lookup */}
           <div className="mt-8 rounded-xl border border-border p-6">
             <h2 className="text-sm font-semibold text-foreground">Analysis Lookup</h2>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -157,29 +152,22 @@ export default function MetricsDebugPage() {
                 <Label htmlFor="analysis-id">Analysis ID</Label>
                 <div className="flex gap-2">
                   <Input id="analysis-id" placeholder="res_1" value={analysisId} onChange={(e) => setAnalysisId(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleLookupById()} />
-                  <Button variant="outline" size="sm" onClick={handleLookupById} disabled={lookupLoading}>
-                    <Search className="h-4 w-4" />
-                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleLookupById} disabled={lookupLoading}><Search className="h-4 w-4" /></Button>
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="embed-token">Embed Token</Label>
                 <div className="flex gap-2">
                   <Input id="embed-token" placeholder="tok_abc123" value={embedToken} onChange={(e) => setEmbedToken(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleLookupByToken()} />
-                  <Button variant="outline" size="sm" onClick={handleLookupByToken} disabled={lookupLoading}>
-                    <Search className="h-4 w-4" />
-                  </Button>
+                  <Button variant="outline" size="sm" onClick={handleLookupByToken} disabled={lookupLoading}><Search className="h-4 w-4" /></Button>
                 </div>
               </div>
             </div>
 
-            {lookupLoading && (
-              <div className="mt-4 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>
-            )}
+            {lookupLoading && <div className="mt-4 flex justify-center"><Loader2 className="h-5 w-5 animate-spin text-muted-foreground" /></div>}
 
             {lookupResult && !lookupLoading && (
               <div className="mt-6 space-y-4">
-                {/* Summary */}
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <div className="rounded-lg border border-border p-3 text-center">
                     <p className="text-lg font-bold text-foreground">{lookupResult.id}</p>
@@ -190,8 +178,8 @@ export default function MetricsDebugPage() {
                     <p className="text-xs text-muted-foreground">Status</p>
                   </div>
                   <div className="rounded-lg border border-border p-3 text-center">
-                    <p className="text-lg font-bold text-foreground">{lookupResult.scores.overall || "—"}</p>
-                    <p className="text-xs text-muted-foreground">Score</p>
+                    <p className="text-lg font-bold text-foreground">{lookupResult.metrics?.edgeSimilarity?.overall ?? "—"}</p>
+                    <p className="text-xs text-muted-foreground">Edge Score</p>
                   </div>
                   <div className="rounded-lg border border-border p-3 text-center">
                     <p className="text-lg font-bold text-foreground">{lookupResult.duration ? `${lookupResult.duration}s` : "—"}</p>
@@ -199,7 +187,6 @@ export default function MetricsDebugPage() {
                   </div>
                 </div>
 
-                {/* Frame scrubber */}
                 {totalFrames > 0 && (
                   <div className="rounded-lg border border-border p-4">
                     <h3 className="text-xs font-semibold text-foreground">Frame Scrubber (←/→ keys)</h3>
@@ -208,35 +195,27 @@ export default function MetricsDebugPage() {
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
                       <div className="flex-1">
-                        <Slider
-                          value={[currentFrame]}
-                          min={0}
-                          max={totalFrames - 1}
-                          step={1}
-                          onValueChange={([v]) => setCurrentFrame(v)}
-                        />
+                        <Slider value={[currentFrame]} min={0} max={totalFrames - 1} step={1} onValueChange={([v]) => setCurrentFrame(v)} />
                       </div>
                       <Button variant="outline" size="sm" onClick={() => setCurrentFrame(Math.min(totalFrames - 1, currentFrame + 1))} disabled={currentFrame === totalFrames - 1} aria-label="Next frame">
                         <ChevronRight className="h-4 w-4" />
                       </Button>
                     </div>
                     <p className="mt-2 text-center text-xs text-muted-foreground">
-                      Frame {currentFrame + 1} / {totalFrames} — Similarity: {Math.round((lookupResult.edgeSimilarity![currentFrame]) * 100)}%
+                      Frame {currentFrame + 1} / {totalFrames}
+                      {currentShinScore != null && ` — Shin Parallel: ${currentShinScore}`}
                     </p>
-
-                    {/* Mock frame preview */}
                     <div className="mt-3 h-40">
                       <FramePreview
                         frameIndex={currentFrame}
                         totalFrames={totalFrames}
-                        similarity={lookupResult.edgeSimilarity![currentFrame]}
+                        similarity={currentShinScore != null ? currentShinScore / 100 : 0.5}
                         className="h-full w-full"
                       />
                     </div>
                   </div>
                 )}
 
-                {/* Rerun */}
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={() => setRerunOpen(true)}>
                     <RefreshCw className="mr-2 h-4 w-4" /> Re-run analysis

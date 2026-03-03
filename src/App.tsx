@@ -48,13 +48,14 @@ const App = () => (
             <Route path="/embed/results/:token" element={<EmbedResults />} />
 
             {/* Protected routes — require sign-in */}
-            <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-            <Route path="/results/:id" element={<ProtectedRoute><Results /></ProtectedRoute>} />
-            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
-            <Route path="/billing" element={<ProtectedRoute><Billing /></ProtectedRoute>} />
+            {/* TODO_BACKEND_HOOKUP: Re-wrap with <ProtectedRoute> once auth is connected */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/results/:id" element={<Results />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/billing" element={<Billing />} />
 
-            {/* Internal routes — require internal/admin role */}
-            <Route path="/internal/metrics-debug" element={<ProtectedRoute requireInternal><MetricsDebug /></ProtectedRoute>} />
+            {/* TODO_BACKEND_HOOKUP: Re-wrap with <ProtectedRoute requireInternal> once auth is connected */}
+            <Route path="/internal/metrics-debug" element={<MetricsDebug />} />
 
             {/* Explicit 404 page */}
             <Route path="/404" element={<NotFound />} />

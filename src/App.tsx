@@ -14,7 +14,7 @@ import Settings from "./pages/Settings";
 import ConfirmEmail from "./pages/ConfirmEmail";
 import EmbedResults from "./pages/EmbedResults";
 import Releases from "./pages/Releases";
-import Partners from "./pages/Partners";
+import Integrations from "./pages/Integrations";
 import Billing from "./pages/Billing";
 import Dashboard from "./pages/Dashboard";
 import MetricsDebug from "./pages/MetricsDebug";
@@ -39,7 +39,7 @@ const App = () => (
             <Route path="/about" element={<About />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/releases" element={<Releases />} />
-            <Route path="/partners" element={<Partners />} />
+            <Route path="/integrations" element={<Integrations />} />
             <Route path="/confirm-email" element={<ConfirmEmail />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />

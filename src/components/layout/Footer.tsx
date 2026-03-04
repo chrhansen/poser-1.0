@@ -6,7 +6,7 @@ const footerLinks = [
     links: [
       { label: "Pricing", href: "/pricing" },
       { label: "Releases", href: "/releases" },
-      { label: "Partners", href: "/partners" },
+      { label: "Integrations", href: "/integrations" },
     ],
   },
   {

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Copy, Check, Code, AlertTriangle, ExternalLink, Plus, Globe, Pencil } from "lucide-react";
+import { Copy, Check, Code, AlertTriangle, ExternalLink, Plus, Globe, Pencil, MonitorSmartphone, Zap, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -200,8 +200,64 @@ function CreatePartnerForm({ onCreated }: { onCreated: (p: Partner) => void }) {
   );
 }
 
-// ─── Partners Page ──────────────────────────────────────────────────────────
-export default function PartnersPage() {
+// ─── Embed Widget Promo ─────────────────────────────────────────────────────
+function EmbedWidgetPromo() {
+  return (
+    <div className="rounded-xl border border-border bg-gradient-to-br from-primary/5 via-background to-accent/5 p-6 md:p-8">
+      <div className="flex items-start gap-3">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+          <MonitorSmartphone className="h-5 w-5 text-primary" />
+        </div>
+        <div>
+          <h2 className="text-lg font-semibold text-foreground">Embed Widget</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Let your students analyze their ski technique without leaving your website. Drop Poser's lightweight embed widget into any page — users upload a video, get AI-powered feedback, and see results in seconds.
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+        {[
+          {
+            icon: Zap,
+            title: "Instant setup",
+            desc: "One snippet of HTML or a React component — no backend required.",
+          },
+          {
+            icon: Palette,
+            title: "Your brand",
+            desc: "The widget inherits your domain and partner slug for a seamless experience.",
+          },
+          {
+            icon: MonitorSmartphone,
+            title: "Works everywhere",
+            desc: "Responsive from mobile to desktop. HTTPS-ready for production.",
+          },
+        ].map((item) => (
+          <div key={item.title} className="rounded-lg border border-border bg-background p-4">
+            <item.icon className="h-4 w-4 text-primary" />
+            <h3 className="mt-2 text-sm font-medium text-foreground">{item.title}</h3>
+            <p className="mt-1 text-xs text-muted-foreground">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 rounded-lg border border-border bg-secondary/50 p-4">
+        <p className="text-xs font-medium text-foreground">Quick start</p>
+        <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">
+{`<iframe
+  src="https://poser.app/embed/results/YOUR_TOKEN"
+  width="400" height="600"
+  frameborder="0"
+></iframe>`}
+        </pre>
+      </div>
+    </div>
+  );
+}
+
+// ─── Integrations Page ──────────────────────────────────────────────────────
+export default function IntegrationsPage() {
   const [partners, setPartners] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
@@ -227,14 +283,23 @@ export default function PartnersPage() {
         <div className="mx-auto max-w-2xl">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-foreground">Partners</h1>
-              <p className="mt-2 text-muted-foreground">Organizations we work with.</p>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground">Integrations</h1>
+              <p className="mt-2 text-muted-foreground">Embed Poser into your website or platform.</p>
             </div>
           </div>
 
-          {/* Creation form */}
-          <div className="mt-6">
-            <CreatePartnerForm onCreated={(p) => setPartners((prev) => [...prev, p])} />
+          {/* Embed widget promo */}
+          <div className="mt-8">
+            <EmbedWidgetPromo />
+          </div>
+
+          {/* Partners section */}
+          <div className="mt-12">
+            <h2 className="text-lg font-semibold text-foreground">Partners</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Organizations using the Poser embed widget.</p>
+            <div className="mt-4">
+              <CreatePartnerForm onCreated={(p) => setPartners((prev) => [...prev, p])} />
+            </div>
           </div>
 
           <div className="mt-8 space-y-4">

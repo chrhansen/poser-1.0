@@ -47,21 +47,9 @@ export function IntegrationsTab() {
 
   return (
     <div className="space-y-6">
-      {/* Webhooks placeholder */}
+      {/* Embed Widget */}
       <div className="rounded-xl border border-border p-6">
-        <h2 className="text-sm font-semibold text-foreground">Webhooks</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Get notified when analyses complete or users interact with your embed widget.</p>
-        <div className="mt-4">
-          <p className="text-xs text-muted-foreground">No webhooks configured yet.</p>
-          <Button variant="outline" size="sm" className="mt-3" disabled>
-            Add webhook endpoint
-          </Button>
-        </div>
-      </div>
-
-      {/* Connected partners / domains */}
-      <div className="rounded-xl border border-border p-6">
-        <h2 className="text-sm font-semibold text-foreground">Connected domains</h2>
+        <h2 className="text-sm font-semibold text-foreground">Embed Widget</h2>
         <p className="mt-1 text-sm text-muted-foreground">Domains authorized to load your embed widget.</p>
         <div className="mt-4 space-y-3">
           {partners.map((p) => (

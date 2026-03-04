@@ -24,8 +24,18 @@ interface SidebarContextValue {
 const SidebarContext = createContext<SidebarContextValue>({ collapsed: false, setCollapsed: () => {} });
 export const useSidebarCollapsed = () => useContext(SidebarContext);
 
+// Persist sidebar state across navigations
+const STORAGE_KEY = "sidebar-collapsed";
+function getInitialCollapsed() {
+  try { return localStorage.getItem(STORAGE_KEY) === "true"; } catch { return false; }
+}
+
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsedRaw] = useState(getInitialCollapsed);
+  const setCollapsed = (v: boolean) => {
+    setCollapsedRaw(v);
+    try { localStorage.setItem(STORAGE_KEY, String(v)); } catch {}
+  };
   return <SidebarContext.Provider value={{ collapsed, setCollapsed }}>{children}</SidebarContext.Provider>;
 }
 

@@ -293,65 +293,6 @@ export default function IntegrationsPage() {
             <EmbedWidgetPromo />
           </div>
 
-          {/* Partners section */}
-          <div className="mt-12">
-            <h2 className="text-lg font-semibold text-foreground">Partners</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Organizations using the Poser embed widget.</p>
-            <div className="mt-4">
-              <CreatePartnerForm onCreated={(p) => setPartners((prev) => [...prev, p])} />
-            </div>
-          </div>
-
-          <div className="mt-8 space-y-4">
-            {partners.map((p) => (
-              <div
-                key={p.id}
-                className="rounded-xl border border-border p-6 transition-shadow hover:shadow-md"
-              >
-                <div className="flex items-start justify-between">
-                  <div>
-                    <h3 className="text-base font-semibold text-foreground">{p.name}</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">{p.description}</p>
-                    {p.domain && (
-                      <div className="mt-1 flex items-center gap-2">
-                        <Globe className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">{p.domain}</span>
-                        <button
-                          onClick={() => setEditingDomain(editingDomain === p.id ? null : p.id)}
-                          className="text-muted-foreground hover:text-foreground"
-                          aria-label="Edit domain"
-                        >
-                          <Pencil className="h-3 w-3" />
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                  <a href={p.url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-muted-foreground hover:text-foreground">
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </div>
-
-                {/* Update domain inline form */}
-                {editingDomain === p.id && (
-                  <UpdateDomainForm partner={p} onUpdated={handlePartnerUpdated} />
-                )}
-
-                {p.integrationSnippets && (
-                  <div className="mt-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => setExpanded(expanded === p.id ? null : p.id)}
-                    >
-                      <Code className="mr-2 h-3 w-3" />
-                      {expanded === p.id ? "Hide integration" : "View integration"}
-                    </Button>
-                    {expanded === p.id && <IntegrationSnippets partner={p} />}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
         </div>
       </Section>
     </Layout>

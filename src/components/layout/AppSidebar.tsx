@@ -263,7 +263,7 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
     return (
       <aside
         className={cn(
-          "shrink-0 border-r border-border bg-surface-sunken transition-all duration-300 flex flex-col",
+          "sticky top-0 h-screen shrink-0 border-r border-border bg-surface-sunken transition-all duration-300 flex flex-col",
           collapsed ? "w-14" : "w-60"
         )}
       >

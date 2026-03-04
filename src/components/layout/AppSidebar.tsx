@@ -5,6 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState, createContext, useContext } from "react";
 import { ContactSupportDialog } from "@/components/dialogs/ContactSupportDialog";
 import { RecentAnalysesList } from "./RecentAnalysesList";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 const sidebarLinks = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -43,6 +44,18 @@ interface AppSidebarProps {
   extraContent?: React.ReactNode;
 }
 
+const TOOLTIP_DELAY = 100;
+
+function SidebarTooltip({ label, collapsed, children }: { label: string; collapsed: boolean; children: React.ReactNode }) {
+  if (!collapsed) return <>{children}</>;
+  return (
+    <Tooltip delayDuration={TOOLTIP_DELAY}>
+      <TooltipTrigger asChild>{children}</TooltipTrigger>
+      <TooltipContent side="right" sideOffset={8}>{label}</TooltipContent>
+    </Tooltip>
+  );
+}
+
 export function AppSidebar({ extraContent }: AppSidebarProps) {
   const location = useLocation();
   const { user, signOut } = useAuth();
@@ -60,33 +73,35 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
         <div className="flex h-full flex-col">
           {/* Collapse toggle */}
           <div className={cn("flex items-center border-b border-border px-3 py-2", collapsed ? "justify-center" : "justify-end")}>
-            <button
-              onClick={() => setCollapsed(!collapsed)}
-              className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {collapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-            </button>
+            <SidebarTooltip label={collapsed ? "Expand sidebar" : "Collapse sidebar"} collapsed={collapsed}>
+              <button
+                onClick={() => setCollapsed(!collapsed)}
+                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                {collapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+              </button>
+            </SidebarTooltip>
           </div>
 
           {/* Nav links */}
           <nav className="flex-shrink-0 space-y-0.5 px-2 py-3">
             {sidebarLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                title={collapsed ? link.label : undefined}
-                className={cn(
-                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                  collapsed && "justify-center px-0",
-                  location.pathname === link.href
-                    ? "bg-secondary text-foreground"
-                    : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                )}
-              >
-                <link.icon className="h-4 w-4 shrink-0" />
-                {!collapsed && link.label}
-              </Link>
+              <SidebarTooltip key={link.href} label={link.label} collapsed={collapsed}>
+                <Link
+                  to={link.href}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    collapsed && "justify-center px-0",
+                    location.pathname === link.href
+                      ? "bg-secondary text-foreground"
+                      : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                  )}
+                >
+                  <link.icon className="h-4 w-4 shrink-0" />
+                  {!collapsed && link.label}
+                </Link>
+              </SidebarTooltip>
             ))}
 
             {/* Internal links */}
@@ -99,21 +114,21 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
                   </p>
                 )}
                 {internalLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    to={link.href}
-                    title={collapsed ? link.label : undefined}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                      collapsed && "justify-center px-0",
-                      location.pathname === link.href
-                        ? "bg-secondary text-foreground"
-                        : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                    )}
-                  >
-                    <link.icon className="h-4 w-4 shrink-0" />
-                    {!collapsed && link.label}
-                  </Link>
+                  <SidebarTooltip key={link.href} label={link.label} collapsed={collapsed}>
+                    <Link
+                      to={link.href}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                        collapsed && "justify-center px-0",
+                        location.pathname === link.href
+                          ? "bg-secondary text-foreground"
+                          : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+                      )}
+                    >
+                      <link.icon className="h-4 w-4 shrink-0" />
+                      {!collapsed && link.label}
+                    </Link>
+                  </SidebarTooltip>
                 ))}
               </>
             )}
@@ -129,28 +144,30 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
 
           {/* Bottom actions */}
           <div className="mt-auto space-y-0.5 border-t border-border px-2 py-3">
-            <button
-              onClick={() => setSupportOpen(true)}
-              title={collapsed ? "Support" : undefined}
-              className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground",
-                collapsed && "justify-center px-0"
-              )}
-            >
-              <HelpCircle className="h-4 w-4 shrink-0" />
-              {!collapsed && "Support"}
-            </button>
-            <button
-              onClick={() => signOut()}
-              title={collapsed ? "Sign out" : undefined}
-              className={cn(
-                "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground",
-                collapsed && "justify-center px-0"
-              )}
-            >
-              <LogOut className="h-4 w-4 shrink-0" />
-              {!collapsed && "Sign out"}
-            </button>
+            <SidebarTooltip label="Support" collapsed={collapsed}>
+              <button
+                onClick={() => setSupportOpen(true)}
+                className={cn(
+                  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground",
+                  collapsed && "justify-center px-0"
+                )}
+              >
+                <HelpCircle className="h-4 w-4 shrink-0" />
+                {!collapsed && "Support"}
+              </button>
+            </SidebarTooltip>
+            <SidebarTooltip label="Sign out" collapsed={collapsed}>
+              <button
+                onClick={() => signOut()}
+                className={cn(
+                  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground",
+                  collapsed && "justify-center px-0"
+                )}
+              >
+                <LogOut className="h-4 w-4 shrink-0" />
+                {!collapsed && "Sign out"}
+              </button>
+            </SidebarTooltip>
           </div>
         </div>
       </aside>

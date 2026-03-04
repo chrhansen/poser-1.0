@@ -56,74 +56,72 @@ export function IntegrationsTab() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="rounded-xl border border-border p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-semibold text-foreground">Embed Widgets</h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Manage domains authorized to load your embed widget.
-            </p>
-          </div>
-          {!showAddForm && (
-            <Button variant="outline" size="sm" onClick={() => setShowAddForm(true)}>
-              <Plus className="mr-1.5 h-3.5 w-3.5" />
-              Add widget
-            </Button>
-          )}
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-sm font-semibold text-foreground">Embed Widgets</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Manage domains authorized to load your embed widget.
+          </p>
         </div>
-
-        {showAddForm && (
-          <AddWidgetForm
-            onCreated={handleCreated}
-            onCancel={() => setShowAddForm(false)}
-          />
+        {!showAddForm && (
+          <Button variant="outline" size="sm" onClick={() => setShowAddForm(true)}>
+            <Plus className="mr-1.5 h-3.5 w-3.5" />
+            Add widget
+          </Button>
         )}
+      </div>
 
-        <div className="mt-4 space-y-3">
-          {partners.map((p) => (
-            <div key={p.id} className="rounded-lg border border-border px-4 py-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <Globe className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{p.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {p.domain || "No domain set"} · <span className="font-mono">{p.slug}</span>
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    <Label htmlFor={`notif-${p.id}`} className="text-xs text-muted-foreground">
-                      Email alerts
-                    </Label>
-                    <Switch
-                      id={`notif-${p.id}`}
-                      checked={emailNotifs[p.id] ?? false}
-                      onCheckedChange={() => toggleEmailNotif(p.id)}
-                    />
-                  </div>
-                  <button
-                    onClick={() => setEditingId(editingId === p.id ? null : p.id)}
-                    className="text-muted-foreground hover:text-foreground"
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </button>
+      {showAddForm && (
+        <AddWidgetForm
+          onCreated={handleCreated}
+          onCancel={() => setShowAddForm(false)}
+        />
+      )}
+
+      <div className="space-y-3">
+        {partners.map((p) => (
+          <div key={p.id} className="rounded-xl border border-border px-4 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Globe className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">{p.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {p.domain || "No domain set"} · <span className="font-mono">{p.slug}</span>
+                  </p>
                 </div>
               </div>
-
-              {editingId === p.id && (
-                <DomainEditor partner={p} onUpdated={handleDomainUpdated} />
-              )}
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <Label htmlFor={`notif-${p.id}`} className="text-xs text-muted-foreground">
+                    Email alerts
+                  </Label>
+                  <Switch
+                    id={`notif-${p.id}`}
+                    checked={emailNotifs[p.id] ?? false}
+                    onCheckedChange={() => toggleEmailNotif(p.id)}
+                  />
+                </div>
+                <button
+                  onClick={() => setEditingId(editingId === p.id ? null : p.id)}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                </button>
+              </div>
             </div>
-          ))}
-          {partners.length === 0 && !showAddForm && (
-            <p className="text-xs text-muted-foreground">
-              No embed widgets yet. Click "Add widget" to get started.
-            </p>
-          )}
-        </div>
+
+            {editingId === p.id && (
+              <DomainEditor partner={p} onUpdated={handleDomainUpdated} />
+            )}
+          </div>
+        ))}
+        {partners.length === 0 && !showAddForm && (
+          <p className="text-xs text-muted-foreground">
+            No embed widgets yet. Click "Add widget" to get started.
+          </p>
+        )}
       </div>
     </div>
   );

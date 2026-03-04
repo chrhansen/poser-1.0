@@ -85,7 +85,14 @@ function SidebarInner({ extraContent, collapsed, setCollapsed, onNavigate, hideH
 
   return (
     <>
-      <div className="flex h-full flex-col">
+      <div
+        className="flex h-full flex-col"
+        onClick={(e) => {
+          if (collapsed && e.target === e.currentTarget) {
+            setCollapsed(false);
+          }
+        }}
+      >
         {/* Top: Logo + collapse toggle (hidden when used inside mobile sheet) */}
         {!hideHeader && (
           <div className={cn("flex items-center border-b border-border px-3 py-3", collapsed ? "justify-center" : "justify-between")}>
@@ -264,8 +271,13 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
       <aside
         className={cn(
           "sticky top-0 h-screen shrink-0 border-r border-border bg-surface-sunken transition-all duration-300 flex flex-col",
-          collapsed ? "w-14" : "w-60"
+          collapsed ? "w-14 cursor-pointer" : "w-60"
         )}
+        onClick={(e) => {
+          if (collapsed && e.target === e.currentTarget) {
+            setCollapsed(false);
+          }
+        }}
       >
         <SidebarInner extraContent={extraContent} collapsed={collapsed} setCollapsed={setCollapsed} />
       </aside>

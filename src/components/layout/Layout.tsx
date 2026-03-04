@@ -1,6 +1,7 @@
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { AppSidebar, SidebarProvider } from "./AppSidebar";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -29,10 +30,7 @@ export function AppLayout({ children, sidebarExtra }: AppLayoutProps) {
     <SidebarProvider>
       <div className="flex min-h-screen">
         <AppSidebar extraContent={sidebarExtra} />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <Header />
-          <main className="flex-1 overflow-auto">{children}</main>
-        </div>
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </SidebarProvider>
   );

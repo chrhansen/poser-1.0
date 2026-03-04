@@ -1,11 +1,19 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, BarChart3, Settings, CreditCard, HelpCircle, LogOut, PanelLeftClose, PanelLeft } from "lucide-react";
+import { LayoutDashboard, BarChart3, Settings, CreditCard, HelpCircle, LogOut, PanelLeftClose, PanelLeft, Info, Tag, FileText, ChevronUp } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, createContext, useContext } from "react";
 import { ContactSupportDialog } from "@/components/dialogs/ContactSupportDialog";
 import { RecentAnalysesList } from "./RecentAnalysesList";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const sidebarLinks = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -56,6 +64,11 @@ function SidebarTooltip({ label, collapsed, children }: { label: string; collaps
   );
 }
 
+function getInitials(name?: string) {
+  if (!name) return "?";
+  return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+}
+
 export function AppSidebar({ extraContent }: AppSidebarProps) {
   const location = useLocation();
   const { user, signOut } = useAuth();
@@ -71,8 +84,13 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
         )}
       >
         <div className="flex h-full flex-col">
-          {/* Collapse toggle */}
-          <div className={cn("flex items-center border-b border-border px-3 py-2", collapsed ? "justify-center" : "justify-end")}>
+          {/* Top: Logo + collapse toggle */}
+          <div className={cn("flex items-center border-b border-border px-3 py-3", collapsed ? "justify-center" : "justify-between")}>
+            {!collapsed && (
+              <Link to="/" className="text-lg font-bold tracking-tight text-foreground">
+                poser
+              </Link>
+            )}
             <SidebarTooltip label={collapsed ? "Expand sidebar" : "Collapse sidebar"} collapsed={collapsed}>
               <button
                 onClick={() => setCollapsed(!collapsed)}
@@ -142,7 +160,7 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
             </div>
           )}
 
-          {/* Bottom actions */}
+          {/* Bottom: Support + User menu */}
           <div className="mt-auto space-y-0.5 border-t border-border px-2 py-3">
             <SidebarTooltip label="Support" collapsed={collapsed}>
               <button
@@ -156,18 +174,62 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
                 {!collapsed && "Support"}
               </button>
             </SidebarTooltip>
-            <SidebarTooltip label="Sign out" collapsed={collapsed}>
-              <button
-                onClick={() => signOut()}
-                className={cn(
-                  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-secondary/50 hover:text-foreground",
-                  collapsed && "justify-center px-0"
-                )}
+
+            {/* User menu — ChatGPT style */}
+            <DropdownMenu>
+              <SidebarTooltip label={user?.name ?? "Account"} collapsed={collapsed}>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className={cn(
+                      "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-secondary/50",
+                      collapsed && "justify-center px-0"
+                    )}
+                  >
+                    <Avatar className="h-6 w-6 shrink-0 text-[10px]">
+                      <AvatarFallback className="bg-primary text-primary-foreground text-[10px]">
+                        {getInitials(user?.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    {!collapsed && (
+                      <>
+                        <span className="flex-1 truncate text-left">{user?.name}</span>
+                        <ChevronUp className="h-3.5 w-3.5 text-muted-foreground" />
+                      </>
+                    )}
+                  </button>
+                </DropdownMenuTrigger>
+              </SidebarTooltip>
+              <DropdownMenuContent
+                side={collapsed ? "right" : "top"}
+                align={collapsed ? "end" : "start"}
+                className="w-56"
+                sideOffset={8}
               >
-                <LogOut className="h-4 w-4 shrink-0" />
-                {!collapsed && "Sign out"}
-              </button>
-            </SidebarTooltip>
+                {!collapsed && (
+                  <>
+                    <div className="px-3 py-2">
+                      <p className="text-sm font-medium">{user?.name}</p>
+                      <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem asChild>
+                  <Link to="/about"><Info className="mr-2 h-4 w-4" />About</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/pricing"><Tag className="mr-2 h-4 w-4" />Pricing</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/releases"><FileText className="mr-2 h-4 w-4" />Releases</Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => signOut()}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </aside>

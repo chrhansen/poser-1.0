@@ -27,10 +27,10 @@ export function Layout({ children, hideHeader, hideFooter }: LayoutProps) {
 export function AppLayout({ children, sidebarExtra }: AppLayoutProps) {
   return (
     <SidebarProvider>
-      <div className="flex min-h-screen flex-col">
-        <Header />
-        <div className="flex flex-1 overflow-hidden">
-          <AppSidebar extraContent={sidebarExtra} />
+      <div className="flex min-h-screen">
+        <AppSidebar extraContent={sidebarExtra} />
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <Header />
           <main className="flex-1 overflow-auto">{children}</main>
         </div>
       </div>

@@ -19,6 +19,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // TODO_BACKEND_HOOKUP: Replace with onAuthStateChange from Supabase
     const unsub = authService.onAuthStateChange(setUser);
+    // Auto-sign-in with mock user so authenticated pages render correctly
+    // TODO_BACKEND_HOOKUP: Remove this mock auto-sign-in once real auth is connected
+    authService._mockSignIn();
     authService.getCurrentUser().then((u) => {
       setUser(u);
       setLoading(false);

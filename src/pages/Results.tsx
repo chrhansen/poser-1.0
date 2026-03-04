@@ -147,37 +147,7 @@ function StatusBadge({ status }: { status: AnalysisResult["status"] }) {
   );
 }
 
-// ─── Recent Analyses list (rendered inside sidebar) ─────────────────────────
-function RecentAnalysesList({ results, currentId }: { results: AnalysisResult[]; currentId: string }) {
-  return (
-    <div>
-      <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Recent analyses</h3>
-      <div className="mt-2 space-y-1.5">
-        {results.map((r) => (
-          <Link
-            key={r.id}
-            to={`/results/${r.id}`}
-            className={cn(
-              "block rounded-lg border p-2.5 text-sm transition-colors",
-              r.id === currentId ? "border-foreground/30 bg-secondary" : "border-border hover:bg-secondary/50"
-            )}
-          >
-            <div className="flex items-center justify-between">
-              <StatusBadge status={r.status} />
-              {r.status === "complete" && r.metrics && (
-                <span className="text-xs font-bold text-foreground">{r.metrics.edgeSimilarity.overall}</span>
-              )}
-            </div>
-            <p className="mt-1 text-[11px] text-muted-foreground">
-              {new Date(r.createdAt).toLocaleDateString()}
-              {r.duration ? ` · ${r.duration}s` : ""}
-            </p>
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
+
 
 // ─── Metrics drill-down panels ──────────────────────────────────────────────
 
@@ -380,7 +350,7 @@ export default function ResultsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [allResults, setAllResults] = useState<AnalysisResult[]>([]);
+  
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [selectedMetric, setSelectedMetric] = useState<MetricKey>("model");
@@ -394,13 +364,9 @@ export default function ResultsPage() {
 
   const loadData = useCallback(async () => {
     try {
-      const [r, all] = await Promise.all([
-        analysisService.getResult(id ?? ""),
-        analysisService.getResults(),
-      ]);
+      const r = await analysisService.getResult(id ?? "");
       if (!r) { setError(true); setLoading(false); return; }
       setResult(r);
-      setAllResults(all);
       setLoading(false);
     } catch {
       setError(true);
@@ -440,12 +406,12 @@ export default function ResultsPage() {
   if (loading) return <AppLayout><PageLoader /></AppLayout>;
   if (error || !result) return <AppLayout><PageError message="Result not found." onRetry={loadData} /></AppLayout>;
 
-  const recentList = <RecentAnalysesList results={allResults} currentId={result.id} />;
+  
 
   // ── Non-complete states ──
   if (result.status === "pending") {
     return (
-      <AppLayout sidebarExtra={recentList}>
+      <AppLayout>
         <Section>
           <div className="flex flex-col items-center justify-center gap-4 text-center">
             <Clock className="h-10 w-10 text-muted-foreground" />
@@ -459,7 +425,7 @@ export default function ResultsPage() {
 
   if (result.status === "processing") {
     return (
-      <AppLayout sidebarExtra={recentList}>
+      <AppLayout>
         <Section>
           <div className="mx-auto flex max-w-md flex-col items-center gap-6 text-center">
             <Loader2 className="h-10 w-10 animate-spin text-accent" />
@@ -477,7 +443,7 @@ export default function ResultsPage() {
 
   if (result.status === "error") {
     return (
-      <AppLayout sidebarExtra={recentList}>
+      <AppLayout>
         <Section>
           <div className="mx-auto flex max-w-md flex-col items-center gap-4 text-center">
             <AlertTriangle className="h-10 w-10 text-destructive" />
@@ -509,7 +475,7 @@ export default function ResultsPage() {
   };
 
   return (
-    <AppLayout sidebarExtra={recentList}>
+    <AppLayout>
       <Section>
         <div className="mx-auto max-w-5xl">
           {/* Header */}

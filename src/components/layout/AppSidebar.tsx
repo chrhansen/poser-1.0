@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { useState, createContext, useContext } from "react";
 import { ContactSupportDialog } from "@/components/dialogs/ContactSupportDialog";
+import { RecentAnalysesList } from "./RecentAnalysesList";
 
 const sidebarLinks = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -108,10 +109,11 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
             )}
           </nav>
 
-          {/* Extra content (e.g. recent analyses) — scrollable */}
-          {extraContent && !collapsed && (
+          {/* Recent analyses — always shown, scrollable */}
+          {!collapsed && (
             <div className="flex-1 overflow-y-auto border-t border-border px-2 py-3">
               {extraContent}
+              <RecentAnalysesList />
             </div>
           )}
 

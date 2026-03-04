@@ -2,13 +2,12 @@ import { Link, useLocation } from "react-router-dom";
 import { LayoutDashboard, BarChart3, Settings, CreditCard, HelpCircle, LogOut, PanelLeftClose, PanelLeft, Info, Tag, FileText, ChevronUp, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext } from "react";
 import { ContactSupportDialog } from "@/components/dialogs/ContactSupportDialog";
 import { RecentAnalysesList } from "./RecentAnalysesList";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -247,15 +246,24 @@ function SidebarInner({ extraContent, collapsed, setCollapsed, onNavigate, hideH
 
 export function AppSidebar({ extraContent }: AppSidebarProps) {
   const { collapsed, setCollapsed } = useSidebarCollapsed();
-  const isMobile = useIsMobile();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isDesktop, setIsDesktop] = useState(true);
+
+  // Use lg breakpoint (1024px) to match the CSS lg:flex class
+  React.useEffect(() => {
+    const mql = window.matchMedia("(min-width: 1024px)");
+    const onChange = () => setIsDesktop(mql.matches);
+    mql.addEventListener("change", onChange);
+    setIsDesktop(mql.matches);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
 
   // Desktop sidebar
-  if (!isMobile) {
+  if (isDesktop) {
     return (
       <aside
         className={cn(
-          "hidden shrink-0 border-r border-border bg-surface-sunken transition-all duration-300 lg:flex flex-col",
+          "shrink-0 border-r border-border bg-surface-sunken transition-all duration-300 flex flex-col",
           collapsed ? "w-14" : "w-60"
         )}
       >

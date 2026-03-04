@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import type { AnalysisResult } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { Plus, Clock, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { NewAnalysisSheet } from "@/components/upload/NewAnalysisSheet";
 
 const statusConfig: Record<AnalysisResult["status"], { icon: typeof Clock; label: string; cls: string }> = {
   pending: { icon: Clock, label: "Pending", cls: "text-muted-foreground" },
@@ -68,6 +69,7 @@ export default function DashboardPage() {
   const [results, setResults] = useState<AnalysisResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [newAnalysisOpen, setNewAnalysisOpen] = useState(false);
 
   const loadData = () => {
     setLoading(true);
@@ -92,10 +94,8 @@ export default function DashboardPage() {
         <div className="mx-auto max-w-3xl">
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
-            <Button size="sm" asChild>
-              <Link to="/#upload">
-                <Plus className="mr-1 h-4 w-4" /> New analysis
-              </Link>
+            <Button size="sm" onClick={() => setNewAnalysisOpen(true)}>
+              <Plus className="mr-1 h-4 w-4" /> New analysis
             </Button>
           </div>
 
@@ -103,7 +103,7 @@ export default function DashboardPage() {
             <EmptyState
               title="No analyses yet"
               description="Upload a clip to get your first analysis."
-              action={<Button asChild><Link to="/#upload">Upload clip</Link></Button>}
+              action={<Button onClick={() => setNewAnalysisOpen(true)}>Upload clip</Button>}
             />
           ) : (
             <>
@@ -127,6 +127,7 @@ export default function DashboardPage() {
           )}
         </div>
       </Section>
+      <NewAnalysisSheet open={newAnalysisOpen} onOpenChange={setNewAnalysisOpen} />
     </AppLayout>
   );
 }

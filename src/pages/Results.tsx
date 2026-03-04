@@ -22,6 +22,7 @@ import {
   Cuboid, GitCompareArrows, RotateCw, Crosshair, Timer,
 } from "lucide-react";
 import { toast } from "sonner";
+import { NewAnalysisSheet } from "@/components/upload/NewAnalysisSheet";
 import {
   AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, BarChart, Bar,
@@ -357,6 +358,7 @@ export default function ResultsPage() {
   const [theater, setTheater] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
+  const [newAnalysisOpen, setNewAnalysisOpen] = useState(false);
   const pollRef = useRef<ReturnType<typeof setInterval>>();
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoTime, setVideoTime] = useState(0);
@@ -496,7 +498,7 @@ export default function ResultsPage() {
               <Button variant="outline" size="sm" aria-label="Download results">
                 <Download className="h-4 w-4" />
               </Button>
-              <Button variant="outline" size="sm" onClick={() => navigate("/#upload")}>
+              <Button variant="outline" size="sm" onClick={() => setNewAnalysisOpen(true)}>
                 <Plus className="mr-1 h-4 w-4" /> New
               </Button>
             </div>
@@ -540,6 +542,7 @@ export default function ResultsPage() {
 
       <ConfirmActionDialog open={deleteOpen} onOpenChange={setDeleteOpen} title="Delete analysis?" description="This will permanently remove this analysis and all associated data." confirmLabel="Delete" destructive onConfirm={handleDelete} />
       <ContactSupportDialog open={supportOpen} onOpenChange={setSupportOpen} />
+      <NewAnalysisSheet open={newAnalysisOpen} onOpenChange={setNewAnalysisOpen} />
     </AppLayout>
   );
 }

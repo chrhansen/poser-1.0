@@ -51,7 +51,7 @@ export function UploadStep({ maxSizeMB, onFileSelected, error }: UploadStepProps
           Upload your ski video
         </p>
         <p className="mt-1 text-sm text-muted-foreground">
-          MP4, MOV, or WebM (Max. {maxSizeMB} MB)
+          Max. {maxSizeMB} MB
         </p>
         <input
           ref={inputRef}

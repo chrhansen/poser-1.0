@@ -252,9 +252,9 @@ export function EmbedWidget({ partnerSlug = "demo" }: EmbedWidgetProps) {
           href="https://poser.pro"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-medium text-accent hover:underline"
+          className="font-medium text-muted-foreground hover:text-foreground hover:underline transition-colors"
         >
-          Poser.pro
+          poser.pro
         </a>
       </p>
     </div>

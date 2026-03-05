@@ -245,11 +245,15 @@ function EmbedWidgetPromo() {
       <div className="mt-6 rounded-lg border border-border bg-secondary/50 p-4">
         <p className="text-xs font-medium text-foreground">Quick start</p>
         <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">
-{`<iframe
-  src="https://poser.app/embed/results/YOUR_TOKEN"
-  width="400" height="600"
-  frameborder="0"
-></iframe>`}
+{`<div id="poser-embed"></div>
+
+<script src="https://js.poser.pro/poser.js"></script>
+
+<script>
+  window.addEventListener("load", () => {
+    window.PoserEmbed.mount("#poser-embed", { partnerId: "YOUR-PARTNER-ID" })
+  })
+</script>`}
         </pre>
       </div>
     </div>

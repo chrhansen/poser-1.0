@@ -307,6 +307,33 @@ export default function IntegrationsPage() {
             <EmbedWidgetPromo />
           </div>
 
+          {/* Partner examples */}
+          <div className="mt-10">
+            <h2 className="text-lg font-semibold text-foreground">Used by ski schools</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              See the Poser embed widget in action on real partner websites.
+            </p>
+            <div className="mt-4 grid gap-3">
+              <a
+                href="https://www.filalpin.com/ski-video-analysis/lite-live"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between rounded-xl border border-border bg-background p-4 transition-colors hover:border-primary/40 hover:bg-primary/5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-secondary">
+                    <Globe className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-foreground">FIL ALPIN</p>
+                    <p className="text-xs text-muted-foreground">filalpin.com</p>
+                  </div>
+                </div>
+                <ExternalLink className="h-4 w-4 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" />
+              </a>
+            </div>
+          </div>
+
         </div>
       </Section>
     </Layout>

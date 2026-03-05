@@ -116,7 +116,7 @@ export const mockPricingPlans: PricingPlan[] = [
 
 export const mockPricingFAQs: PricingFAQ[] = [
   { id: "faq1", question: "Can I cancel anytime?", answer: "Yes, you can cancel your subscription at any time. You'll retain access until the end of your billing period." },
-  { id: "faq2", question: "What video formats are supported?", answer: "We support MP4, MOV, and WebM files up to 100MB. For best results, film in landscape orientation at 720p or higher." },
+  { id: "faq2", question: "What video formats are supported?", answer: "We support MP4, MOV, and WebM files up to 250MB. For best results, film in landscape orientation at 720p or higher." },
   { id: "faq3", question: "How long does analysis take?", answer: "Most analyses complete within 1–2 minutes. Pro and Team plans get priority processing." },
   { id: "faq4", question: "Is there a free trial?", answer: "Pro plans include a 7-day free trial. No credit card required to start." },
   { id: "faq5", question: "Can I share my results?", answer: "Yes! Team plan users can create embeddable result widgets. All plans can share results via link." },

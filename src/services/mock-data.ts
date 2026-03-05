@@ -102,7 +102,7 @@ export const mockPricingPlans: PricingPlan[] = [
     interval: "month",
     features: ["15 analyses per month", "Ski Rank score", "Edge Similarity", "Turn Cadence"],
     highlighted: true,
-    ctaLabel: "Start free trial",
+    ctaLabel: "Get started",
   },
   {
     id: "max",

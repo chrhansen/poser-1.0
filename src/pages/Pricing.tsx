@@ -34,7 +34,6 @@ export default function PricingPage() {
 
   const getCtaHref = (plan: PricingPlan) => {
     if (plan.id === "free") return user ? "/dashboard" : "/#upload";
-    if (plan.id === "team") return "/about"; // contact sales
     return user ? "/billing" : "/#upload";
   };
 

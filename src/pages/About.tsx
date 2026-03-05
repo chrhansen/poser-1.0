@@ -29,8 +29,10 @@ export default function AboutPage() {
           <div className="mt-4 space-y-4 text-muted-foreground text-sm leading-relaxed">
             <p>
               I'm originally from Denmark, but I now live in Innsbruck, Austria — surrounded by
-              the Alps. Being a skier, ski instructor, and developer with too much time, I decided
-              to build this AI-assisted ski coach during summer 2025.
+              the Alps. I'm a skier, ski instructor with both the Austrian and Danish Ski School.
+              I have a bachelor and master's degree in applied physics, but I have worked mostly
+              as a software developer in my professional life. I started building this AI-assisted
+              ski coach during summer 2025.
             </p>
             <p>
               Poser combines computer vision and pose estimation to give you detailed insights
@@ -44,10 +46,8 @@ export default function AboutPage() {
               >
                 https://github.com/chrhansen/poser
               </a>
-              . I use YOLOv11 (with BoT-SORT) for object detection and tracking, Google
-              MediaPipe for pose-estimation (body-joint coordinates), and standard Python
-              libraries for calculations on pose data. The code could definitely be cleaner and
-              more efficient, but it works for now 🙃
+              . Poser uses SAM2, SAM3D Body, and other AI-libraries for human pose and mesh
+              recovery, as well as standard Python libraries for calculations on 3D data.
             </p>
           </div>
 

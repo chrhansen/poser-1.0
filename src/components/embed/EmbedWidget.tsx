@@ -1,231 +1,262 @@
-import { useState, useCallback, useRef, useEffect } from "react";
-import { Upload, X, Loader2, AlertCircle, CheckCircle, Mail, ArrowRight, ArrowLeft, RotateCcw } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Progress } from "@/components/ui/progress";
-import { analysisService, type SkierPosition } from "@/services/analysis.service";
-import { cn } from "@/lib/utils";
-import { toast } from "sonner";
-import type { AnalysisResult } from "@/lib/types";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import {
+  embedApiService,
+  type EmbedPartnerConfig,
+  type SkierBbox,
+  type FeedbackResponse,
+  type AnalysisStatus,
+} from "@/services/embed-api.service";
+import { UploadStep } from "./steps/UploadStep";
+import { PreviewTrimStep } from "./steps/PreviewTrimStep";
+import { EmailStep } from "./steps/EmailStep";
+import { AwaitingConfirmationStep } from "./steps/AwaitingConfirmationStep";
+import { ProcessingStep } from "./steps/ProcessingStep";
+import { ResultsStep } from "./steps/ResultsStep";
 
-export type EmbedWidgetStep =
+export type EmbedStep =
   | "upload"
-  | "skier-select"
+  | "preview"
   | "email"
   | "awaiting_confirmation"
   | "processing"
-  | "results"
-  | "error";
+  | "results";
 
 interface EmbedWidgetProps {
   partnerSlug?: string;
-  partnerDomain?: string;
-  maxFileSizeMB?: number;
-  onComplete?: (result: AnalysisResult) => void;
 }
 
-const skierPositions: { value: SkierPosition; label: string }[] = [
-  { value: "left", label: "Left" },
-  { value: "center", label: "Center" },
-  { value: "right", label: "Right" },
-];
+const transition = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -10 },
+  transition: { duration: 0.2 },
+};
 
-export function EmbedWidget({
-  partnerSlug,
-  partnerDomain,
-  maxFileSizeMB = 100,
-  onComplete,
-}: EmbedWidgetProps) {
-  const inputRef = useRef<HTMLInputElement>(null);
+export function EmbedWidget({ partnerSlug = "demo" }: EmbedWidgetProps) {
   const pollRef = useRef<ReturnType<typeof setInterval>>();
 
-  const [step, setStep] = useState<EmbedWidgetStep>("upload");
+  // Config
+  const [config, setConfig] = useState<EmbedPartnerConfig>({
+    partner_slug: partnerSlug,
+    partner_name: "",
+    max_upload_size_mb: 250,
+    max_trim_seconds: 20,
+  });
+
+  // Flow state
+  const [step, setStep] = useState<EmbedStep>("upload");
   const [file, setFile] = useState<File | null>(null);
-  const [skierPos, setSkierPos] = useState<SkierPosition>("center");
+  const [uploadError, setUploadError] = useState("");
+  const [skierPayload, setSkierPayload] = useState<{
+    trimStart: number;
+    trimEnd: number;
+    bbox: SkierBbox;
+    objectId: number;
+    normalizedTime: number;
+  } | null>(null);
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [errorMsg, setErrorMsg] = useState("");
-  const [dragOver, setDragOver] = useState(false);
-  const [result, setResult] = useState<AnalysisResult | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   const [analysisId, setAnalysisId] = useState<string | null>(null);
+  const [progress, setProgress] = useState(0);
+  const [processingError, setProcessingError] = useState("");
+  const [feedback, setFeedback] = useState<FeedbackResponse | null>(null);
 
-  // TODO_BACKEND_HOOKUP: Validate partner config on mount
+  // Load partner config
   useEffect(() => {
-    if (partnerSlug) {
-      console.log(`[EmbedWidget] Partner init: slug=${partnerSlug}, domain=${partnerDomain}`);
-    }
-  }, [partnerSlug, partnerDomain]);
+    embedApiService.getPartnerConfig(partnerSlug).then(setConfig).catch(() => {});
+  }, [partnerSlug]);
 
+  // Polling for status
   useEffect(() => {
-    if (step !== "processing" || !analysisId) return;
+    if ((step !== "awaiting_confirmation" && step !== "processing") || !analysisId) return;
+
     pollRef.current = setInterval(async () => {
-      const updated = await analysisService.pollResult(analysisId);
-      if (updated) {
-        setUploadProgress(updated.progress ?? 0);
-        if (updated.status === "complete") {
+      try {
+        const status = await embedApiService.getStatus(analysisId);
+
+        if (status.status === "processing" || status.status === "pending") {
+          setStep("processing");
+          setProgress(status.progress?.overall_percentage ?? 0);
+        } else if (status.status === "complete") {
           clearInterval(pollRef.current);
-          setResult(updated);
+          setProgress(100);
+          // Fetch feedback
+          const fb = await embedApiService.getFeedback(analysisId);
+          setFeedback(fb);
           setStep("results");
-          onComplete?.(updated);
-        } else if (updated.status === "error") {
+        } else if (status.status === "failed") {
           clearInterval(pollRef.current);
-          setErrorMsg(updated.failedReason ?? "Analysis failed.");
-          setStep("error");
+          setProcessingError(status.error ?? "Analysis failed. Please try again.");
+          setStep("processing");
         }
+        // awaiting_confirmation / awaiting_upload → stay on current step
+      } catch {
+        // Polling error — silent, will retry
       }
-    }, 3000);
-    return () => { if (pollRef.current) clearInterval(pollRef.current); };
-  }, [step, analysisId, onComplete]);
+    }, 2000);
 
-  const handleFileSelect = useCallback((f: File) => {
-    const validation = analysisService.validateFile(f);
-    if (!validation.valid) { setErrorMsg(validation.error!); setStep("error"); return; }
-    if (f.size > maxFileSizeMB * 1024 * 1024) { setErrorMsg(`File must be under ${maxFileSizeMB}MB.`); setStep("error"); return; }
-    setFile(f); setErrorMsg(""); setStep("skier-select");
-  }, [maxFileSizeMB]);
+    return () => {
+      if (pollRef.current) clearInterval(pollRef.current);
+    };
+  }, [step, analysisId]);
 
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault(); setDragOver(false);
-    const f = e.dataTransfer.files[0]; if (f) handleFileSelect(f);
-  }, [handleFileSelect]);
+  // File selection
+  const handleFileSelected = useCallback(
+    (f: File) => {
+      const validation = embedApiService.validateFileType(f);
+      if (!validation.valid) {
+        setUploadError(validation.error!);
+        return;
+      }
+      if (f.size > config.max_upload_size_mb * 1024 * 1024) {
+        setUploadError(`File must be under ${config.max_upload_size_mb} MB.`);
+        return;
+      }
+      setUploadError("");
+      setFile(f);
+      setStep("preview");
+    },
+    [config.max_upload_size_mb]
+  );
 
-  const handleEmailSubmit = async () => {
-    const trimmed = email.trim();
-    if (!trimmed || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) { setEmailError("Please enter a valid email address."); return; }
-    setEmailError("");
-    setStep("awaiting_confirmation");
-    toast.success("Check your inbox for confirmation.");
-    setTimeout(() => { handleStartUpload(); }, 3000);
-  };
+  // Skier + trim selection done
+  const handlePreviewContinue = useCallback(
+    (payload: typeof skierPayload) => {
+      setSkierPayload(payload);
+      setStep("email");
+    },
+    []
+  );
 
-  const handleStartUpload = async () => {
-    if (!file) return;
-    setStep("processing"); setUploadProgress(0);
-    try {
-      const res = await analysisService.uploadClip(file, skierPos, (pct) => setUploadProgress(pct));
-      setAnalysisId(res.id);
-    } catch (err: any) {
-      setErrorMsg(err?.message ?? "Upload failed."); setStep("error");
-    }
-  };
+  // Email submit → POST /submit → upload → POST /upload-complete
+  const handleEmailSubmit = useCallback(
+    async (emailValue: string) => {
+      if (!file || !skierPayload) return;
+      setEmail(emailValue);
+      setSubmitting(true);
+      setSubmitError("");
 
-  const reset = () => {
-    setFile(null); setStep("upload"); setUploadProgress(0); setErrorMsg(""); setEmail(""); setEmailError(""); setResult(null); setAnalysisId(null);
-    if (inputRef.current) inputRef.current.value = "";
-  };
+      try {
+        const res = await embedApiService.submit({
+          email: emailValue,
+          filename: file.name,
+          content_type: file.type,
+          trim_start_seconds: skierPayload.trimStart,
+          trim_end_seconds: skierPayload.trimEnd,
+          bbox_x1: skierPayload.bbox.x1,
+          bbox_y1: skierPayload.bbox.y1,
+          bbox_x2: skierPayload.bbox.x2,
+          bbox_y2: skierPayload.bbox.y2,
+          click_normalized_time: skierPayload.normalizedTime,
+          click_object_id: skierPayload.objectId,
+        });
 
-  const transition = { initial: { opacity: 0, y: 8 }, animate: { opacity: 1, y: 0 }, exit: { opacity: 0, y: -8 } };
+        setAnalysisId(res.analysis_id);
+
+        // Upload to storage
+        await embedApiService.uploadToStorage(res.upload_url, res.upload_fields, file);
+
+        // Confirm upload
+        await embedApiService.uploadComplete(res.analysis_id);
+
+        setStep("awaiting_confirmation");
+      } catch (err: any) {
+        setSubmitError(err?.message ?? "Submission failed. Please try again.");
+      } finally {
+        setSubmitting(false);
+      }
+    },
+    [file, skierPayload]
+  );
+
+  // Full reset
+  const reset = useCallback(() => {
+    if (pollRef.current) clearInterval(pollRef.current);
+    setStep("upload");
+    setFile(null);
+    setUploadError("");
+    setSkierPayload(null);
+    setEmail("");
+    setSubmitting(false);
+    setSubmitError("");
+    setAnalysisId(null);
+    setProgress(0);
+    setProcessingError("");
+    setFeedback(null);
+  }, []);
 
   return (
-    <div className="mx-auto max-w-md rounded-2xl border border-border bg-background p-6">
-      {partnerSlug && <p className="mb-4 text-center text-xs text-muted-foreground">Powered by Poser · {partnerSlug}</p>}
+    <div className="mx-auto w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-md">
       <AnimatePresence mode="wait">
-        {(step === "upload" || step === "error") && (
+        {step === "upload" && (
           <motion.div key="upload" {...transition}>
-            <div className={cn("flex flex-col items-center rounded-xl border-2 border-dashed p-8 text-center transition-colors", dragOver ? "border-foreground bg-secondary" : "border-border", step === "error" && "border-destructive/50")}
-              onDragOver={(e) => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={handleDrop}>
-              <Upload className="h-6 w-6 text-muted-foreground" />
-              <p className="mt-2 text-sm font-medium text-foreground">Drop your ski clip here</p>
-              <p className="mt-1 text-xs text-muted-foreground">MP4, MOV, WebM · up to {maxFileSizeMB}MB</p>
-              <Button variant="outline" size="sm" className="mt-3" onClick={() => inputRef.current?.click()}>Browse files</Button>
-              <input ref={inputRef} type="file" accept="video/mp4,video/quicktime,video/webm" className="hidden" onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFileSelect(f); }} />
-              {step === "error" && errorMsg && <div className="mt-3 flex items-center gap-2 text-xs text-destructive"><AlertCircle className="h-3 w-3 shrink-0" /><span>{errorMsg}</span></div>}
-            </div>
+            <UploadStep
+              maxSizeMB={config.max_upload_size_mb}
+              onFileSelected={handleFileSelected}
+              error={uploadError}
+            />
           </motion.div>
         )}
 
-        {step === "skier-select" && file && (
-          <motion.div key="skier" {...transition}>
-            <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-foreground">{file.name}</p>
-              <button onClick={reset} className="text-muted-foreground hover:text-foreground"><X className="h-4 w-4" /></button>
-            </div>
-            <p className="mt-1 text-xs text-muted-foreground">{(file.size / (1024 * 1024)).toFixed(1)} MB</p>
-            <p className="mt-4 text-sm font-medium text-foreground">Where is the skier?</p>
-            <div className="mt-2 grid grid-cols-3 gap-2">
-              {skierPositions.map((pos) => (
-                <button key={pos.value} onClick={() => setSkierPos(pos.value)} className={cn("rounded-lg border p-2 text-sm transition-colors", skierPos === pos.value ? "border-foreground bg-secondary font-medium" : "border-border hover:border-muted-foreground")}>{pos.label}</button>
-              ))}
-            </div>
-            <div className="mt-4 flex gap-2">
-              <Button variant="outline" size="sm" onClick={reset}><ArrowLeft className="mr-1 h-3 w-3" />Back</Button>
-              <Button size="sm" className="flex-1" onClick={() => setStep("email")}>Continue <ArrowRight className="ml-1 h-3 w-3" /></Button>
-            </div>
+        {step === "preview" && file && (
+          <motion.div key="preview" {...transition}>
+            <PreviewTrimStep
+              file={file}
+              maxTrimSeconds={config.max_trim_seconds}
+              onContinue={handlePreviewContinue}
+            />
           </motion.div>
         )}
 
         {step === "email" && (
           <motion.div key="email" {...transition}>
-            <div className="flex flex-col items-center text-center">
-              <Mail className="h-6 w-6 text-muted-foreground" />
-              <p className="mt-2 text-sm font-medium text-foreground">Enter your email to receive results</p>
-              <p className="mt-1 text-xs text-muted-foreground">We'll send a confirmation link first.</p>
-            </div>
-            <div className="mt-4">
-              <Input type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleEmailSubmit()} />
-              {emailError && <p className="mt-1 text-xs text-destructive">{emailError}</p>}
-            </div>
-            <div className="mt-4 flex gap-2">
-              <Button variant="outline" size="sm" onClick={() => setStep("skier-select")}><ArrowLeft className="mr-1 h-3 w-3" />Back</Button>
-              <Button size="sm" className="flex-1" onClick={handleEmailSubmit}>Send confirmation</Button>
-            </div>
+            <EmailStep
+              onSubmit={handleEmailSubmit}
+              onBack={() => setStep("preview")}
+              submitting={submitting}
+              submitError={submitError}
+            />
           </motion.div>
         )}
 
         {step === "awaiting_confirmation" && (
           <motion.div key="awaiting" {...transition}>
-            <div className="flex flex-col items-center text-center py-6">
-              <Mail className="h-8 w-8 text-accent" />
-              <p className="mt-3 text-sm font-medium text-foreground">Check your email</p>
-              <p className="mt-1 text-xs text-muted-foreground">Click the link in your inbox to start analysis.</p>
-              <Loader2 className="mt-4 h-4 w-4 animate-spin text-muted-foreground" />
-              <p className="mt-2 text-[10px] text-muted-foreground">Waiting for confirmation…</p>
-            </div>
+            <AwaitingConfirmationStep email={email} />
           </motion.div>
         )}
 
         {step === "processing" && (
           <motion.div key="processing" {...transition}>
-            <div className="flex flex-col items-center py-6 text-center">
-              <Loader2 className="h-8 w-8 animate-spin text-accent" />
-              <p className="mt-3 text-sm font-medium text-foreground">Analyzing your skiing…</p>
-              <p className="mt-1 text-xs text-muted-foreground">This usually takes 1–2 minutes.</p>
-              <div className="mt-4 w-full">
-                <Progress value={uploadProgress} className="h-1.5" />
-                <p className="mt-1 text-xs text-muted-foreground">{uploadProgress}%</p>
-              </div>
-            </div>
+            <ProcessingStep
+              progress={progress}
+              email={email}
+              error={processingError}
+              onRetry={reset}
+            />
           </motion.div>
         )}
 
-        {step === "results" && result && (
+        {step === "results" && feedback && (
           <motion.div key="results" {...transition}>
-            <div className="flex flex-col items-center text-center">
-              <CheckCircle className="h-8 w-8 text-foreground" />
-              {result.metrics && (
-                <>
-                  <p className="mt-3 text-lg font-bold text-foreground">Edge Score: {result.metrics.edgeSimilarity.overall}</p>
-                  <div className="mt-4 grid w-full grid-cols-2 gap-2">
-                    <div className="rounded-lg border border-border p-2 text-center">
-                      <p className="text-lg font-bold text-foreground">{result.metrics.turnCadence.tpmMedian}</p>
-                      <p className="text-[10px] text-muted-foreground">TPM Median</p>
-                    </div>
-                    <div className="rounded-lg border border-border p-2 text-center">
-                      <p className="text-lg font-bold text-foreground">{result.metrics.turnSegments.length}</p>
-                      <p className="text-[10px] text-muted-foreground">Turns</p>
-                    </div>
-                  </div>
-                </>
-              )}
-              <Button className="mt-6 w-full" onClick={reset}>
-                <RotateCcw className="mr-2 h-3 w-3" /> Analyze another video
-              </Button>
-            </div>
+            <ResultsStep feedback={feedback} onReset={reset} />
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Footer */}
+      <p className="mt-5 text-center text-xs text-muted-foreground">
+        Powered by{" "}
+        <a
+          href="https://poser.pro"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-accent hover:underline"
+        >
+          Poser.pro
+        </a>
+      </p>
     </div>
   );
 }

@@ -18,6 +18,7 @@ import Integrations from "./pages/Integrations";
 import Billing from "./pages/Billing";
 import Dashboard from "./pages/Dashboard";
 import MetricsDebug from "./pages/MetricsDebug";
+import EmbedWidgetPreview from "./pages/EmbedWidgetPreview";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
@@ -57,6 +58,7 @@ const App = () => (
 
             {/* TODO_BACKEND_HOOKUP: Re-wrap with <ProtectedRoute requireInternal> once auth is connected */}
             <Route path="/internal/metrics-debug" element={<MetricsDebug />} />
+            <Route path="/dev/embed-widget" element={<EmbedWidgetPreview />} />
 
             {/* Explicit 404 page */}
             <Route path="/404" element={<NotFound />} />

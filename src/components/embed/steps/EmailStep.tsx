@@ -33,7 +33,7 @@ export function EmailStep({ onSubmit, onBack, submitting, submitError }: EmailSt
       <div className="text-center">
         <p className="text-lg font-semibold text-foreground">Enter your email</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          We will send a link to confirm and view results
+          We will send a link to confirm and start the analysis
         </p>
       </div>
 

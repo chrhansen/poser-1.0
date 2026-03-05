@@ -205,16 +205,11 @@ function CreatePartnerForm({ onCreated }: { onCreated: (p: Partner) => void }) {
 function EmbedWidgetPromo() {
   return (
     <div>
-      <div className="flex items-start gap-3">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-          <Code className="h-5 w-5 text-primary" />
-        </div>
-        <div>
-          <h2 className="text-lg font-semibold text-foreground">Setup</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Paste this JavaScript snippet into your HTML where you want the widget to appear. Replace <span className="font-mono text-foreground">YOUR-PARTNER-ID</span> with the partner ID from <Link to="/settings?tab=integrations" className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors">your account settings</Link>.
-          </p>
-        </div>
+      <div>
+        <h2 className="text-lg font-semibold text-foreground">Embed Poser on your website</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Add AI-powered ski video analysis to your site in minutes.
+        </p>
       </div>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -238,12 +233,22 @@ function EmbedWidgetPromo() {
         ))}
       </div>
 
-      <div className="mt-6 space-y-4">
+      <div className="mt-8 space-y-6">
         <div>
-          <p className="text-sm font-medium text-foreground mb-2">Step 1 — Add the scripts to your HTML</p>
+          <h3 className="text-sm font-semibold text-foreground">1. Create an embed-token</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Go to <Link to="/settings?tab=integrations" className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors">your account settings</Link> and create an embed-token. Copy the partner ID — you'll need it in the next step.
+          </p>
+        </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">2. Add the scripts to your HTML</h3>
+          <p className="mt-1 mb-2 text-sm text-muted-foreground">
+            Paste this into your HTML. Replace <span className="font-mono text-foreground">YOUR-PARTNER-ID</span> with the token from step 1.
+          </p>
           <div className="relative rounded-lg border border-border bg-secondary/50 p-4">
             <div className="absolute top-2 right-2">
-              <CopyButton text={`<script src="https://js.poser.pro/poser.js"></script>\n\n<script>\n  window.addEventListener("load", () => {\n    window.PoserEmbed.mount("#poser-embed", { partnerId: "YOUR-PARTNER-ID" })\n  })\n</script>`} label="Step 1 snippet" />
+              <CopyButton text={`<script src="https://js.poser.pro/poser.js"></script>\n\n<script>\n  window.addEventListener("load", () => {\n    window.PoserEmbed.mount("#poser-embed", { partnerId: "YOUR-PARTNER-ID" })\n  })\n</script>`} label="Step 2 snippet" />
             </div>
             <pre className="overflow-x-auto text-xs text-muted-foreground pr-8">
 {`<script src="https://js.poser.pro/poser.js"></script>
@@ -258,10 +263,13 @@ function EmbedWidgetPromo() {
         </div>
 
         <div>
-          <p className="text-sm font-medium text-foreground mb-2">Step 2 — Place this where you want the widget to appear</p>
+          <h3 className="text-sm font-semibold text-foreground">3. Place this where you want the widget to appear</h3>
+          <p className="mt-1 mb-2 text-sm text-muted-foreground">
+            Add this element wherever you'd like the Poser widget to render.
+          </p>
           <div className="relative rounded-lg border border-border bg-secondary/50 p-4">
             <div className="absolute top-2 right-2">
-              <CopyButton text={`<div id="poser-embed"></div>`} label="Step 2 snippet" />
+              <CopyButton text={`<div id="poser-embed"></div>`} label="Step 3 snippet" />
             </div>
             <pre className="overflow-x-auto text-xs text-muted-foreground pr-8">
 {`<div id="poser-embed"></div>`}

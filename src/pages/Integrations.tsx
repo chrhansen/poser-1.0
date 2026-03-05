@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Copy, Check, Code, AlertTriangle, ExternalLink, Plus, Globe, Pencil, MonitorSmartphone, Zap, Palette } from "lucide-react";
+import { Copy, Check, Code, AlertTriangle, ExternalLink, Plus, Globe, Pencil, MonitorSmartphone, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import embedPreview from "@/assets/embed-preview.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -207,27 +207,22 @@ function EmbedWidgetPromo() {
     <div className="rounded-xl border border-border bg-gradient-to-br from-primary/5 via-background to-accent/5 p-6 md:p-8">
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
-          <MonitorSmartphone className="h-5 w-5 text-primary" />
+          <Code className="h-5 w-5 text-primary" />
         </div>
         <div>
-          <h2 className="text-lg font-semibold text-foreground">Embed Widget</h2>
+          <h2 className="text-lg font-semibold text-foreground">Setup</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Let your students analyze their ski technique without leaving your website. Drop Poser's lightweight embed widget into any page — users upload a video, get AI-powered feedback, and see results in seconds.
+            Paste this JavaScript snippet into your HTML where you want the widget to appear. Replace <span className="font-mono text-foreground">YOUR-PARTNER-ID</span> with the partner ID from your account settings.
           </p>
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-3">
+      <div className="mt-6 grid gap-4 sm:grid-cols-2">
         {[
           {
             icon: Zap,
             title: "Instant setup",
-            desc: "One snippet of HTML or a React component — no backend required.",
-          },
-          {
-            icon: Palette,
-            title: "Your brand",
-            desc: "The widget inherits your domain and partner slug for a seamless experience.",
+            desc: "One snippet of JavaScript — no backend or build step required.",
           },
           {
             icon: MonitorSmartphone,
@@ -289,7 +284,9 @@ export default function IntegrationsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight text-foreground">Integrations</h1>
-              <p className="mt-2 text-muted-foreground">Embed Poser into your website or platform.</p>
+              <p className="mt-2 text-muted-foreground">
+                Add AI-powered ski video analysis to your website and give potential students a taste of your coaching expertise. Every analysis is an opportunity to connect with new students and sell lessons.
+              </p>
             </div>
           </div>
 

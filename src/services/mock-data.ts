@@ -109,7 +109,7 @@ export const mockPricingPlans: PricingPlan[] = [
     name: "Max",
     price: 100,
     interval: "month",
-    features: ["100 analyses per month", "Everything in Pro", "Embeddable results", "API access", "Dedicated support"],
+    features: ["100 analyses per month", "Everything in Pro"],
     ctaLabel: "Get started",
   },
 ];

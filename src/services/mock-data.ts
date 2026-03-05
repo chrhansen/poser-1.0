@@ -92,7 +92,7 @@ export const mockPricingPlans: PricingPlan[] = [
     name: "Free",
     price: 0,
     interval: "month",
-    features: ["2 analyses per month", "Basic feedback", "720p video support"],
+    features: ["2 analyses per month", "Ski Rank score", "Edge Similarity", "Turn Cadence"],
     ctaLabel: "Get started",
   },
   {
@@ -100,7 +100,7 @@ export const mockPricingPlans: PricingPlan[] = [
     name: "Pro",
     price: 29,
     interval: "month",
-    features: ["15 analyses per month", "Detailed feedback", "4K video support", "Frame-by-frame breakdown", "Progress tracking", "Priority processing"],
+    features: ["15 analyses per month", "Ski Rank score", "Edge Similarity", "Turn Cadence", "Frame-by-frame breakdown", "Progress tracking", "Priority processing"],
     highlighted: true,
     ctaLabel: "Start free trial",
   },

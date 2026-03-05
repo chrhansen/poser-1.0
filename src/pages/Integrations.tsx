@@ -343,15 +343,8 @@ export default function IntegrationsPage() {
             />
           </div>
 
-          {/* Embed widget promo */}
-          <div className="mt-8">
-            <EmbedWidgetPromo onContactSupport={() => setContactOpen(true)} isAuthenticated={!!user} />
-          </div>
-
-          <ContactSupportDialog open={contactOpen} onOpenChange={setContactOpen} />
-
           {/* Partner examples */}
-          <div className="mt-10">
+          <div className="mt-8">
             <h2 className="text-lg font-semibold text-foreground">Used by ski schools</h2>
             <p className="mt-1 text-sm text-muted-foreground">
               See the Poser embed widget in action on real partner websites.
@@ -376,6 +369,13 @@ export default function IntegrationsPage() {
               </a>
             </div>
           </div>
+
+          {/* Embed widget promo */}
+          <div className="mt-10">
+            <EmbedWidgetPromo onContactSupport={() => setContactOpen(true)} isAuthenticated={!!user} />
+          </div>
+
+          <ContactSupportDialog open={contactOpen} onOpenChange={setContactOpen} />
 
         </div>
       </Section>

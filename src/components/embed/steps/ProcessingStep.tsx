@@ -49,7 +49,7 @@ export function ProcessingStep({ progress, email, error, onRetry }: ProcessingSt
       </div>
 
       <p className="text-sm text-muted-foreground">
-        📧 We will email you at{" "}
+        📧 We will also email you at{" "}
         <span className="font-medium text-accent">{email}</span>{" "}
         when ready
       </p>

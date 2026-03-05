@@ -96,20 +96,30 @@ function SidebarInner({ extraContent, collapsed, setCollapsed, onNavigate, hideH
         {/* Top: Logo + collapse toggle (hidden when used inside mobile sheet) */}
         {!hideHeader && (
           <div className={cn("flex items-center border-b border-border px-3 py-3", collapsed ? "justify-center" : "justify-between")}>
-            {!collapsed && (
-              <Link to="/" onClick={handleNav}>
-                <img src={poserLogo} alt="poser" className="h-6 w-auto" />
-              </Link>
+            {collapsed ? (
+              <SidebarTooltip label="Expand sidebar" collapsed={collapsed}>
+                <button
+                  onClick={() => setCollapsed(false)}
+                  className="rounded-md p-1 transition-colors hover:bg-secondary"
+                  aria-label="Expand sidebar"
+                >
+                  <img src={poserLogo} alt="poser" className="h-5 w-auto" />
+                </button>
+              </SidebarTooltip>
+            ) : (
+              <>
+                <Link to="/" onClick={handleNav}>
+                  <img src={poserLogo} alt="poser" className="h-6 w-auto" />
+                </Link>
+                <button
+                  onClick={() => setCollapsed(true)}
+                  className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  aria-label="Collapse sidebar"
+                >
+                  <PanelLeftClose className="h-4 w-4" />
+                </button>
+              </>
             )}
-            <SidebarTooltip label={collapsed ? "Expand sidebar" : "Collapse sidebar"} collapsed={collapsed}>
-              <button
-                onClick={() => setCollapsed(!collapsed)}
-                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              >
-                {collapsed ? <PanelLeft className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
-              </button>
-            </SidebarTooltip>
           </div>
         )}
 

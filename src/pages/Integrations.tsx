@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Copy, Check, Code, AlertTriangle, ExternalLink, Plus, Globe, Pencil, MonitorSmartphone, Zap, Palette } from "lucide-react";
 import { cn } from "@/lib/utils";
+import embedPreview from "@/assets/embed-preview.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // ─── Copy Button ────────────────────────────────────────────────────────────
@@ -290,6 +291,15 @@ export default function IntegrationsPage() {
               <h1 className="text-3xl font-bold tracking-tight text-foreground">Integrations</h1>
               <p className="mt-2 text-muted-foreground">Embed Poser into your website or platform.</p>
             </div>
+          </div>
+
+          {/* Embed preview screenshot */}
+          <div className="mt-8 flex justify-center">
+            <img
+              src={embedPreview}
+              alt="Poser embed widget preview showing video upload interface"
+              className="rounded-xl border border-border shadow-sm max-w-sm w-full"
+            />
           </div>
 
           {/* Embed widget promo */}

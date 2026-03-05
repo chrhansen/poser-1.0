@@ -238,19 +238,32 @@ function EmbedWidgetPromo() {
         ))}
       </div>
 
-      <div className="mt-6 rounded-lg border border-border bg-secondary/50 p-4">
-        <p className="text-xs font-medium text-foreground">Quick start</p>
-        <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">
-{`<div id="poser-embed"></div>
-
-<script src="https://js.poser.pro/poser.js"></script>
+      <div className="mt-6 space-y-4">
+        <div className="rounded-lg border border-border bg-secondary/50 p-4">
+          <p className="text-xs font-medium text-foreground">Step 1 — Add the scripts to your HTML</p>
+          <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">
+{`<script src="https://js.poser.pro/poser.js"></script>
 
 <script>
   window.addEventListener("load", () => {
     window.PoserEmbed.mount("#poser-embed", { partnerId: "YOUR-PARTNER-ID" })
   })
 </script>`}
-        </pre>
+          </pre>
+          <div className="mt-2">
+            <CopyButton text={`<script src="https://js.poser.pro/poser.js"></script>\n\n<script>\n  window.addEventListener("load", () => {\n    window.PoserEmbed.mount("#poser-embed", { partnerId: "YOUR-PARTNER-ID" })\n  })\n</script>`} label="Step 1 snippet" />
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-border bg-secondary/50 p-4">
+          <p className="text-xs font-medium text-foreground">Step 2 — Place this where you want the widget to appear</p>
+          <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">
+{`<div id="poser-embed"></div>`}
+          </pre>
+          <div className="mt-2">
+            <CopyButton text={`<div id="poser-embed"></div>`} label="Step 2 snippet" />
+          </div>
+        </div>
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ export function AwaitingConfirmationStep({ email }: AwaitingConfirmationStepProp
       <div>
         <p className="text-lg font-semibold text-foreground">Confirm your email</p>
         <p className="mt-1 text-sm text-muted-foreground">
-          Click the link we sent to start analysis
+          Click the link we sent to start the analysis
         </p>
       </div>
 

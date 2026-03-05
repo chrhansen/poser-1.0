@@ -27,10 +27,9 @@ function CopyButton({ text, label }: { text: string; label: string }) {
     setTimeout(() => setCopied(false), 2000);
   };
   return (
-    <Button variant="outline" size="sm" onClick={handleCopy}>
-      {copied ? <Check className="mr-1 h-3 w-3" /> : <Copy className="mr-1 h-3 w-3" />}
-      {copied ? "Copied" : "Copy"}
-    </Button>
+    <button onClick={handleCopy} className="p-1.5 rounded-md hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors" title="Copy to clipboard">
+      {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+    </button>
   );
 }
 
@@ -204,7 +203,7 @@ function CreatePartnerForm({ onCreated }: { onCreated: (p: Partner) => void }) {
 // ─── Embed Widget Promo ─────────────────────────────────────────────────────
 function EmbedWidgetPromo() {
   return (
-    <div className="rounded-xl border border-border bg-gradient-to-br from-primary/5 via-background to-accent/5 p-6 md:p-8">
+    <div>
       <div className="flex items-start gap-3">
         <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
           <Code className="h-5 w-5 text-primary" />
@@ -230,7 +229,7 @@ function EmbedWidgetPromo() {
             desc: "Responsive from mobile to desktop. HTTPS-ready for production.",
           },
         ].map((item) => (
-          <div key={item.title} className="rounded-lg border border-border bg-background p-4">
+          <div key={item.title} className="rounded-lg border border-border bg-card p-4">
             <item.icon className="h-4 w-4 text-primary" />
             <h3 className="mt-2 text-sm font-medium text-foreground">{item.title}</h3>
             <p className="mt-1 text-xs text-muted-foreground">{item.desc}</p>
@@ -239,9 +238,13 @@ function EmbedWidgetPromo() {
       </div>
 
       <div className="mt-6 space-y-4">
-        <div className="rounded-lg border border-border bg-secondary/50 p-4">
-          <p className="text-xs font-medium text-foreground">Step 1 — Add the scripts to your HTML</p>
-          <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">
+        <div>
+          <p className="text-sm font-medium text-foreground mb-2">Step 1 — Add the scripts to your HTML</p>
+          <div className="relative rounded-lg border border-border bg-secondary/50 p-4">
+            <div className="absolute top-2 right-2">
+              <CopyButton text={`<script src="https://js.poser.pro/poser.js"></script>\n\n<script>\n  window.addEventListener("load", () => {\n    window.PoserEmbed.mount("#poser-embed", { partnerId: "YOUR-PARTNER-ID" })\n  })\n</script>`} label="Step 1 snippet" />
+            </div>
+            <pre className="overflow-x-auto text-xs text-muted-foreground pr-8">
 {`<script src="https://js.poser.pro/poser.js"></script>
 
 <script>
@@ -249,19 +252,19 @@ function EmbedWidgetPromo() {
     window.PoserEmbed.mount("#poser-embed", { partnerId: "YOUR-PARTNER-ID" })
   })
 </script>`}
-          </pre>
-          <div className="mt-2">
-            <CopyButton text={`<script src="https://js.poser.pro/poser.js"></script>\n\n<script>\n  window.addEventListener("load", () => {\n    window.PoserEmbed.mount("#poser-embed", { partnerId: "YOUR-PARTNER-ID" })\n  })\n</script>`} label="Step 1 snippet" />
+            </pre>
           </div>
         </div>
 
-        <div className="rounded-lg border border-border bg-secondary/50 p-4">
-          <p className="text-xs font-medium text-foreground">Step 2 — Place this where you want the widget to appear</p>
-          <pre className="mt-2 overflow-x-auto text-xs text-muted-foreground">
+        <div>
+          <p className="text-sm font-medium text-foreground mb-2">Step 2 — Place this where you want the widget to appear</p>
+          <div className="relative rounded-lg border border-border bg-secondary/50 p-4">
+            <div className="absolute top-2 right-2">
+              <CopyButton text={`<div id="poser-embed"></div>`} label="Step 2 snippet" />
+            </div>
+            <pre className="overflow-x-auto text-xs text-muted-foreground pr-8">
 {`<div id="poser-embed"></div>`}
-          </pre>
-          <div className="mt-2">
-            <CopyButton text={`<div id="poser-embed"></div>`} label="Step 2 snippet" />
+            </pre>
           </div>
         </div>
       </div>

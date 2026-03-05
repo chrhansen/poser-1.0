@@ -13,6 +13,7 @@ import { Copy, Check, Code, AlertTriangle, ExternalLink, Plus, Globe, Pencil, Mo
 import { cn } from "@/lib/utils";
 import embedPreview from "@/assets/embed-preview.png";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ContactSupportDialog } from "@/components/dialogs/ContactSupportDialog";
 
 // ─── Copy Button ────────────────────────────────────────────────────────────
 function CopyButton({ text, label }: { text: string; label: string }) {
@@ -202,7 +203,7 @@ function CreatePartnerForm({ onCreated }: { onCreated: (p: Partner) => void }) {
 }
 
 // ─── Embed Widget Promo ─────────────────────────────────────────────────────
-function EmbedWidgetPromo() {
+function EmbedWidgetPromo({ onContactSupport }: { onContactSupport?: () => void }) {
   return (
     <div>
       <div>
@@ -276,6 +277,16 @@ function EmbedWidgetPromo() {
             </pre>
           </div>
         </div>
+
+        <div>
+          <h3 className="text-sm font-semibold text-foreground">Need help?</h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            If you run into any issues setting up the embed widget, our team is happy to help.
+          </p>
+          <Button variant="outline" size="sm" className="mt-3" onClick={() => onContactSupport?.()}>
+            Contact support
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -287,6 +298,7 @@ export default function IntegrationsPage() {
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [editingDomain, setEditingDomain] = useState<string | null>(null);
+  const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
     partnersService.getPartners().then((p) => {
@@ -326,8 +338,10 @@ export default function IntegrationsPage() {
 
           {/* Embed widget promo */}
           <div className="mt-8">
-            <EmbedWidgetPromo />
+            <EmbedWidgetPromo onContactSupport={() => setContactOpen(true)} />
           </div>
+
+          <ContactSupportDialog open={contactOpen} onOpenChange={setContactOpen} />
 
           {/* Partner examples */}
           <div className="mt-10">

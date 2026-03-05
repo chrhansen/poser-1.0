@@ -13,7 +13,7 @@ export default function PrivacyPage() {
           <ul>
             <li>Account information (email, name)</li>
             <li>Video clips uploaded for analysis</li>
-            <li>Usage analytics</li>
+            
           </ul>
           <h2 className="text-foreground">How We Use Your Data</h2>
           <p>We use your data solely to provide and improve our analysis service. Videos are processed and stored securely.</p>

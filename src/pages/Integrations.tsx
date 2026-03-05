@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Section } from "@/components/shared/Section";
 import { PageLoader } from "@/components/shared/PageLoader";
@@ -211,7 +212,7 @@ function EmbedWidgetPromo() {
         <div>
           <h2 className="text-lg font-semibold text-foreground">Setup</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Paste this JavaScript snippet into your HTML where you want the widget to appear. Replace <span className="font-mono text-foreground">YOUR-PARTNER-ID</span> with the partner ID from your account settings.
+            Paste this JavaScript snippet into your HTML where you want the widget to appear. Replace <span className="font-mono text-foreground">YOUR-PARTNER-ID</span> with the partner ID from <Link to="/settings?tab=integrations" className="text-primary underline underline-offset-2 hover:text-primary/80 transition-colors">your account settings</Link>.
           </p>
         </div>
       </div>

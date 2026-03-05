@@ -8,6 +8,7 @@ import { RecentAnalysesList } from "./RecentAnalysesList";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import poserLogo from "@/assets/poser-logo.svg";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -96,8 +97,8 @@ function SidebarInner({ extraContent, collapsed, setCollapsed, onNavigate, hideH
         {!hideHeader && (
           <div className={cn("flex items-center border-b border-border px-3 py-3", collapsed ? "justify-center" : "justify-between")}>
             {!collapsed && (
-              <Link to="/" onClick={handleNav} className="text-lg font-bold tracking-tight text-foreground">
-                poser
+              <Link to="/" onClick={handleNav}>
+                <img src={poserLogo} alt="poser" className="h-6 w-auto" />
               </Link>
             )}
             <SidebarTooltip label={collapsed ? "Expand sidebar" : "Collapse sidebar"} collapsed={collapsed}>
@@ -293,8 +294,8 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
           <div className="flex h-full flex-col">
             {/* Close button row */}
             <div className="flex items-center justify-between border-b border-border px-3 py-3">
-              <Link to="/" onClick={() => setMobileOpen(false)} className="text-lg font-bold tracking-tight text-foreground">
-                poser
+              <Link to="/" onClick={() => setMobileOpen(false)}>
+                <img src={poserLogo} alt="poser" className="h-6 w-auto" />
               </Link>
               <button
                 onClick={() => setMobileOpen(false)}

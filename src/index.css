@@ -34,6 +34,9 @@
     --warm-muted: 30 60% 94%;
     --warm-glow: 24 100% 65%;
 
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
@@ -92,6 +95,8 @@
     --warm-foreground: 0 0% 100%;
     --warm-muted: 30 30% 15%;
     --warm-glow: 24 90% 60%;
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
     --shadow-warm: 0 8px 32px -8px hsl(28 80% 55% / 0.2);
   }
 }

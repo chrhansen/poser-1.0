@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Check, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
@@ -21,6 +22,7 @@ export default function PricingPage() {
   const [faqs, setFaqs] = useState<PricingFAQ[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { hash } = useLocation();
 
   useEffect(() => {
     Promise.all([pricingService.getPlans(), pricingService.getFAQs()]).then(([p, f]) => {
@@ -29,6 +31,13 @@ export default function PricingPage() {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    if (!loading && hash) {
+      const el = document.getElementById(hash.slice(1));
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
+    }
+  }, [loading, hash]);
 
   if (loading) return <Layout><PageLoader /></Layout>;
 
@@ -91,7 +100,7 @@ export default function PricingPage() {
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <Section className="bg-surface-sunken">
+        <Section className="bg-surface-sunken" id="faq">
           <div className="mx-auto max-w-2xl">
             <h2 className="text-center text-2xl font-bold tracking-tight text-foreground">
               Frequently asked questions

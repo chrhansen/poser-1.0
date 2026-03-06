@@ -164,6 +164,14 @@ export default function LandingPage() {
       {/* Upload Section */}
       <Section>
         <div id="upload" className="scroll-mt-24 mx-auto max-w-xl">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+              Try Poser in under a minute
+            </h2>
+            <p className="mt-3 text-muted-foreground">
+              Start with a demo clip, or use your own.
+            </p>
+          </div>
           {/* Pill switch */}
           <div className="mx-auto mb-8 flex w-fit rounded-full bg-muted p-1">
             {(["demo", "clip"] as const).map((tab) => (

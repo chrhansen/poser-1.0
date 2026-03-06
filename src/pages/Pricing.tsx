@@ -22,6 +22,7 @@ export default function PricingPage() {
   const [faqs, setFaqs] = useState<PricingFAQ[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
+  const { hash } = useLocation();
 
   useEffect(() => {
     Promise.all([pricingService.getPlans(), pricingService.getFAQs()]).then(([p, f]) => {
@@ -30,6 +31,13 @@ export default function PricingPage() {
       setLoading(false);
     });
   }, []);
+
+  useEffect(() => {
+    if (!loading && hash) {
+      const el = document.getElementById(hash.slice(1));
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
+    }
+  }, [loading, hash]);
 
   if (loading) return <Layout><PageLoader /></Layout>;
 

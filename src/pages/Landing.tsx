@@ -205,7 +205,7 @@ export default function LandingPage() {
       </Section>
 
       {/* How it works */}
-      <Section className="bg-surface-sunken">
+      <Section className="bg-surface-sunken scroll-mt-24" id="how-it-works">
         <div className="text-center">
           <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
             How it works

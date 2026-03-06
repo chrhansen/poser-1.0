@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { Menu, X, User as UserIcon, LogOut } from "lucide-react";
 import poserLogo from "@/assets/poser-logo.svg";
@@ -15,6 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { LoginDialog } from "@/components/dialogs/LoginDialog";
 
 const navLinks = [
+  { label: "How it works", href: "/#how-it-works" },
   { label: "About", href: "/about" },
   { label: "Pricing", href: "/pricing" },
 ];
@@ -23,7 +24,22 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, signOut, loading } = useAuth();
+
+  const handleNavClick = (href: string) => {
+    if (href.startsWith("/#")) {
+      const id = href.slice(2);
+      if (location.pathname === "/") {
+        document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      } else {
+        navigate("/");
+        setTimeout(() => {
+          document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  };
 
   const scrollToUpload = () => {
     if (location.pathname === "/") {
@@ -42,18 +58,29 @@ export function Header() {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-8 md:flex">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                to={link.href}
-                className={cn(
-                  "text-sm font-medium transition-colors hover:text-foreground",
-                  location.pathname === link.href ? "text-foreground" : "text-muted-foreground"
-                )}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {navLinks.map((link) => {
+              const isHash = link.href.startsWith("/#");
+              return isHash ? (
+                <button
+                  key={link.href}
+                  onClick={() => handleNavClick(link.href)}
+                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {link.label}
+                </button>
+              ) : (
+                <Link
+                  key={link.href}
+                  to={link.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-foreground",
+                    location.pathname === link.href ? "text-foreground" : "text-muted-foreground"
+                  )}
+                >
+                  {link.label}
+                </Link>
+              );
+            })}
           </nav>
 
           <div className="hidden items-center gap-3 md:flex">
@@ -114,16 +141,27 @@ export function Header() {
         {mobileOpen && (
           <div className="border-t border-border bg-background px-6 pb-6 pt-4 md:hidden">
             <nav className="flex flex-col gap-4">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  to={link.href}
-                  onClick={() => setMobileOpen(false)}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground"
-                >
-                  {link.label}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isHash = link.href.startsWith("/#");
+                return isHash ? (
+                  <button
+                    key={link.href}
+                    onClick={() => { setMobileOpen(false); handleNavClick(link.href); }}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground text-left"
+                  >
+                    {link.label}
+                  </button>
+                ) : (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground"
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
               <div className="flex flex-col gap-2 border-t border-border pt-4">
                 {!user ? (
                   <>

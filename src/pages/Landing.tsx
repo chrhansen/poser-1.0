@@ -54,14 +54,14 @@ export default function LandingPage() {
               custom={0}
               className="text-balance text-4xl font-bold tracking-tight text-foreground md:text-6xl"
             >
-              Ski better with clear technique feedback.
+              Upload a ski clip. Get clear feedback on what to change next.
             </motion.h1>
             <motion.p
               variants={fadeUp}
               custom={1}
               className="mx-auto mt-6 max-w-lg text-lg text-muted-foreground"
             >
-              Upload a short clip. Poser analyzes your stance and movement and highlights what to change.
+              Poser analyzes your stance and movement, then highlights the body-position changes that matter most for better turns.
             </motion.p>
             <motion.div
               variants={fadeUp}
@@ -69,7 +69,7 @@ export default function LandingPage() {
               className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
             >
               <Button size="lg" onClick={scrollToUpload}>
-                Upload your clip
+                Try a demo analysis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
               <Button variant="outline" size="lg" asChild>

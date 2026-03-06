@@ -103,7 +103,7 @@ export interface PricingPlan {
   id: string;
   name: string;
   price: number;
-  interval: "month" | "year";
+  interval: "month" | "year" | "one-time";
   features: string[];
   highlighted?: boolean;
   ctaLabel: string;

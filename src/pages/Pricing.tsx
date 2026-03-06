@@ -61,8 +61,13 @@ export default function PricingPage() {
               )}
               <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
               <div className="mt-2">
-                <span className="text-3xl font-bold text-foreground">${plan.price}</span>
-                <span className="text-sm text-muted-foreground">/{plan.interval}</span>
+                <span className="text-3xl font-bold text-foreground">{plan.price === 0 ? "Free" : `$${plan.price}`}</span>
+                {plan.interval !== "one-time" && (
+                  <span className="text-sm text-muted-foreground">/{plan.interval}</span>
+                )}
+                {plan.interval === "one-time" && plan.price > 0 && (
+                  <span className="text-sm text-muted-foreground"> one-time</span>
+                )}
               </div>
               <ul className="mt-6 flex-1 space-y-3">
                 {plan.features.map((f) => (

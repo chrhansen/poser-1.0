@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { Check, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
@@ -91,7 +92,7 @@ export default function PricingPage() {
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <Section className="bg-surface-sunken">
+        <Section className="bg-surface-sunken" id="faq">
           <div className="mx-auto max-w-2xl">
             <h2 className="text-center text-2xl font-bold tracking-tight text-foreground">
               Frequently asked questions

@@ -127,7 +127,7 @@ export function NewAnalysisSheet({ open, onOpenChange }: NewAnalysisSheetProps) 
 
             {/* Video preview */}
             {videoUrl ? (
-              <div className="relative overflow-hidden rounded-xl border border-border bg-black">
+              <div className="relative overflow-hidden rounded-xl border border-border bg-foreground">
                 <video
                   ref={videoRef}
                   src={videoUrl}

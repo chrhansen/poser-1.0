@@ -60,6 +60,10 @@ export default {
           muted: "hsl(var(--warm-muted))",
           glow: "hsl(var(--warm-glow))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

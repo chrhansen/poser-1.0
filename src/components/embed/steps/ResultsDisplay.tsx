@@ -11,8 +11,8 @@ export function ResultsDisplay({ videoUrl, edgeSimilarity, turnsAnalyzed }: Resu
     <div className="flex flex-col gap-5">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <CheckCircle className="h-5 w-5" style={{ color: "hsl(142 71% 45%)" }} />
-        <span className="text-base font-semibold" style={{ color: "hsl(142 71% 45%)" }}>Analysis Complete</span>
+        <CheckCircle className="h-5 w-5 text-success" />
+        <span className="text-base font-semibold text-success">Analysis Complete</span>
       </div>
 
       {/* Video preview */}

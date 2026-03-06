@@ -118,7 +118,10 @@ export default function LandingPage() {
               custom={2}
               className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
             >
-              <Button size="lg" onClick={scrollToUpload}>
+              <Button size="lg" onClick={() => {
+                setActiveTab("demo");
+                document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
+              }}>
                 Try demo analysis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>

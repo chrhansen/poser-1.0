@@ -20,18 +20,18 @@ const fadeUp = {
 const steps = [
   {
     icon: Upload,
-    title: "Upload your clip",
-    description: "Record a short video of your skiing and upload it to Poser.",
+    title: "Upload a short clip",
+    description: "Record a clear side or 3/4 view where your full body stays visible.",
   },
   {
     icon: Target,
-    title: "Get analyzed",
-    description: "Our AI breaks down your stance, balance, edging, and rotation.",
+    title: "Poser analyzes the movement",
+    description: "Poser estimates body position through the turn and looks for technique patterns.",
   },
   {
     icon: TrendingUp,
-    title: "Improve",
-    description: "Follow clear, actionable feedback to ski better next time out.",
+    title: "Get clear feedback",
+    description: "See what looks strong, what looks off, and what to work on next.",
   },
 ];
 
@@ -211,7 +211,7 @@ export default function LandingPage() {
             How it works
           </h2>
           <p className="mx-auto mt-3 max-w-md text-muted-foreground">
-            Three simple steps to better skiing.
+            From clip to next-step feedback.
           </p>
         </div>
         <div className="mt-12 grid gap-8 md:grid-cols-3">

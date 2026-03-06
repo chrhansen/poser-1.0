@@ -101,7 +101,6 @@ export const mockPricingPlans: PricingPlan[] = [
     price: 19,
     interval: "one-time",
     features: ["5 analyses", "Ski Rank score", "Edge Similarity", "Turn Cadence"],
-    highlighted: true,
     ctaLabel: "Get started",
   },
   {
@@ -110,6 +109,7 @@ export const mockPricingPlans: PricingPlan[] = [
     price: 79,
     interval: "one-time",
     features: ["25 analyses", "Everything in Trip Pack"],
+    highlighted: true,
     ctaLabel: "Get started",
   },
 ];

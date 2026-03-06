@@ -115,11 +115,13 @@ export const mockPricingPlans: PricingPlan[] = [
 ];
 
 export const mockPricingFAQs: PricingFAQ[] = [
-  { id: "faq2", question: "What video formats are supported?", answer: "We support MP4, MOV, and WebM files up to 250MB. For best results, film in landscape orientation at 720p or higher." },
-  { id: "faq3", question: "How long does analysis take?", answer: "Most analyses complete within 1–2 minutes. Pro and Team plans get priority processing." },
-  { id: "faq4", question: "Is there a free trial?", answer: "Pro plans include a 7-day free trial. No credit card required to start." },
-  { id: "faq5", question: "Can I share my results?", answer: "Yes! Team plan users can create embeddable result widgets. All plans can share results via link." },
-  { id: "faq6", question: "Can I upgrade from Trip Pack to Season Pass later?", answer: "Yes! You can upgrade at any time. When you upgrade, your remaining unused analyses from the Trip Pack will carry over to your Season Pass." },
+  { id: "faq1", question: "What kind of ski clip works best?", answer: "The skier should be as clear as possible with a steady camera. If you can see all parts of the skier clearly, so can Poser." },
+  { id: "faq2", question: "How long does analysis take?", answer: "1–2 minutes." },
+  { id: "faq3", question: "Do I need sensors or special hardware?", answer: "No, we just need a video clip." },
+  { id: "faq4", question: "Can I upload from my phone?", answer: "Yes." },
+  { id: "faq5", question: "What happens if multiple skiers are in frame?", answer: "No worries, just tap the right skier and Poser will track the correct skier through the clip." },
+  { id: "faq6", question: "Can I try a demo first?", answer: "YES_DEMO_LINK" },
+  { id: "faq7", question: "Can I upgrade from Trip Pack to Season Pass later?", answer: "Yes! You can upgrade at any time. When you upgrade, your remaining unused analyses from the Trip Pack will carry over to your Season Pass." },
 ];
 
 // ─── Releases ───────────────────────────────────────────────────────────────

@@ -1,10 +1,11 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
-import { Upload, Target, TrendingUp, ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Upload, Target, TrendingUp, ArrowRight, QrCode, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { Section } from "@/components/shared/Section";
 import { UploadBlock } from "@/components/upload/UploadBlock";
+import { cn } from "@/lib/utils";
 import heroImage from "@/assets/hero-ski.jpg";
 
 const fadeUp = {
@@ -34,7 +35,56 @@ const steps = [
   },
 ];
 
+type UploadTab = "demo" | "clip";
+
+function DemoContent() {
+  return (
+    <div className="flex flex-col items-center gap-4 py-6 text-center">
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
+        <Target className="h-5 w-5 text-muted-foreground" />
+      </div>
+      <p className="text-sm font-medium text-foreground">
+        See Poser in action with a sample ski clip
+      </p>
+      <p className="text-xs text-muted-foreground max-w-xs">
+        We'll run an analysis on a pre-recorded clip so you can see the kind of feedback you'll get.
+      </p>
+      <Button size="lg">
+        Run demo analysis
+        <ArrowRight className="ml-2 h-4 w-4" />
+      </Button>
+    </div>
+  );
+}
+
+function ClipContent() {
+  return (
+    <div className="flex flex-col gap-6">
+      <UploadBlock />
+      <div className="relative flex items-center gap-4">
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-xs font-medium text-muted-foreground">OR</span>
+        <div className="h-px flex-1 bg-border" />
+      </div>
+      <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border p-6 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
+          <Smartphone className="h-5 w-5 text-muted-foreground" />
+        </div>
+        <p className="text-sm font-medium text-foreground">Send from your phone</p>
+        <p className="text-xs text-muted-foreground max-w-xs">
+          Scan the QR code with your phone camera to upload a clip directly from your camera roll.
+        </p>
+        <div className="mt-1 flex h-28 w-28 items-center justify-center rounded-lg border border-border bg-secondary">
+          <QrCode className="h-14 w-14 text-muted-foreground/60" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LandingPage() {
+  const [activeTab, setActiveTab] = useState<UploadTab>("demo");
+
   const scrollToUpload = () => {
     document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
   };
@@ -54,14 +104,14 @@ export default function LandingPage() {
               custom={0}
               className="text-balance text-4xl font-bold tracking-tight text-foreground md:text-6xl"
             >
-              Upload a ski clip. Get clear feedback on what to change next.
+              Know what to change in your skiing.
             </motion.h1>
             <motion.p
               variants={fadeUp}
               custom={1}
               className="mx-auto mt-6 max-w-lg text-lg text-muted-foreground"
             >
-              Poser analyzes your stance and movement, then highlights the body-position changes that matter most for better turns.
+              Upload a short ski clip and Poser shows the stance and movement changes that matter most for better turns.
             </motion.p>
             <motion.div
               variants={fadeUp}
@@ -69,13 +119,23 @@ export default function LandingPage() {
               className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
             >
               <Button size="lg" onClick={scrollToUpload}>
-                Try a demo analysis
+                Try demo analysis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-              <Button variant="outline" size="lg" asChild>
-                <Link to="/about">Learn more</Link>
+              <Button variant="outline" size="lg" onClick={() => {
+                setActiveTab("clip");
+                document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
+              }}>
+                Upload your clip
               </Button>
             </motion.div>
+            <motion.p
+              variants={fadeUp}
+              custom={3}
+              className="mt-4 text-xs text-muted-foreground"
+            >
+              No sensors · short clip · results in minutes
+            </motion.p>
           </motion.div>
         </div>
 
@@ -100,16 +160,29 @@ export default function LandingPage() {
 
       {/* Upload Section */}
       <Section>
-        <div className="mx-auto max-w-xl">
-          <div className="mb-8 text-center">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              Try it now
-            </h2>
-            <p className="mt-2 text-muted-foreground">
-              Upload a clip and get your analysis in minutes.
-            </p>
+        <div id="upload" className="scroll-mt-24 mx-auto max-w-xl">
+          {/* Pill switch */}
+          <div className="mx-auto mb-8 flex w-fit rounded-full bg-muted p-1">
+            {(["demo", "clip"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={cn(
+                  "rounded-full px-5 py-2 text-sm font-medium transition-colors",
+                  activeTab === tab
+                    ? "bg-background text-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {tab === "demo" ? "Try demo" : "Use my clip"}
+              </button>
+            ))}
           </div>
-          <UploadBlock />
+
+          {/* Card content */}
+          <div className="rounded-2xl border border-border bg-card p-6">
+            {activeTab === "demo" ? <DemoContent /> : <ClipContent />}
+          </div>
         </div>
       </Section>
 
@@ -158,10 +231,10 @@ export default function LandingPage() {
             Start with a free analysis. No credit card required.
           </p>
           <Button size="lg" className="mt-6" asChild>
-            <Link to="/pricing">
+            <a href="/pricing">
               See pricing
               <ArrowRight className="ml-2 h-4 w-4" />
-            </Link>
+            </a>
           </Button>
         </motion.div>
       </Section>

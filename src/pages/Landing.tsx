@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Upload, Target, TrendingUp, ArrowRight, QrCode, Smartphone } from "lucide-react";
+import { Upload, Target, TrendingUp, ArrowRight, QrCode, Smartphone, Eye, AlertTriangle, Crosshair } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { Section } from "@/components/shared/Section";
@@ -234,7 +234,40 @@ export default function LandingPage() {
         </div>
       </Section>
 
-      {/* CTA */}
+      {/* Feedback section */}
+      <Section>
+        <div className="text-center">
+          <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+            Clear feedback, not just another video.
+          </h2>
+          <p className="mx-auto mt-3 max-w-lg text-muted-foreground">
+            Poser helps you see the movement behind your turns and gives you something useful to work on next.
+          </p>
+        </div>
+        <div className="mt-12 grid gap-8 md:grid-cols-3">
+          {[
+            { icon: Eye, title: "Visual breakdown", description: "See pose overlays and movement through the turn." },
+            { icon: AlertTriangle, title: "Technique callouts", description: "Spot stance, balance, shin alignment, and body-position issues." },
+            { icon: Crosshair, title: "One next focus", description: "Finish each analysis knowing what to try on your next run." },
+          ].map((item, i) => (
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.4 }}
+              className="flex flex-col items-center text-center md:items-start md:text-left"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary">
+                <item.icon className="h-5 w-5 text-foreground" />
+              </div>
+              <h3 className="mt-4 text-lg font-semibold text-foreground">{item.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{item.description}</p>
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
       <Section>
         <motion.div
           initial={{ opacity: 0, y: 16 }}

@@ -17,8 +17,6 @@ import { LoginDialog } from "@/components/dialogs/LoginDialog";
 const navLinks = [
   { label: "About", href: "/about" },
   { label: "Pricing", href: "/pricing" },
-  { label: "Integrations", href: "/integrations" },
-  { label: "Releases", href: "/releases" },
 ];
 
 export function Header() {

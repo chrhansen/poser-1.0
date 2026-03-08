@@ -21,7 +21,7 @@ const steps = [
   {
     icon: Upload,
     title: "Upload a short clip",
-    description: "Record a clear side or 3/4 view where your full body stays visible.",
+    description: "Record and upload a video of you skiing.",
   },
   {
     icon: Target,

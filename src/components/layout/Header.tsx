@@ -3,13 +3,7 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import poserLogo from "@/assets/poser-logo.svg";
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { cn } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
 import { LoginDialog } from "@/components/dialogs/LoginDialog";

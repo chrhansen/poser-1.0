@@ -112,8 +112,8 @@ export default function PricingPage() {
                     {faq.question}
                   </AccordionTrigger>
                   <AccordionContent className="text-sm text-muted-foreground">
-                    {faq.id === "faq6" ? (
-                      <>Yes! <Link to="/#upload" className="underline text-foreground hover:text-foreground/80">Try the demo here</Link>.</>
+                  {faq.id === "faq6" ? (
+                      <>Yes! <a href="/#upload" className="underline text-foreground hover:text-foreground/80">Try the demo here</a>.</>
                     ) : (
                       faq.answer
                     )}

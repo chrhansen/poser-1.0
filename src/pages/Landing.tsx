@@ -295,8 +295,8 @@ export default function LandingPage() {
               transition={{ delay: i * 0.1, duration: 0.4 }}
               className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-6 text-center"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary">
-                <item.icon className="h-5 w-5 text-foreground" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent">
+                <item.icon className="h-5 w-5 text-accent-foreground" />
               </div>
               <p className="text-sm font-medium text-foreground">{item.title}</p>
             </motion.div>

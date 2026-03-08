@@ -50,7 +50,7 @@ function DemoContent() {
         Watch how Poser goes from uploaded clip to movement breakdown to clear technique feedback.
       </p>
       <Button size="lg">
-        Run demo analysis
+        Start demo analysis
         <ArrowRight className="ml-2 h-4 w-4" />
       </Button>
       <p className="text-[11px] text-muted-foreground">No signup required</p>

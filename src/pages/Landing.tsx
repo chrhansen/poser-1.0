@@ -74,8 +74,8 @@ function ClipContent() {
         <div className="h-px flex-1 bg-border" />
       </div>
       <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border p-6 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-          <Smartphone className="h-5 w-5 text-muted-foreground" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+          <Smartphone className="h-5 w-5 text-accent-foreground" />
         </div>
         <p className="text-sm font-medium text-foreground">Send from your phone</p>
         <p className="text-xs text-muted-foreground max-w-xs">

@@ -40,8 +40,8 @@ type UploadTab = "demo" | "clip";
 function DemoContent() {
   return (
     <div className="flex flex-col items-center gap-4 py-6 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-secondary">
-        <Target className="h-5 w-5 text-muted-foreground" />
+      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent">
+        <Target className="h-5 w-5 text-accent-foreground" />
       </div>
       <p className="text-sm font-medium text-foreground">
         See a sample run analyzed from start to finish

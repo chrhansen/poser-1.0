@@ -337,6 +337,7 @@ export default function LandingPage() {
           </div>
         </motion.div>
       </Section>
+      <DemoAnalysisModal open={demoOpen} onOpenChange={setDemoOpen} />
     </Layout>
   );
 }

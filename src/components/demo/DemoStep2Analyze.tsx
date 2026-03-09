@@ -8,10 +8,10 @@ interface DemoStep2Props {
 }
 
 const progressRows = [
-  { label: "Tracking skier", duration: 900 },
-  { label: "Estimating pose", duration: 1000 },
-  { label: "Measuring movement", duration: 1100 },
-  { label: "Generating feedback", duration: 800 },
+  { label: "Tracking location of skier", duration: 2700 },
+  { label: "Estimating body position in 3D", duration: 3000 },
+  { label: "Measuring signals and calculating metrics", duration: 3300 },
+  { label: "Generating feedback", duration: 2400 },
 ];
 
 // Simple skeleton keypoints for the overlay (percentage-based)

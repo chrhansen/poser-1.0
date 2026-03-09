@@ -22,8 +22,8 @@ export function DemoStep1Select({ onComplete }: DemoStep1Props) {
   const ghostTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
-    ghostTimerRef.current = setTimeout(() => setShowGhost(true), 2500);
-    autoTimerRef.current = setTimeout(() => handleSelect(TARGET_ID), 4500);
+    ghostTimerRef.current = setTimeout(() => setShowGhost(true), 7500);
+    autoTimerRef.current = setTimeout(() => handleSelect(TARGET_ID), 13500);
     return () => {
       clearTimeout(ghostTimerRef.current);
       clearTimeout(autoTimerRef.current);

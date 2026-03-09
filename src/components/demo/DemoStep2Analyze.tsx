@@ -145,8 +145,8 @@ export function DemoStep2Analyze({ onComplete }: DemoStep2Props) {
           </div>
 
           <p className="text-sm text-muted-foreground leading-relaxed">
-            We track the skier, estimate body position, and generate technique
-            feedback.
+            We track the skier and estimate body position through the clip. Then
+            we derive metrics and generate an overall technique feedback.
           </p>
 
           {/* Progress rows */}

@@ -41,7 +41,10 @@ export const mockResults: AnalysisResult[] = [
     status: "complete",
     createdAt: "2026-02-28T10:00:00Z",
     duration: 14,
+    clipLength: 26,
     metrics: generateMockMetrics(14 * 30, 42),
+    skiRank: 80,
+    biggestLimiter: "edging",
     embedToken: "tok_abc123",
   },
   {
@@ -52,6 +55,7 @@ export const mockResults: AnalysisResult[] = [
     status: "processing",
     createdAt: "2026-03-01T14:30:00Z",
     duration: 22,
+    clipLength: 34,
     progress: 42,
   },
   {
@@ -62,6 +66,7 @@ export const mockResults: AnalysisResult[] = [
     status: "error",
     createdAt: "2026-02-25T09:15:00Z",
     duration: 8,
+    clipLength: 15,
     failedReason: "Video quality too low for reliable analysis. Please upload a higher resolution clip.",
   },
   {
@@ -71,6 +76,7 @@ export const mockResults: AnalysisResult[] = [
     thumbnailUrl: "",
     status: "pending",
     createdAt: "2026-03-02T08:00:00Z",
+    clipLength: 20,
   },
   {
     id: "res_5",
@@ -80,7 +86,10 @@ export const mockResults: AnalysisResult[] = [
     status: "complete",
     createdAt: "2026-02-20T16:45:00Z",
     duration: 18,
+    clipLength: 30,
     metrics: generateMockMetrics(18 * 30, 99),
+    skiRank: 65,
+    biggestLimiter: "balance",
     embedToken: "tok_def456",
   },
 ];

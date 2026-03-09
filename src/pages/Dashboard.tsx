@@ -7,9 +7,9 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { analysisService } from "@/services/analysis.service";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import type { AnalysisResult } from "@/lib/types";
+import type { AnalysisResult, SkiLimiter } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Plus, Clock, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { Plus, Clock, Loader2, CheckCircle, XCircle, RotateCcw, AlertTriangle } from "lucide-react";
 import { NewAnalysisSheet } from "@/components/upload/NewAnalysisSheet";
 
 const statusConfig: Record<AnalysisResult["status"], { icon: typeof Clock; label: string; cls: string }> = {
@@ -19,49 +19,103 @@ const statusConfig: Record<AnalysisResult["status"], { icon: typeof Clock; label
   error: { icon: XCircle, label: "Failed", cls: "text-destructive" },
 };
 
-function ResultCard({ r }: { r: AnalysisResult }) {
-  const { icon: Icon, label, cls } = statusConfig[r.status];
-  const edgeScore = r.metrics?.edgeSimilarity?.overall;
+const limiterLabels: Record<SkiLimiter, string> = {
+  balance: "Balance",
+  pressure: "Pressure",
+  edging: "Edging",
+  rotary: "Rotary",
+};
+
+function formatClipMeta(r: AnalysisResult) {
+  const date = new Date(r.createdAt).toLocaleDateString();
+  const clip = r.clipLength ? `${r.clipLength}s clip` : null;
+  return [date, clip].filter(Boolean).join(" · ");
+}
+
+function ResultCard({ r, onRetry }: { r: AnalysisResult; onRetry: (id: string) => void }) {
+  const { icon: Icon, cls } = statusConfig[r.status];
   return (
-    <Link
-      to={`/results/${r.id}`}
-      className="flex items-center justify-between rounded-xl border border-border p-4 transition-shadow hover:shadow-md"
-    >
-      <div className="flex items-center gap-3">
-        <Icon className={cn("h-5 w-5 shrink-0", cls, r.status === "processing" && "animate-spin")} />
-        <div>
-          <p className="text-sm font-medium text-foreground">
-            {r.status === "complete" && edgeScore != null ? `Edge: ${edgeScore}` : label}
-          </p>
-          <p className="text-xs text-muted-foreground">
-            {new Date(r.createdAt).toLocaleDateString()}
-            {r.duration ? ` · ${r.duration}s` : ""}
-          </p>
+    <div className="rounded-xl border border-border p-4 transition-shadow hover:shadow-md">
+      <Link to={r.status === "error" ? "#" : `/results/${r.id}`} className="block">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Icon className={cn("h-5 w-5 shrink-0", cls, r.status === "processing" && "animate-spin")} />
+            <div>
+              {r.status === "complete" && r.skiRank != null ? (
+                <p className="text-sm font-bold text-foreground">SkiRank {r.skiRank}</p>
+              ) : (
+                <p className={cn("text-sm font-medium", cls)}>{statusConfig[r.status].label}</p>
+              )}
+              <p className="text-xs text-muted-foreground">{formatClipMeta(r)}</p>
+            </div>
+          </div>
+          {r.status === "complete" && r.biggestLimiter && (
+            <span className="text-xs text-muted-foreground">
+              Limiter: <span className="font-medium text-foreground">{limiterLabels[r.biggestLimiter]}</span>
+            </span>
+          )}
         </div>
-      </div>
-      <span className={cn("text-xs font-medium capitalize", cls)}>{label}</span>
-    </Link>
+      </Link>
+      {r.status === "error" && (
+        <div className="mt-3 flex items-center gap-2 border-t border-border pt-3">
+          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => onRetry(r.id)}>
+            <RotateCcw className="mr-1 h-3 w-3" /> Retry
+          </Button>
+          <Button variant="ghost" size="sm" className="h-7 text-xs" asChild>
+            <Link to={`/results/${r.id}`}>
+              <AlertTriangle className="mr-1 h-3 w-3" /> View issue
+            </Link>
+          </Button>
+        </div>
+      )}
+    </div>
   );
 }
 
-function ResultTableRow({ r }: { r: AnalysisResult }) {
+function ResultTableRow({ r, onRetry }: { r: AnalysisResult; onRetry: (id: string) => void }) {
   const { icon: Icon, label, cls } = statusConfig[r.status];
-  const edgeScore = r.metrics?.edgeSimilarity?.overall;
-  const turnCount = r.metrics?.turnSegments?.length ?? 0;
   return (
-    <Link
-      to={`/results/${r.id}`}
-      className="grid grid-cols-5 items-center gap-4 border-b border-border px-4 py-3 text-sm transition-colors hover:bg-secondary/50 last:border-0"
-    >
-      <span className="text-muted-foreground">{new Date(r.createdAt).toLocaleDateString()}</span>
-      <span className="flex items-center gap-1.5">
-        <Icon className={cn("h-3.5 w-3.5", cls, r.status === "processing" && "animate-spin")} />
-        <span className={cls}>{label}</span>
-      </span>
-      <span className="text-foreground">{r.status === "complete" && edgeScore != null ? edgeScore : "—"}</span>
-      <span className="text-muted-foreground">{r.duration ? `${r.duration}s` : "—"}</span>
-      <span className="text-muted-foreground">{turnCount > 0 ? `${turnCount} turns` : "—"}</span>
-    </Link>
+    <div className="grid grid-cols-[1fr_1fr_1.2fr_auto] items-center gap-4 border-b border-border px-4 py-3 text-sm transition-colors hover:bg-secondary/50 last:border-0">
+      {/* SkiRank + status */}
+      <div className="flex items-center gap-2">
+        <Icon className={cn("h-3.5 w-3.5 shrink-0", cls, r.status === "processing" && "animate-spin")} />
+        {r.status === "complete" && r.skiRank != null ? (
+          <span className="font-bold text-foreground">SkiRank {r.skiRank}</span>
+        ) : (
+          <span className={cls}>{label}</span>
+        )}
+      </div>
+
+      {/* Date + clip length */}
+      <span className="text-muted-foreground">{formatClipMeta(r)}</span>
+
+      {/* Biggest limiter or error actions */}
+      {r.status === "complete" && r.biggestLimiter ? (
+        <span className="text-muted-foreground">
+          Biggest limiter: <span className="font-medium text-foreground">{limiterLabels[r.biggestLimiter]}</span>
+        </span>
+      ) : r.status === "error" ? (
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={(e) => { e.preventDefault(); onRetry(r.id); }}>
+            <RotateCcw className="mr-1 h-3 w-3" /> Retry
+          </Button>
+          <Button variant="ghost" size="sm" className="h-7 text-xs" asChild>
+            <Link to={`/results/${r.id}`}>
+              <AlertTriangle className="mr-1 h-3 w-3" /> View issue
+            </Link>
+          </Button>
+        </div>
+      ) : (
+        <span className="text-muted-foreground">—</span>
+      )}
+
+      {/* Link arrow for non-error rows */}
+      {r.status !== "error" ? (
+        <Link to={`/results/${r.id}`} className="text-muted-foreground hover:text-foreground">
+          →
+        </Link>
+      ) : <span />}
+    </div>
   );
 }
 
@@ -81,6 +135,10 @@ export default function DashboardPage() {
       setError(true);
       setLoading(false);
     });
+  };
+
+  const handleRetry = (id: string) => {
+    analysisService.rerunAnalysis(id).then(() => loadData());
   };
 
   useEffect(() => { loadData(); }, []);
@@ -109,19 +167,18 @@ export default function DashboardPage() {
             <>
               {/* Mobile cards */}
               <div className="mt-6 space-y-3 md:hidden">
-                {results.map((r) => <ResultCard key={r.id} r={r} />)}
+                {results.map((r) => <ResultCard key={r.id} r={r} onRetry={handleRetry} />)}
               </div>
 
               {/* Desktop table */}
               <div className="mt-6 hidden overflow-hidden rounded-xl border border-border md:block">
-                <div className="grid grid-cols-5 gap-4 border-b border-border bg-secondary/50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  <span>Date</span>
-                  <span>Status</span>
-                  <span>Edge Score</span>
-                  <span>Duration</span>
-                  <span>Turns</span>
+                <div className="grid grid-cols-[1fr_1fr_1.2fr_auto] gap-4 border-b border-border bg-secondary/50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  <span>SkiRank</span>
+                  <span>Details</span>
+                  <span>Insight</span>
+                  <span />
                 </div>
-                {results.map((r) => <ResultTableRow key={r.id} r={r} />)}
+                {results.map((r) => <ResultTableRow key={r.id} r={r} onRetry={handleRetry} />)}
               </div>
             </>
           )}

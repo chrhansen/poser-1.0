@@ -84,6 +84,8 @@ export interface AnalysisMetrics {
 
 // ─── Analysis Result ────────────────────────────────────────────────────────
 
+export type SkiLimiter = "balance" | "pressure" | "edging" | "rotary";
+
 export interface AnalysisResult {
   id: string;
   userId: string;
@@ -92,10 +94,13 @@ export interface AnalysisResult {
   status: "pending" | "processing" | "complete" | "error";
   createdAt: string;
   duration?: number; // seconds
+  clipLength?: number; // seconds — length of original clip
   progress?: number; // 0-100 for processing
   failedReason?: string;
   modelUrl?: string; // optional 3D model
   metrics?: AnalysisMetrics;
+  skiRank?: number; // 0-100 overall score
+  biggestLimiter?: SkiLimiter;
   embedToken?: string;
 }
 

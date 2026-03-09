@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import {
   Dialog,
-  DialogContent,
   DialogOverlay,
   DialogPortal,
 } from "@/components/ui/dialog";
@@ -12,6 +11,9 @@ import {
   Sheet,
   SheetContent,
 } from "@/components/ui/sheet";
+import { DemoStep1Select } from "./DemoStep1Select";
+import { DemoStep2Analyze } from "./DemoStep2Analyze";
+import { DemoStep3Feedback } from "./DemoStep3Feedback";
 
 const steps = [
   { number: 1, label: "Select" },
@@ -98,28 +100,6 @@ function ModalTopBar({
   );
 }
 
-function ModalBody({ currentStep }: { currentStep: number }) {
-  return (
-    <div className="flex flex-1 flex-col md:flex-row overflow-hidden">
-      {/* Left / Top — media area */}
-      <div className="flex items-center justify-center bg-accent/30 p-6 md:w-1/2">
-        <div className="flex h-48 w-full items-center justify-center rounded-lg border border-dashed border-border text-sm text-muted-foreground md:h-full">
-          Media placeholder — Step {currentStep}
-        </div>
-      </div>
-
-      {/* Right / Bottom — copy area */}
-      <div className="flex flex-1 flex-col justify-between p-6 md:w-1/2">
-        <div className="flex-1">
-          <p className="text-sm text-muted-foreground">
-            Step {currentStep} content will go here.
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 export function DemoAnalysisModal({
   open,
   onOpenChange,
@@ -129,9 +109,25 @@ export function DemoAnalysisModal({
 
   const handleClose = () => {
     onOpenChange(false);
-    // Reset step after close animation
     setTimeout(() => setCurrentStep(1), 300);
   };
+
+  const handleReplay = () => {
+    setCurrentStep(1);
+  };
+
+  const goStep2 = useCallback(() => setCurrentStep(2), []);
+  const goStep3 = useCallback(() => setCurrentStep(3), []);
+
+  const stepContent = (
+    <>
+      {currentStep === 1 && <DemoStep1Select onComplete={goStep2} />}
+      {currentStep === 2 && <DemoStep2Analyze onComplete={goStep3} />}
+      {currentStep === 3 && (
+        <DemoStep3Feedback onReplay={handleReplay} onClose={handleClose} />
+      )}
+    </>
+  );
 
   if (isMobile) {
     return (
@@ -141,7 +137,7 @@ export function DemoAnalysisModal({
           className="flex h-[100dvh] flex-col p-0 rounded-none [&>button]:hidden"
         >
           <ModalTopBar currentStep={currentStep} onClose={handleClose} />
-          <ModalBody currentStep={currentStep} />
+          {stepContent}
         </SheetContent>
       </Sheet>
     );
@@ -163,7 +159,7 @@ export function DemoAnalysisModal({
             data-state={open ? "open" : "closed"}
           >
             <ModalTopBar currentStep={currentStep} onClose={handleClose} />
-            <ModalBody currentStep={currentStep} />
+            {stepContent}
           </div>
         </div>
       </DialogPortal>

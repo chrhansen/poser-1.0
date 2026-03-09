@@ -109,7 +109,7 @@ function SidebarInner({ extraContent, collapsed, setCollapsed, onNavigate, hideH
             ) : (
               <>
                 <Link to="/" onClick={handleNav}>
-                  <img src={poserLogo} alt="poser" className="h-6 w-auto" />
+                  <img src={poserLogo} alt="poser" className="h-9 w-auto" />
                 </Link>
                 <button
                   onClick={() => setCollapsed(true)}

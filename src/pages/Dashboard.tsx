@@ -23,7 +23,7 @@ const limiterLabels: Record<SkiLimiter, string> = {
   balance: "Balance",
   pressure: "Pressure",
   edging: "Edging",
-  rotary: "Rotary",
+  steering: "Steering",
 };
 
 function formatClipMeta(r: AnalysisResult) {

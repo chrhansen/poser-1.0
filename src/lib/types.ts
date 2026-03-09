@@ -145,6 +145,7 @@ export interface AnalysisResult {
   metrics?: AnalysisMetrics;
   skiRank?: number; // 0-100 overall score
   biggestLimiter?: SkiLimiter;
+  themeScores?: ThemeScores;
   embedToken?: string;
 }
 

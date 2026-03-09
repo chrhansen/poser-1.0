@@ -14,7 +14,7 @@ import { NewAnalysisSheet } from "@/components/upload/NewAnalysisSheet";
 
 const statusConfig: Record<AnalysisResult["status"], { icon: typeof Clock; label: string; cls: string }> = {
   pending: { icon: Clock, label: "Pending", cls: "text-muted-foreground" },
-  processing: { icon: Loader2, label: "Processing", cls: "text-accent" },
+  processing: { icon: Loader2, label: "Processing", cls: "text-accent-foreground" },
   complete: { icon: CheckCircle, label: "Complete", cls: "text-foreground" },
   error: { icon: XCircle, label: "Failed", cls: "text-destructive" },
 };

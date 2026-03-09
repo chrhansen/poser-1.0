@@ -7,7 +7,7 @@ import { Clock, Loader2, CheckCircle, XCircle } from "lucide-react";
 
 const statusIcons: Record<AnalysisResult["status"], { icon: typeof Clock; cls: string }> = {
   pending: { icon: Clock, cls: "text-muted-foreground" },
-  processing: { icon: Loader2, cls: "text-accent" },
+  processing: { icon: Loader2, cls: "text-accent-foreground" },
   complete: { icon: CheckCircle, cls: "text-foreground" },
   error: { icon: XCircle, cls: "text-destructive" },
 };

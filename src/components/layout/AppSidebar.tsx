@@ -103,7 +103,7 @@ function SidebarInner({ extraContent, collapsed, setCollapsed, onNavigate, hideH
                   className="rounded-md p-1 transition-colors hover:bg-secondary"
                   aria-label="Expand sidebar"
                 >
-                  <img src={poserLogo} alt="poser" className="h-8 w-auto" />
+                  <img src={poserLogo} alt="poser" className="h-6 w-auto" />
                 </button>
               </SidebarTooltip>
             ) : (

@@ -44,7 +44,7 @@ export function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground">
-            <img src={poserLogo} alt="" className="h-8 w-auto" />
+            <img src={poserLogo} alt="" className="h-6 w-auto" />
             poser
           </Link>
 

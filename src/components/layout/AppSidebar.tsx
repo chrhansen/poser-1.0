@@ -103,13 +103,13 @@ function SidebarInner({ extraContent, collapsed, setCollapsed, onNavigate, hideH
                   className="rounded-md p-1 transition-colors hover:bg-secondary"
                   aria-label="Expand sidebar"
                 >
-                  <img src={poserLogo} alt="poser" className="h-8 w-auto" />
+                  <img src={poserLogo} alt="poser" className="h-6 w-auto" />
                 </button>
               </SidebarTooltip>
             ) : (
               <>
                 <Link to="/" onClick={handleNav}>
-                  <img src={poserLogo} alt="poser" className="h-9 w-auto" />
+                  <img src={poserLogo} alt="poser" className="h-6 w-auto" />
                 </Link>
                 <button
                   onClick={() => setCollapsed(true)}
@@ -305,7 +305,7 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
             {/* Close button row */}
             <div className="flex items-center justify-between border-b border-border px-3 py-3">
               <Link to="/" onClick={() => setMobileOpen(false)}>
-                <img src={poserLogo} alt="poser" className="h-9 w-auto" />
+                <img src={poserLogo} alt="poser" className="h-6 w-auto" />
               </Link>
               <button
                 onClick={() => setMobileOpen(false)}

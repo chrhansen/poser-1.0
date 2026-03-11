@@ -203,13 +203,26 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
       {/* Scrubber */}
       {duration > 0 && (
         <div className="px-5 pt-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Scissors className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">
+              Select the section to analyze (max. {MAX_TRIM_SECONDS}s)
+            </span>
+          </div>
           <Slider
-            value={scrubValue}
-            onValueChange={handleScrub}
+            value={trimRange}
+            onValueChange={handleTrimChange}
+            min={0}
             max={100}
             step={0.5}
+            minStepsBetweenThumbs={1}
             className="w-full"
           />
+          <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+            <span>{formatTime(trimStart)}</span>
+            <span>Duration: {formatTime(trimDuration)}</span>
+            <span>{formatTime(trimEnd)}</span>
+          </div>
         </div>
       )}
 

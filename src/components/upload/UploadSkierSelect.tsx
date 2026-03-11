@@ -82,12 +82,24 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
     setThumbnails(newThumbs);
   };
 
-  const handleScrub = (value: number[]) => {
-    setScrubValue(value);
-    if (videoRef.current && duration > 0) {
-      videoRef.current.currentTime = (value[0] / 100) * duration;
-    }
-  };
+  const handleTrimChange = useCallback(
+    (values: number[]) => {
+      let [start, end] = values;
+      const maxPct = (MAX_TRIM_SECONDS / Math.max(duration, 0.01)) * 100;
+      if (end - start > maxPct) {
+        end = start + maxPct;
+      }
+      setTrimRange([start, Math.min(end, 100)]);
+      if (videoRef.current && duration > 0) {
+        videoRef.current.currentTime = (start / 100) * duration;
+      }
+    },
+    [duration]
+  );
+
+  const trimStart = (trimRange[0] / 100) * duration;
+  const trimEnd = (trimRange[1] / 100) * duration;
+  const trimDuration = trimEnd - trimStart;
 
   const handleSelect = (id: number) => {
     setSelectedSkier(id);

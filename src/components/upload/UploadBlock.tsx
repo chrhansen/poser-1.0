@@ -130,54 +130,27 @@ export function UploadBlock() {
             </motion.div>
           )}
 
-          {/* Skier selection */}
+          {/* Skier selection — video preview + overlay */}
           {state === "skier-select" && file && (
             <motion.div
               key="skier-select"
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
-              className="rounded-2xl border border-border p-6"
             >
-              <div className="flex items-start justify-between">
-                <div>
-                  <p className="text-sm font-medium text-foreground">{file.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {(file.size / (1024 * 1024)).toFixed(1)} MB
-                  </p>
-                </div>
-                <button onClick={reset} className="text-muted-foreground hover:text-foreground">
-                  <X className="h-4 w-4" />
-                </button>
-              </div>
-
-              <div className="mt-6">
-                <p className="text-sm font-medium text-foreground">Where is the skier in the frame?</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  This helps our AI focus on the right person.
-                </p>
-                <div className="mt-3 grid grid-cols-3 gap-2">
-                  {skierPositions.map((pos) => (
-                    <button
-                      key={pos.value}
-                      onClick={() => setSkierPos(pos.value)}
-                      className={cn(
-                        "flex flex-col items-center gap-1 rounded-lg border p-3 text-center transition-colors",
-                        skierPos === pos.value
-                          ? "border-foreground bg-secondary"
-                          : "border-border hover:border-muted-foreground"
-                      )}
-                    >
-                      <span className="text-sm font-medium text-foreground">{pos.label}</span>
-                      <span className="text-[10px] text-muted-foreground">{pos.desc}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <Button className="mt-6 w-full" onClick={handleUpload}>
-                {user ? "Analyze my skiing" : "Sign in & analyze"}
-              </Button>
+              <UploadSkierSelect
+                file={file}
+                onCancel={reset}
+                onContinue={(skierId) => {
+                  setSelectedSkierId(skierId);
+                  if (!user) {
+                    setAuthContext("upload");
+                    setAuthOpen(true);
+                  } else {
+                    handleUpload();
+                  }
+                }}
+              />
 
               {/* Inline helper for logged-out users */}
               {!user && (

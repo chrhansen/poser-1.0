@@ -28,6 +28,7 @@ export function UploadBlock() {
   const [progress, setProgress] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
   const [authOpen, setAuthOpen] = useState(false);
+  const [authContext, setAuthContext] = useState<"upload" | "signin" | "signup">("upload");
   const [dragOver, setDragOver] = useState(false);
 
   const handleFileSelect = useCallback((f: File) => {
@@ -59,6 +60,7 @@ export function UploadBlock() {
 
     // If not signed in, show auth dialog in upload context
     if (!user) {
+      setAuthContext("upload");
       setAuthOpen(true);
       return;
     }
@@ -187,10 +189,17 @@ export function UploadBlock() {
                 <p className="mt-3 text-center text-xs text-muted-foreground">
                   Requires a free account.{" "}
                   <button
-                    onClick={() => setAuthOpen(true)}
+                    onClick={() => { setAuthContext("signin"); setAuthOpen(true); }}
                     className="underline hover:text-foreground transition-colors"
                   >
-                    Sign in or create one
+                    Sign in
+                  </button>{" "}
+                  or{" "}
+                  <button
+                    onClick={() => { setAuthContext("signup"); setAuthOpen(true); }}
+                    className="underline hover:text-foreground transition-colors"
+                  >
+                    create one
                   </button>{" "}
                   to upload your own clip.
                 </p>
@@ -240,7 +249,7 @@ export function UploadBlock() {
       <AuthDialog
         open={authOpen}
         onOpenChange={setAuthOpen}
-        context="upload"
+        context={authContext}
         onSuccess={handleUpload}
       />
     </>

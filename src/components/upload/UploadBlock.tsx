@@ -249,7 +249,7 @@ export function UploadBlock() {
       <AuthDialog
         open={authOpen}
         onOpenChange={setAuthOpen}
-        context="upload"
+        context={authContext}
         onSuccess={handleUpload}
       />
     </>

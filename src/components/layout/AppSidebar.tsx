@@ -263,10 +263,20 @@ function SidebarInner({ extraContent, collapsed, setCollapsed, onNavigate, hideH
   );
 }
 
-export function AppSidebar({ extraContent }: AppSidebarProps) {
+export function AppSidebar({ extraContent, mobileOpen: controlledMobileOpen, onMobileOpenChange }: AppSidebarProps) {
   const { collapsed, setCollapsed } = useSidebarCollapsed();
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [internalMobileOpen, setInternalMobileOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
+
+  const isMobileControlled = typeof controlledMobileOpen === "boolean" && !!onMobileOpenChange;
+  const mobileOpen = isMobileControlled ? controlledMobileOpen : internalMobileOpen;
+  const setMobileOpen = (open: boolean) => {
+    if (isMobileControlled) {
+      onMobileOpenChange?.(open);
+      return;
+    }
+    setInternalMobileOpen(open);
+  };
 
   React.useEffect(() => {
     const mql = window.matchMedia("(min-width: 1024px)");

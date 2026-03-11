@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Check, X } from "lucide-react";
+import { Check, X, Scissors } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -17,12 +17,20 @@ interface UploadSkierSelectProps {
   onContinue: (skierId: number) => void;
 }
 
+const MAX_TRIM_SECONDS = 20;
+
+function formatTime(s: number) {
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+}
+
 export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSelectProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [duration, setDuration] = useState(0);
-  const [scrubValue, setScrubValue] = useState([0]);
+  const [trimRange, setTrimRange] = useState<[number, number]>([0, 100]);
   const [selectedSkier, setSelectedSkier] = useState<number | null>(null);
   const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
 
@@ -35,8 +43,10 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
 
   const handleLoadedMetadata = () => {
     if (videoRef.current) {
-      setDuration(videoRef.current.duration);
-      // Capture thumbnails from the first frame after a tiny delay
+      const dur = videoRef.current.duration;
+      setDuration(dur);
+      const endPct = dur > MAX_TRIM_SECONDS ? (MAX_TRIM_SECONDS / dur) * 100 : 100;
+      setTrimRange([0, endPct]);
       setTimeout(() => captureThumbnails(), 300);
     }
   };
@@ -72,12 +82,24 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
     setThumbnails(newThumbs);
   };
 
-  const handleScrub = (value: number[]) => {
-    setScrubValue(value);
-    if (videoRef.current && duration > 0) {
-      videoRef.current.currentTime = (value[0] / 100) * duration;
-    }
-  };
+  const handleTrimChange = useCallback(
+    (values: number[]) => {
+      let [start, end] = values;
+      const maxPct = (MAX_TRIM_SECONDS / Math.max(duration, 0.01)) * 100;
+      if (end - start > maxPct) {
+        end = start + maxPct;
+      }
+      setTrimRange([start, Math.min(end, 100)]);
+      if (videoRef.current && duration > 0) {
+        videoRef.current.currentTime = (start / 100) * duration;
+      }
+    },
+    [duration]
+  );
+
+  const trimStart = (trimRange[0] / 100) * duration;
+  const trimEnd = (trimRange[1] / 100) * duration;
+  const trimDuration = trimEnd - trimStart;
 
   const handleSelect = (id: number) => {
     setSelectedSkier(id);
@@ -181,13 +203,26 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
       {/* Scrubber */}
       {duration > 0 && (
         <div className="px-5 pt-3">
+          <div className="flex items-center gap-2 mb-2">
+            <Scissors className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="text-xs font-medium text-muted-foreground">
+              Select the section to analyze (max. {MAX_TRIM_SECONDS}s)
+            </span>
+          </div>
           <Slider
-            value={scrubValue}
-            onValueChange={handleScrub}
+            value={trimRange}
+            onValueChange={handleTrimChange}
+            min={0}
             max={100}
             step={0.5}
+            minStepsBetweenThumbs={1}
             className="w-full"
           />
+          <div className="mt-1 flex items-center justify-between text-xs text-muted-foreground">
+            <span>{formatTime(trimStart)}</span>
+            <span>Duration: {formatTime(trimDuration)}</span>
+            <span>{formatTime(trimEnd)}</span>
+          </div>
         </div>
       )}
 

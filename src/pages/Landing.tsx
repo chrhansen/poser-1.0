@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { Section } from "@/components/shared/Section";
 import { UploadBlock } from "@/components/upload/UploadBlock";
+import { AuthDialog, type AuthContext } from "@/components/dialogs/AuthDialog";
+import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import heroImage from "@/assets/hero-ski.jpg";
 
@@ -59,7 +61,9 @@ function DemoContent({ onStartDemo }: { onStartDemo: () => void }) {
   );
 }
 
-function ClipContent() {
+function ClipContent({ onRequireAuth }: { onRequireAuth: () => void }) {
+  const { user } = useAuth();
+
   return (
     <div className="flex flex-col gap-6">
       <div className="text-center mb-2">
@@ -86,15 +90,42 @@ function ClipContent() {
           <QrCode className="h-14 w-14 text-accent-foreground/60" />
         </div>
       </div>
+
+      {/* Inline helper for logged-out users */}
+      {!user && (
+        <p className="text-center text-xs text-muted-foreground">
+          Requires a free account.{" "}
+          <button
+            onClick={onRequireAuth}
+            className="underline hover:text-foreground transition-colors"
+          >
+            Sign in or create one
+          </button>{" "}
+          to upload your own clip.
+        </p>
+      )}
     </div>
   );
 }
 
 export default function LandingPage() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<UploadTab>("demo");
   const [demoOpen, setDemoOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authContext, setAuthContext] = useState<AuthContext>("upload");
 
-  const scrollToUpload = () => {
+  const openAuth = (ctx: AuthContext) => {
+    setAuthContext(ctx);
+    setAuthOpen(true);
+  };
+
+  const handleUploadClick = () => {
+    if (!user) {
+      openAuth("upload");
+      return;
+    }
+    setActiveTab("clip");
     document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -134,10 +165,7 @@ export default function LandingPage() {
                 Try demo analysis
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
-              <Button variant="outline" size="lg" onClick={() => {
-                setActiveTab("clip");
-                document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
-              }}>
+              <Button variant="outline" size="lg" onClick={handleUploadClick}>
                 Upload your clip
               </Button>
             </motion.div>
@@ -186,7 +214,13 @@ export default function LandingPage() {
             {(["demo", "clip"] as const).map((tab) => (
               <button
                 key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => {
+                  if (tab === "clip" && !user) {
+                    openAuth("upload");
+                    return;
+                  }
+                  setActiveTab(tab);
+                }}
                 className={cn(
                   "rounded-full px-5 py-2 text-sm font-medium transition-colors",
                   activeTab === tab
@@ -201,7 +235,11 @@ export default function LandingPage() {
 
           {/* Card content */}
           <div className="rounded-2xl border border-border bg-card p-6">
-            {activeTab === "demo" ? <DemoContent onStartDemo={() => setDemoOpen(true)} /> : <ClipContent />}
+            {activeTab === "demo" ? (
+              <DemoContent onStartDemo={() => setDemoOpen(true)} />
+            ) : (
+              <ClipContent onRequireAuth={() => openAuth("upload")} />
+            )}
           </div>
         </div>
       </Section>
@@ -328,16 +366,26 @@ export default function LandingPage() {
               Try demo analysis
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-            <Button variant="outline" size="lg" onClick={() => {
-              setActiveTab("clip");
-              document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
-            }}>
+            <Button variant="outline" size="lg" onClick={handleUploadClick}>
               Upload your clip
             </Button>
           </div>
         </motion.div>
       </Section>
+
       <DemoAnalysisModal open={demoOpen} onOpenChange={setDemoOpen} />
+      <AuthDialog
+        open={authOpen}
+        onOpenChange={setAuthOpen}
+        context={authContext}
+        onSuccess={() => {
+          // After auth, switch to clip tab and scroll to upload
+          setActiveTab("clip");
+          setTimeout(() => {
+            document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        }}
+      />
     </Layout>
   );
 }

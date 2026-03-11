@@ -267,7 +267,7 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
       </div>
 
       {/* Action */}
-      <div className="p-4 pt-4">
+      <div>
         <Button
           className="w-full"
           disabled={!selectedSkier}

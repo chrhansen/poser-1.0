@@ -176,23 +176,9 @@ export function NewAnalysisSheet({ open, onOpenChange }: NewAnalysisSheetProps) 
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
-      <DialogPortal>
-        <DialogOverlay />
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div
-            className={cn(
-              "relative z-50 flex w-full max-w-lg flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xl",
-              "max-h-[85vh]",
-              "data-[state=open]:animate-in data-[state=closed]:animate-out",
-              "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-              "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
-            )}
-            data-state={open ? "open" : "closed"}
-          >
-            {content}
-          </div>
-        </div>
-      </DialogPortal>
+      <DialogContent className="flex max-w-lg flex-col overflow-hidden rounded-xl p-0 max-h-[85vh]">
+        {content}
+      </DialogContent>
     </Dialog>
   );
 }

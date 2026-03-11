@@ -266,7 +266,6 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(true);
 
-  // Use lg breakpoint (1024px) to match the CSS lg:flex class
   React.useEffect(() => {
     const mql = window.matchMedia("(min-width: 1024px)");
     const onChange = () => setIsDesktop(mql.matches);
@@ -294,47 +293,47 @@ export function AppSidebar({ extraContent }: AppSidebarProps) {
     );
   }
 
-  // Mobile: hamburger button + Sheet overlay
+  // Mobile: top bar is rendered by AppLayout, we just handle the Sheet
   return (
-    <>
-      <MobileMenuButton onClick={() => setMobileOpen(true)} />
-      <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
-        <SheetContent side="left" className="w-72 p-0 bg-surface-sunken [&>button.absolute]:hidden">
-          <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <div className="flex h-full flex-col">
-            {/* Close button row */}
-            <div className="flex items-center justify-between border-b border-border px-3 py-3">
-              <Link to="/" onClick={() => setMobileOpen(false)}>
-                <img src={poserLogo} alt="poser" className="h-6 w-auto" />
-              </Link>
-              <button
-                onClick={() => setMobileOpen(false)}
-                className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-                aria-label="Close sidebar"
-              >
-                <X className="h-4 w-4" />
-              </button>
-            </div>
-            {/* Reuse inner content, always expanded */}
-            <div className="flex-1 flex flex-col overflow-hidden">
-              <SidebarInner extraContent={extraContent} collapsed={false} setCollapsed={() => {}} onNavigate={() => setMobileOpen(false)} hideHeader />
-            </div>
+    <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+      <SheetContent side="left" className="w-72 p-0 bg-surface-sunken [&>button.absolute]:hidden">
+        <SheetTitle className="sr-only">Navigation</SheetTitle>
+        <div className="flex h-full flex-col">
+          <div className="flex items-center justify-between border-b border-border px-3 py-3">
+            <Link to="/" onClick={() => setMobileOpen(false)}>
+              <img src={poserLogo} alt="poser" className="h-6 w-auto" />
+            </Link>
+            <button
+              onClick={() => setMobileOpen(false)}
+              className="rounded-md p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              aria-label="Close sidebar"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
-        </SheetContent>
-      </Sheet>
-    </>
+          <div className="flex-1 flex flex-col overflow-hidden">
+            <SidebarInner extraContent={extraContent} collapsed={false} setCollapsed={() => {}} onNavigate={() => setMobileOpen(false)} hideHeader />
+          </div>
+        </div>
+      </SheetContent>
+    </Sheet>
   );
 }
 
-/** Floating hamburger button for mobile */
-export function MobileMenuButton({ onClick }: { onClick: () => void }) {
+/** Mobile top bar for authenticated pages — rendered by AppLayout */
+export function MobileTopBar({ onMenuClick }: { onMenuClick: () => void }) {
   return (
-    <button
-      onClick={onClick}
-      className="fixed left-3 top-3 z-40 rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground lg:hidden"
-      aria-label="Open menu"
-    >
-      <Menu className="h-5 w-5" />
-    </button>
+    <div className="flex items-center h-12 border-b border-border px-3 lg:hidden">
+      <button
+        onClick={onMenuClick}
+        className="rounded-md p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+        aria-label="Open menu"
+      >
+        <Menu className="h-5 w-5" />
+      </button>
+      <Link to="/" className="ml-2">
+        <img src={poserLogo} alt="poser" className="h-5 w-auto" />
+      </Link>
+    </div>
   );
 }

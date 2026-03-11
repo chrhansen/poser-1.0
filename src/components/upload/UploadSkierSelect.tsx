@@ -111,9 +111,9 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
   };
 
   return (
-    <div className="rounded-2xl border border-border overflow-hidden">
+    <div className="flex flex-col gap-3">
       {/* Header */}
-      <div className="flex items-start justify-between p-4 pb-0">
+      <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-medium text-foreground">{file.name}</p>
           <p className="text-xs text-muted-foreground">
@@ -126,7 +126,7 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
       </div>
 
       {/* Video preview with skier overlays */}
-      <div className="relative mx-4 mt-3 overflow-hidden rounded-xl border border-border bg-secondary">
+      <div className="relative overflow-hidden rounded-xl border border-border bg-secondary">
         {videoUrl && (
           <video
             ref={videoRef}
@@ -207,7 +207,7 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
 
       {/* Scrubber */}
       {duration > 0 && (
-        <div className="px-5 pt-3">
+        <div>
           <div className="flex items-center gap-2 mb-2">
             <Scissors className="h-3.5 w-3.5 text-muted-foreground" />
             <span className="text-xs font-medium text-muted-foreground">
@@ -232,7 +232,7 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
       )}
 
       {/* Thumbnail selectors + label */}
-      <div className="flex items-center gap-3 px-4 pt-3">
+      <div className="flex items-center gap-3">
         {MOCK_SKIERS.map((skier) => (
           <button
             key={skier.id}
@@ -267,7 +267,7 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
       </div>
 
       {/* Action */}
-      <div className="p-4 pt-4">
+      <div>
         <Button
           className="w-full"
           disabled={!selectedSkier}

@@ -113,7 +113,7 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
   return (
     <div className="flex flex-col gap-3">
       {/* Header */}
-      <div className="flex items-start justify-between p-4 pb-0">
+      <div className="flex items-start justify-between">
         <div>
           <p className="text-sm font-medium text-foreground">{file.name}</p>
           <p className="text-xs text-muted-foreground">

@@ -30,7 +30,7 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [duration, setDuration] = useState(0);
-  const [scrubValue, setScrubValue] = useState([0]);
+  const [trimRange, setTrimRange] = useState<[number, number]>([0, 100]);
   const [selectedSkier, setSelectedSkier] = useState<number | null>(null);
   const [thumbnails, setThumbnails] = useState<Record<number, string>>({});
 

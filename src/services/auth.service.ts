@@ -26,15 +26,43 @@ function notifyListeners() {
   _authListeners.forEach((fn) => fn(_currentUser));
 }
 
-// TODO_BACKEND_HOOKUP: Replace all methods with real Supabase auth calls
+// TODO_BACKEND_HOOKUP: Replace all methods with real backend calls
 export const authService = {
   getCurrentUser: async (): Promise<User | null> => {
     await delay(200);
     return _currentUser;
   },
 
+  /** Send a 6-digit OTP code to the given email. Backend creates account if new. */
+  sendOtp: async (email: string): Promise<void> => {
+    // TODO_BACKEND_HOOKUP: POST /auth/send-otp { email }
+    await delay(800);
+    // Mock: always succeeds
+  },
+
+  /** Verify the 6-digit OTP. Returns the signed-in user. */
+  verifyOtp: async (email: string, code: string): Promise<User> => {
+    // TODO_BACKEND_HOOKUP: POST /auth/verify-otp { email, code }
+    await delay(800);
+    // Mock: accept any 6-digit code
+    if (code.length !== 6) throw new Error("Invalid code. Please try again.");
+    _currentUser = { ...mockUser, email };
+    persist(_currentUser);
+    notifyListeners();
+    return _currentUser;
+  },
+
+  /** Sign in with Google OAuth */
+  signInWithGoogle: async (): Promise<void> => {
+    // TODO_BACKEND_HOOKUP: Redirect to Google OAuth flow
+    await delay(600);
+    _currentUser = { ...mockUser };
+    persist(_currentUser);
+    notifyListeners();
+  },
+
+  // Keep legacy methods for backward compat during migration
   signInWithEmail: async (email: string, _password: string): Promise<User> => {
-    // TODO_BACKEND_HOOKUP
     await delay(600);
     _currentUser = { ...mockUser, email };
     persist(_currentUser);
@@ -43,13 +71,11 @@ export const authService = {
   },
 
   signUpWithEmail: async (email: string, _password: string): Promise<{ needsConfirmation: boolean }> => {
-    // TODO_BACKEND_HOOKUP
     await delay(600);
     return { needsConfirmation: true };
   },
 
   signOut: async (): Promise<void> => {
-    // TODO_BACKEND_HOOKUP
     await delay(200);
     _currentUser = null;
     persist(null);
@@ -57,7 +83,6 @@ export const authService = {
   },
 
   confirmEmail: async (_token: string): Promise<boolean> => {
-    // TODO_BACKEND_HOOKUP
     await delay(500);
     _currentUser = { ...mockUser };
     persist(_currentUser);

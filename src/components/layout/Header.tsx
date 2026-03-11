@@ -5,7 +5,7 @@ import poserLogo from "@/assets/poser-logo.svg";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";
-import { LoginDialog } from "@/components/dialogs/LoginDialog";
+import { AuthDialog, type AuthContext } from "@/components/dialogs/AuthDialog";
 
 const navLinks = [
   { label: "How it works", href: "/#how-it-works" },
@@ -14,10 +14,16 @@ const navLinks = [
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [authContext, setAuthContext] = useState<AuthContext>("signin");
   const location = useLocation();
   const navigate = useNavigate();
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
+
+  const openAuth = (ctx: AuthContext) => {
+    setAuthContext(ctx);
+    setAuthOpen(true);
+  };
 
   const handleNavClick = (href: string) => {
     if (href.startsWith("/#")) {
@@ -33,9 +39,14 @@ export function Header() {
     }
   };
 
-  const scrollToUpload = () => {
+  const scrollToDemo = () => {
     if (location.pathname === "/") {
       document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById("upload")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
   };
 
@@ -75,14 +86,23 @@ export function Header() {
             })}
           </nav>
 
-          <div className="hidden items-center gap-3 md:flex">
-            <Button variant="ghost" size="sm" onClick={() => setLoginOpen(true)}>
-              Sign in
-            </Button>
-            <Button size="sm" asChild>
-              <Link to="/#upload" onClick={scrollToUpload}>Try demo</Link>
-            </Button>
-          </div>
+          {/* Desktop actions — logged-out only on public pages */}
+          {!user && (
+            <div className="hidden items-center gap-3 md:flex">
+              <button
+                onClick={() => openAuth("signin")}
+                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Sign in
+              </button>
+              <Button size="sm" onClick={scrollToDemo}>
+                Try demo
+              </Button>
+            </div>
+          )}
+
+          {/* If user is logged in, show nothing extra here (sidebar handles it) */}
+          {user && <div className="hidden md:block" />}
 
           {/* Mobile toggle */}
           <button
@@ -119,20 +139,25 @@ export function Header() {
                   </Link>
                 );
               })}
-              <div className="flex flex-col gap-2 border-t border-border pt-4">
-                <Button variant="ghost" size="sm" className="w-full" onClick={() => { setMobileOpen(false); setLoginOpen(true); }}>
-                  Sign in
-                </Button>
-                <Button size="sm" className="w-full" asChild>
-                  <Link to="/#upload" onClick={() => setMobileOpen(false)}>Try demo</Link>
-                </Button>
-              </div>
+              {!user && (
+                <div className="flex flex-col gap-2 border-t border-border pt-4">
+                  <button
+                    onClick={() => { setMobileOpen(false); openAuth("signin"); }}
+                    className="text-sm font-medium text-muted-foreground hover:text-foreground text-left"
+                  >
+                    Sign in
+                  </button>
+                  <Button size="sm" className="w-full" onClick={() => { setMobileOpen(false); scrollToDemo(); }}>
+                    Try demo
+                  </Button>
+                </div>
+              )}
             </nav>
           </div>
         )}
       </header>
 
-      <LoginDialog open={loginOpen} onOpenChange={setLoginOpen} />
+      <AuthDialog open={authOpen} onOpenChange={setAuthOpen} context={authContext} />
     </>
   );
 }

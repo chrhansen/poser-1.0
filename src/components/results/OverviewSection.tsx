@@ -38,7 +38,7 @@ export function OverviewSection({ skiRank, themes, onThemeSelect, onMomentSelect
         <p className="mt-2 text-5xl font-bold text-warm">{skiRank}</p>
         <p className="mt-1 text-xs font-semibold text-warm">SkiRank</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          Strongest in <span className="font-medium text-foreground capitalize">{strongest}</span> · Weakest in <span className="font-medium text-foreground capitalize">{weakest}</span>
+          Strongest: <span className="font-medium text-foreground capitalize">{strongest}</span> · Main limiter: <span className="font-medium text-foreground capitalize">{weakest}</span>
         </p>
       </div>
 

@@ -89,12 +89,17 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
       if (end - start > maxPct) {
         end = start + maxPct;
       }
-      setTrimRange([start, Math.min(end, 100)]);
+      const prev = trimRange;
+      const newRange: [number, number] = [start, Math.min(end, 100)];
+      setTrimRange(newRange);
       if (videoRef.current && duration > 0) {
-        videoRef.current.currentTime = (start / 100) * duration;
+        // Seek to whichever thumb moved
+        const movedEnd = newRange[1] !== prev[1];
+        const seekPct = movedEnd ? newRange[1] : newRange[0];
+        videoRef.current.currentTime = (seekPct / 100) * duration;
       }
     },
-    [duration]
+    [duration, trimRange]
   );
 
   const trimStart = (trimRange[0] / 100) * duration;

@@ -74,12 +74,16 @@ export function PreviewTrimStep({ file, maxTrimSeconds, onContinue }: PreviewTri
       if (end - start > maxPct) {
         end = start + maxPct;
       }
-      setTrimRange([start, Math.min(end, 100)]);
+      const prev = trimRange;
+      const newRange: [number, number] = [start, Math.min(end, 100)];
+      setTrimRange(newRange);
       if (videoRef.current && duration > 0) {
-        videoRef.current.currentTime = (start / 100) * duration;
+        const movedEnd = newRange[1] !== prev[1];
+        const seekPct = movedEnd ? newRange[1] : newRange[0];
+        videoRef.current.currentTime = (seekPct / 100) * duration;
       }
     },
-    [duration, maxTrimSeconds]
+    [duration, maxTrimSeconds, trimRange]
   );
 
   const handleVideoClick = (e: React.MouseEvent<HTMLVideoElement>) => {

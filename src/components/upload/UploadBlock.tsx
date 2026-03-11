@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { analysisService, type SkierPosition } from "@/services/analysis.service";
-import { LoginDialog } from "@/components/dialogs/LoginDialog";
+import { AuthDialog } from "@/components/dialogs/AuthDialog";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 
@@ -27,7 +27,7 @@ export function UploadBlock() {
   const [skierPos, setSkierPos] = useState<SkierPosition>("center");
   const [progress, setProgress] = useState(0);
   const [errorMsg, setErrorMsg] = useState("");
-  const [loginOpen, setLoginOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const [dragOver, setDragOver] = useState(false);
 
   const handleFileSelect = useCallback((f: File) => {
@@ -57,9 +57,9 @@ export function UploadBlock() {
   const handleUpload = async () => {
     if (!file) return;
 
-    // If not signed in, show login dialog
+    // If not signed in, show auth dialog in upload context
     if (!user) {
-      setLoginOpen(true);
+      setAuthOpen(true);
       return;
     }
 
@@ -181,6 +181,20 @@ export function UploadBlock() {
               <Button className="mt-6 w-full" onClick={handleUpload}>
                 {user ? "Analyze my skiing" : "Sign in & analyze"}
               </Button>
+
+              {/* Inline helper for logged-out users */}
+              {!user && (
+                <p className="mt-3 text-center text-xs text-muted-foreground">
+                  Requires a free account.{" "}
+                  <button
+                    onClick={() => setAuthOpen(true)}
+                    className="underline hover:text-foreground transition-colors"
+                  >
+                    Sign in or create one
+                  </button>{" "}
+                  to upload your own clip.
+                </p>
+              )}
             </motion.div>
           )}
 
@@ -223,9 +237,10 @@ export function UploadBlock() {
         </AnimatePresence>
       </div>
 
-      <LoginDialog
-        open={loginOpen}
-        onOpenChange={setLoginOpen}
+      <AuthDialog
+        open={authOpen}
+        onOpenChange={setAuthOpen}
+        context="upload"
         onSuccess={handleUpload}
       />
     </>

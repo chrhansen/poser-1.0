@@ -111,7 +111,7 @@ export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSel
   };
 
   return (
-    <div className="rounded-2xl border border-border overflow-hidden">
+    <div className="flex flex-col gap-3">
       {/* Header */}
       <div className="flex items-start justify-between p-4 pb-0">
         <div>

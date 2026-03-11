@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Upload, Target, TrendingUp, ArrowRight, QrCode, Smartphone, Eye, AlertTriangle, Crosshair, BookOpen, Video, BarChart3 } from "lucide-react";
+import { Upload, Target, TrendingUp, ArrowRight, Eye, AlertTriangle, Crosshair, BookOpen, Video, BarChart3 } from "lucide-react";
 import { DemoAnalysisModal } from "@/components/demo/DemoAnalysisModal";
 import { Button } from "@/components/ui/button";
 import { Layout } from "@/components/layout/Layout";
 import { Section } from "@/components/shared/Section";
-import { UploadBlock } from "@/components/upload/UploadBlock";
+import { UploadPickContent } from "@/components/upload/UploadPickContent";
 import { AuthDialog, type AuthContext } from "@/components/dialogs/AuthDialog";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";

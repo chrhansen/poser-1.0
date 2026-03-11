@@ -2,7 +2,8 @@ import type { ThemeScores } from "@/lib/types";
 
 /** Mock theme scores for res_1 (skiRank 80, limiter: edging) */
 export const mockThemeScores_res1: ThemeScores = {
-  whyNotHigher: "Edging lowered your overall score most, especially in right turns.",
+  wentWell: "Steering stayed strong through most turns, helping you keep good direction control.",
+  heldBackScore: "Edging lowered your overall score most, especially in right turns.",
   nextFocus: "Build edge angle earlier through turn initiation.",
   nextFocusDetail: "This should help you feel more stable and create cleaner pressure earlier in the turn.",
   keyMoments: [
@@ -146,7 +147,8 @@ export const mockThemeScores_res1: ThemeScores = {
 
 /** Mock theme scores for res_5 (skiRank 65, limiter: balance) */
 export const mockThemeScores_res5: ThemeScores = {
-  whyNotHigher: "Balance was the biggest factor — fore-aft positioning cost you consistency.",
+  wentWell: "Steering showed good consistency, with clean direction changes in most turns.",
+  heldBackScore: "Balance was the biggest factor — fore-aft positioning cost you consistency.",
   nextFocus: "Work on staying centered over your feet, especially at the start of each turn.",
   keyMoments: [
     { id: "km_4", type: "weakest", label: "Weakest turn", description: "Lost balance rearward through the whole turn.", turnId: "turn_4", frame: 160 },

@@ -38,14 +38,23 @@ export function OverviewSection({ skiRank, themes, onThemeSelect, onMomentSelect
         <p className="mt-2 text-5xl font-bold text-warm">{skiRank}</p>
         <p className="mt-1 text-xs font-semibold text-warm">SkiRank</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          Strongest in <span className="font-medium text-foreground capitalize">{strongest}</span> · Weakest in <span className="font-medium text-foreground capitalize">{weakest}</span>
+          Strongest: <span className="font-medium text-foreground capitalize">{strongest}</span> · Main limiter: <span className="font-medium text-foreground capitalize">{weakest}</span>
         </p>
       </div>
 
-      {/* Why not higher */}
+      {/* What stood out */}
       <div className="rounded-xl border border-border bg-card p-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Why your SkiRank wasn't higher</p>
-        <p className="mt-1.5 text-sm text-foreground">{themes.whyNotHigher}</p>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">What stood out</p>
+        <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-primary">Went well</p>
+            <p className="mt-1 text-sm text-foreground">{themes.wentWell}</p>
+          </div>
+          <div className="border-t border-border pt-3 sm:border-t-0 sm:border-l sm:pl-4 sm:pt-0">
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-warm">Held back score</p>
+            <p className="mt-1 text-sm text-foreground">{themes.heldBackScore}</p>
+          </div>
+        </div>
       </div>
 
       {/* Next focus */}

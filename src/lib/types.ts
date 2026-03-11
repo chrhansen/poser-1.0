@@ -124,7 +124,8 @@ export interface ThemeScores {
   pressure: ThemeScore;
   edging: ThemeScore;
   steering: ThemeScore;
-  whyNotHigher: string;
+  wentWell: string;
+  heldBackScore: string;
   nextFocus: string;
   nextFocusDetail?: string;
   keyMoments: KeyMoment[];

@@ -168,10 +168,6 @@ export function AccountTab() {
           <Label htmlFor="notif-complete">Analysis complete</Label>
           <Switch id="notif-complete" checked={notifComplete} onCheckedChange={setNotifComplete} />
         </div>
-        <div className="mt-3 flex items-center justify-between">
-          <Label htmlFor="notif-tips">Weekly tips</Label>
-          <Switch id="notif-tips" checked={notifTips} onCheckedChange={setNotifTips} />
-        </div>
       </div>
 
       {/* Save */}

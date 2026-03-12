@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Upload, Target, TrendingUp, ArrowRight, Eye, AlertTriangle, Crosshair, BookOpen, Video, BarChart3 } from "lucide-react";
 import { DemoAnalysisModal } from "@/components/demo/DemoAnalysisModal";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { BetaBadge } from "@/components/shared/BetaBadge";
 import { Layout } from "@/components/layout/Layout";
 import { Section } from "@/components/shared/Section";
 import { UploadPickContent } from "@/components/upload/UploadPickContent";

@@ -194,7 +194,7 @@ export default function ResultsPage() {
 
   // ── Complete state ──
   const themes = getThemeScores(result);
-  if (!themes) return <AppLayout><PageError message="No analysis data available." onRetry={loadData} /></AppLayout>;
+  if (!themes) return <AppLayout><PageError message="No clip data available." onRetry={loadData} /></AppLayout>;
 
   const currentTheme = activeView !== "overview" ? themes[activeView as ThemeKey] : null;
   const currentSubmetric = currentTheme?.submetrics.find((s) => s.id === activeSubmetric) ?? null;

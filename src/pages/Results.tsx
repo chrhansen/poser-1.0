@@ -84,7 +84,7 @@ export default function ResultsPage() {
   const handleDelete = async () => {
     if (!result) return;
     await analysisService.deleteResult(result.id);
-    toast.success("Analysis deleted.");
+    toast.success("Clip deleted.");
     navigate("/dashboard");
   };
 

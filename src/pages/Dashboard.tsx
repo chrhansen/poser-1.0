@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import type { AnalysisResult, SkiLimiter } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Plus, Clock, Loader2, CheckCircle, XCircle, RotateCcw, AlertTriangle } from "lucide-react";
+import { Upload, Clock, Loader2, CheckCircle, XCircle, RotateCcw, AlertTriangle } from "lucide-react";
 import { NewAnalysisSheet } from "@/components/upload/NewAnalysisSheet";
 
 const statusConfig: Record<AnalysisResult["status"], { icon: typeof Clock; label: string; cls: string }> = {

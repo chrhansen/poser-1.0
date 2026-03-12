@@ -158,9 +158,9 @@ export default function DashboardPage() {
           </div>
 
           {results.length === 0 ? (
-            <EmptyState
-              title="No analyses yet"
-              description="Upload a clip to get your first analysis."
+              <EmptyState
+              title="No clips yet"
+              description="Upload a clip to get your first feedback."
               action={<Button onClick={() => setNewAnalysisOpen(true)}>Upload clip</Button>}
             />
           ) : (

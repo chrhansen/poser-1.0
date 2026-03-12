@@ -6,6 +6,8 @@ interface UploadSkierSelectProps {
   file: File;
   onCancel: () => void;
   onContinue: (skierId: number) => void;
+  /** Override the submit button label (default: "Analyze my skiing") */
+  submitLabel?: string;
 }
 
 export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSelectProps) {

@@ -74,8 +74,19 @@ function ResultCard({ r, onRetry }: { r: AnalysisResult; onRetry: (id: string) =
 
 function ResultTableRow({ r, onRetry }: { r: AnalysisResult; onRetry: (id: string) => void }) {
   const { icon: Icon, label, cls } = statusConfig[r.status];
+  const navigate = useNavigate();
+
+  const handleRowClick = (e: React.MouseEvent) => {
+    // Don't navigate if clicking a button or link inside the row
+    if ((e.target as HTMLElement).closest("button, a")) return;
+    navigate(`/results/${r.id}`);
+  };
+
   return (
-    <div className="grid grid-cols-[1fr_1fr_1.2fr_auto] items-center gap-4 border-b border-border px-4 py-3 text-sm transition-colors hover:bg-secondary/50 last:border-0">
+    <div
+      className="grid cursor-pointer grid-cols-[1fr_1fr_1.2fr_auto] items-center gap-4 border-b border-border px-4 py-3 text-sm transition-colors hover:bg-secondary/50 last:border-0"
+      onClick={handleRowClick}
+    >
       {/* SkiRank + status */}
       <div className="flex items-center gap-2">
         <Icon className={cn("h-3.5 w-3.5 shrink-0", cls, r.status === "processing" && "animate-spin")} />
@@ -96,7 +107,7 @@ function ResultTableRow({ r, onRetry }: { r: AnalysisResult; onRetry: (id: strin
         </span>
       ) : r.status === "error" ? (
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={(e) => { e.preventDefault(); onRetry(r.id); }}>
+          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => onRetry(r.id)}>
             <RotateCcw className="mr-1 h-3 w-3" /> Retry
           </Button>
           <Button variant="ghost" size="sm" className="h-7 text-xs" asChild>
@@ -109,12 +120,8 @@ function ResultTableRow({ r, onRetry }: { r: AnalysisResult; onRetry: (id: strin
         <span className="text-muted-foreground">—</span>
       )}
 
-      {/* Link arrow for non-error rows */}
-      {r.status !== "error" ? (
-        <Link to={`/results/${r.id}`} className="text-muted-foreground hover:text-foreground">
-          →
-        </Link>
-      ) : <span />}
+      {/* Link arrow */}
+      <span className="text-muted-foreground">→</span>
     </div>
   );
 }

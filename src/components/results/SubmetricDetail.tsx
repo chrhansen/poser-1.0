@@ -24,7 +24,7 @@ export function SubmetricDetail({
             <p className="text-base font-bold text-foreground">{submetric.name}</p>
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Run-level result</p>
           </div>
-          <span className="text-xl font-bold text-warm">{submetric.score}</span>
+          <span className="text-xl font-bold text-accent-foreground">{submetric.score}</span>
         </div>
 
         {/* Explanation blocks */}
@@ -44,8 +44,8 @@ export function SubmetricDetail({
         </div>
 
         {/* Coaching card */}
-        <div className="mt-4 rounded-lg border border-warm/10 bg-warm/[0.04] px-3 py-2">
-          <p className="text-[10px] font-semibold uppercase tracking-wider text-warm">What to try</p>
+        <div className="mt-4 rounded-lg border border-accent/10 bg-accent/[0.04] px-3 py-2">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-accent-foreground">What to try</p>
           <p className="mt-0.5 text-sm text-foreground">{submetric.whatToTry}</p>
         </div>
       </div>

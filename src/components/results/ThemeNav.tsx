@@ -28,7 +28,7 @@ export function ThemeNav({ themes, activeView, activeSubmetric, onViewChange, on
         className={cn(
           "flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
           activeView === "overview"
-            ? "bg-warm/10 text-foreground shadow-[inset_3px_0_0_hsl(var(--warm))]"
+            ? "bg-accent/10 text-foreground shadow-[inset_3px_0_0_hsl(var(--accent))]"
             : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
         )}
       >
@@ -49,7 +49,7 @@ export function ThemeNav({ themes, activeView, activeSubmetric, onViewChange, on
               className={cn(
                 "flex w-full items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
                 isActive
-                  ? "bg-warm/10 text-foreground shadow-[inset_3px_0_0_hsl(var(--warm))]"
+                  ? "bg-accent/10 text-foreground shadow-[inset_3px_0_0_hsl(var(--accent))]"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
               )}
             >
@@ -57,7 +57,7 @@ export function ThemeNav({ themes, activeView, activeSubmetric, onViewChange, on
                 <Icon className="h-4 w-4" />
                 <span className="capitalize">{theme.name}</span>
               </span>
-              <span className={cn("text-xs font-semibold", isActive ? "text-warm" : "text-muted-foreground")}>{theme.score}</span>
+              <span className={cn("text-xs font-semibold", isActive ? "text-accent-foreground" : "text-muted-foreground")}>{theme.score}</span>
             </button>
 
             {/* Submetrics */}

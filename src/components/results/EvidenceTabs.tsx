@@ -33,7 +33,7 @@ export function EvidenceTabs({ activeTab, onTabChange, metrics, duration, select
             className={cn(
               "flex-1 px-3 py-2.5 text-xs font-medium transition-colors",
               activeTab === tab.id
-                ? "border-b-2 border-warm text-foreground bg-card"
+                ? "border-b-2 border-accent text-foreground bg-card"
                 : "text-muted-foreground hover:text-foreground"
             )}
           >

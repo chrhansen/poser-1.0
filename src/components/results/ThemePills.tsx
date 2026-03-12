@@ -24,7 +24,7 @@ export function ThemePills({ activeView, onViewChange }: ThemePillsProps) {
           className={cn(
             "shrink-0 rounded-full px-3.5 py-1.5 text-xs font-medium transition-all",
             activeView === p.id
-              ? "bg-warm text-warm-foreground shadow-sm"
+              ? "bg-accent text-accent-foreground shadow-sm"
               : "bg-secondary text-muted-foreground hover:text-foreground"
           )}
         >

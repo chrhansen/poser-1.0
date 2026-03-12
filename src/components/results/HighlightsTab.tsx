@@ -24,7 +24,7 @@ export function HighlightsTab({ selectedTurn, onTurnSelect }: HighlightsTabProps
             onClick={() => onTurnSelect(h.turnId)}
             className={cn(
               "flex w-full items-start gap-3 rounded-lg border p-3 text-left transition-all",
-              active ? "border-warm/30 bg-warm/[0.04]" : "border-border hover:border-border/80 hover:shadow-sm"
+              active ? "border-accent/30 bg-accent/[0.04]" : "border-border hover:border-border/80 hover:shadow-sm"
             )}
           >
             <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-secondary">

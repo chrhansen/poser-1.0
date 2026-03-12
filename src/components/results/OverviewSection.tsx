@@ -33,10 +33,10 @@ export function OverviewSection({ skiRank, themes, onThemeSelect, onMomentSelect
   return (
     <div className="space-y-4">
       {/* SkiRank hero */}
-      <div className="rounded-2xl border border-warm/20 bg-gradient-to-br from-warm/[0.06] via-warm-glow/[0.03] to-transparent p-6 text-center shadow-sm">
+      <div className="rounded-2xl border border-accent/20 bg-gradient-to-br from-accent/[0.06] via-accent/[0.03] to-transparent p-6 text-center shadow-sm">
         <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Overall technique score</p>
-        <p className="mt-2 text-5xl font-bold text-warm">{skiRank}</p>
-        <p className="mt-1 text-xs font-semibold text-warm">SkiRank</p>
+        <p className="mt-2 text-5xl font-bold text-accent-foreground">{skiRank}</p>
+        <p className="mt-1 text-xs font-semibold text-accent-foreground">SkiRank</p>
         <p className="mt-2 text-xs text-muted-foreground">
           Strongest: <span className="font-medium text-foreground capitalize">{strongest}</span> · Main limiter: <span className="font-medium text-foreground capitalize">{weakest}</span>
         </p>
@@ -51,15 +51,15 @@ export function OverviewSection({ skiRank, themes, onThemeSelect, onMomentSelect
             <p className="mt-1 text-sm text-foreground">{themes.wentWell}</p>
           </div>
           <div className="border-t border-border pt-3 sm:border-t-0 sm:border-l sm:pl-4 sm:pt-0">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-warm">Held back score</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-destructive">Held back score</p>
             <p className="mt-1 text-sm text-foreground">{themes.heldBackScore}</p>
           </div>
         </div>
       </div>
 
       {/* Next focus */}
-      <div className="rounded-xl border border-warm/15 bg-warm/[0.04] p-4">
-        <p className="text-xs font-semibold uppercase tracking-wider text-warm">Next focus</p>
+      <div className="rounded-xl border border-accent/15 bg-accent/[0.04] p-4">
+        <p className="text-xs font-semibold uppercase tracking-wider text-accent-foreground">Next focus</p>
         <p className="mt-1.5 text-sm font-medium text-foreground">{themes.nextFocus}</p>
         {themes.nextFocusDetail && (
           <p className="mt-1 text-xs text-muted-foreground">{themes.nextFocusDetail}</p>
@@ -79,17 +79,17 @@ export function OverviewSection({ skiRank, themes, onThemeSelect, onMomentSelect
               className={cn(
                 "flex flex-col items-start rounded-xl border p-4 text-left transition-all hover:shadow-md",
                 isWeakest
-                  ? "border-warm/30 bg-warm/[0.04]"
+                  ? "border-destructive/30 bg-destructive/[0.04]"
                   : "border-border bg-card hover:border-border/80"
               )}
             >
               <div className="flex w-full items-center justify-between">
                 <span className="text-sm font-semibold text-foreground capitalize">{t.name}</span>
-                <span className={cn("text-lg font-bold", isWeakest ? "text-warm" : "text-foreground")}>{t.score}</span>
+                <span className={cn("text-lg font-bold", isWeakest ? "text-destructive" : "text-foreground")}>{t.score}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">{t.summary}</p>
               {isWeakest && (
-                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-warm/10 px-2 py-0.5 text-[10px] font-semibold text-warm">
+                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2 py-0.5 text-[10px] font-semibold text-destructive">
                   <AlertTriangle className="h-2.5 w-2.5" /> Biggest limiter
                 </span>
               )}

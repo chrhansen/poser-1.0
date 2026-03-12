@@ -16,7 +16,7 @@ export function ProcessingStep({ progress, email, error, onRetry }: ProcessingSt
         <div className="flex h-14 w-14 items-center justify-center rounded-full bg-destructive/10">
           <AlertCircle className="h-7 w-7 text-destructive" />
         </div>
-        <p className="text-lg font-semibold text-foreground">Analysis failed</p>
+        <p className="text-lg font-semibold text-foreground">Couldn't analyze clip</p>
         <p className="text-sm text-muted-foreground">{error}</p>
         {onRetry && (
           <Button variant="outline" onClick={onRetry}>

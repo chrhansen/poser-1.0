@@ -85,7 +85,7 @@ export function OverviewSection({ skiRank, themes, onThemeSelect, onMomentSelect
             >
               <div className="flex w-full items-center justify-between">
                 <span className="text-sm font-semibold text-foreground capitalize">{t.name}</span>
-                <span className={cn("text-lg font-bold", isWeakest ? "text-warm" : "text-foreground")}>{t.score}</span>
+                <span className={cn("text-lg font-bold", isWeakest ? "text-destructive" : "text-foreground")}>{t.score}</span>
               </div>
               <p className="mt-1 text-xs text-muted-foreground">{t.summary}</p>
               {isWeakest && (

@@ -7,6 +7,8 @@ import { toast } from "sonner";
 interface NewAnalysisSheetProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** When provided, skip upload and go directly to skier select (rerun mode) */
+  rerunFile?: File;
 }
 
 export function NewAnalysisSheet({ open, onOpenChange }: NewAnalysisSheetProps) {

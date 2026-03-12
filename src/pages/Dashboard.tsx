@@ -153,7 +153,7 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard</h1>
             <Button size="sm" onClick={() => setNewAnalysisOpen(true)}>
-              <Plus className="mr-1 h-4 w-4" /> New analysis
+              <Upload className="mr-1 h-4 w-4" /> Upload clip
             </Button>
           </div>
 

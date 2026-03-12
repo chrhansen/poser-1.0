@@ -144,7 +144,7 @@ export default function ResultsPage() {
           <div className="flex flex-col items-center justify-center gap-4 text-center">
             <Clock className="h-10 w-10 text-muted-foreground" />
             <h1 className="text-2xl font-bold text-foreground">Queued for analysis</h1>
-            <p className="text-muted-foreground">Your clip is in the queue. Analysis will begin shortly.</p>
+            <p className="text-muted-foreground">Your clip is in the queue. Processing will begin shortly.</p>
           </div>
         </Section>
       </AppLayout>

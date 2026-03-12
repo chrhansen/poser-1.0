@@ -26,7 +26,7 @@ export function ResultsHeader({ result }: ResultsHeaderProps) {
           <ArrowLeft className="h-4 w-4" />
         </Button>
         <div>
-          <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Run results</h1>
+          <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Clip feedback</h1>
           <p className="text-xs text-muted-foreground">{meta}</p>
         </div>
       </div>

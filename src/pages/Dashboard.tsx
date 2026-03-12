@@ -144,7 +144,7 @@ export default function DashboardPage() {
   useEffect(() => { loadData(); }, []);
 
   if (loading) return <AppLayout><PageLoader /></AppLayout>;
-  if (error) return <AppLayout><PageError message="Failed to load analyses." onRetry={loadData} /></AppLayout>;
+  if (error) return <AppLayout><PageError message="Failed to load clips." onRetry={loadData} /></AppLayout>;
 
   return (
     <AppLayout>

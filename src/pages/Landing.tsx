@@ -48,7 +48,7 @@ function DemoContent({ onStartDemo }: { onStartDemo: () => void }) {
         <Target className="h-5 w-5 text-accent-foreground" />
       </div>
       <p className="text-sm font-medium text-foreground">
-        See a sample run analyzed from start to finish
+        See a sample clip analyzed from start to finish
       </p>
       <p className="text-xs text-muted-foreground max-w-xs">
         Watch how Poser goes from uploaded clip to movement breakdown to clear technique feedback.

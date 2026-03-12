@@ -30,7 +30,7 @@ export function RecentAnalysesList() {
   return (
     <div>
       <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-        Recent analyses
+        Recent clips
       </h3>
       <div className="mt-2 space-y-1.5">
         {results.map((r) => (

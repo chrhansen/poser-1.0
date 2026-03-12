@@ -34,7 +34,7 @@ export function ProcessingStep({ progress, email, error, onRetry }: ProcessingSt
       </div>
 
       <div>
-        <p className="text-lg font-semibold text-foreground">Analyzing your video</p>
+        <p className="text-lg font-semibold text-foreground">Analyzing clip…</p>
         <p className="mt-1 text-sm text-muted-foreground">
           This usually takes 1-2 minutes
         </p>

@@ -10,14 +10,18 @@ interface UploadPickContentProps {
   onContinue: (skierId: number) => void;
   /** Optional extra content rendered below (e.g. sign-in helper) */
   footer?: React.ReactNode;
+  /** When provided, skip file upload and go directly to skier select */
+  initialFile?: File;
+  /** Override the submit button label */
+  submitLabel?: string;
 }
 
 type ViewState = "pick" | "skier-select";
 
-export function UploadPickContent({ onContinue, footer }: UploadPickContentProps) {
+export function UploadPickContent({ onContinue, footer, initialFile, submitLabel }: UploadPickContentProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [view, setView] = useState<ViewState>("pick");
-  const [file, setFile] = useState<File | null>(null);
+  const [view, setView] = useState<ViewState>(initialFile ? "skier-select" : "pick");
+  const [file, setFile] = useState<File | null>(initialFile ?? null);
   const [dragOver, setDragOver] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -56,8 +60,9 @@ export function UploadPickContent({ onContinue, footer }: UploadPickContentProps
     return (
       <UploadSkierSelect
         file={file}
-        onCancel={reset}
+        onCancel={initialFile ? () => {} : reset}
         onContinue={onContinue}
+        submitLabel={submitLabel}
       />
     );
   }

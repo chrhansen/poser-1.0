@@ -45,6 +45,7 @@ export default function ResultsPage() {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [supportOpen, setSupportOpen] = useState(false);
   const [newAnalysisOpen, setNewAnalysisOpen] = useState(false);
+  const [rerunFile, setRerunFile] = useState<File | undefined>(undefined);
   const pollRef = useRef<ReturnType<typeof setInterval>>();
 
   // 3-level navigation state
@@ -88,11 +89,12 @@ export default function ResultsPage() {
     navigate("/dashboard");
   };
 
-  const handleRerun = async () => {
+  const handleRerun = () => {
     if (!result) return;
-    await analysisService.rerunAnalysis(result.id);
-    toast.success("Re-running clip…");
-    setResult({ ...result, status: "processing", progress: 0, failedReason: undefined });
+    // Create a mock file for demo — in production this would fetch the video from the backend
+    const mockFile = new File([new Blob([""], { type: "video/mp4" })], "rerun-clip.mp4", { type: "video/mp4" });
+    setRerunFile(mockFile);
+    setNewAnalysisOpen(true);
   };
 
   // Navigation handlers
@@ -188,6 +190,7 @@ export default function ResultsPage() {
         </Section>
         <ConfirmActionDialog open={deleteOpen} onOpenChange={setDeleteOpen} title="Delete clip?" description="This action cannot be undone." confirmLabel="Delete" destructive onConfirm={handleDelete} />
         <ContactSupportDialog open={supportOpen} onOpenChange={setSupportOpen} />
+        <NewAnalysisSheet open={newAnalysisOpen} onOpenChange={(open) => { setNewAnalysisOpen(open); if (!open) setRerunFile(undefined); }} rerunFile={rerunFile} />
       </AppLayout>
     );
   }
@@ -265,7 +268,7 @@ export default function ResultsPage() {
 
       <ConfirmActionDialog open={deleteOpen} onOpenChange={setDeleteOpen} title="Delete clip?" description="This will permanently remove this clip and all associated data." confirmLabel="Delete" destructive onConfirm={handleDelete} />
       <ContactSupportDialog open={supportOpen} onOpenChange={setSupportOpen} />
-      <NewAnalysisSheet open={newAnalysisOpen} onOpenChange={setNewAnalysisOpen} />
+      <NewAnalysisSheet open={newAnalysisOpen} onOpenChange={(open) => { setNewAnalysisOpen(open); if (!open) setRerunFile(undefined); }} rerunFile={rerunFile} />
     </AppLayout>
   );
 }

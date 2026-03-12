@@ -124,6 +124,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [newAnalysisOpen, setNewAnalysisOpen] = useState(false);
+  const [rerunFile, setRerunFile] = useState<File | undefined>(undefined);
 
   const loadData = () => {
     setLoading(true);
@@ -138,7 +139,9 @@ export default function DashboardPage() {
   };
 
   const handleRetry = (id: string) => {
-    analysisService.rerunAnalysis(id).then(() => loadData());
+    const mockFile = new File([new Blob([""], { type: "video/mp4" })], "retry-clip.mp4", { type: "video/mp4" });
+    setRerunFile(mockFile);
+    setNewAnalysisOpen(true);
   };
 
   useEffect(() => { loadData(); }, []);
@@ -184,7 +187,14 @@ export default function DashboardPage() {
           )}
         </div>
       </Section>
-      <NewAnalysisSheet open={newAnalysisOpen} onOpenChange={setNewAnalysisOpen} />
+      <NewAnalysisSheet
+        open={newAnalysisOpen}
+        onOpenChange={(open) => {
+          setNewAnalysisOpen(open);
+          if (!open) setRerunFile(undefined);
+        }}
+        rerunFile={rerunFile}
+      />
     </AppLayout>
   );
 }

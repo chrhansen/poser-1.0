@@ -200,23 +200,19 @@ export interface MetricsData {
   conversionRate: number;
 }
 
+export interface BillingPurchase {
+  id: string;
+  date: string;
+  packName: string;
+  amount: number;
+  analyses: number;
+}
+
 export interface BillingInfo {
-  plan: PricingPlan;
-  nextBillingDate: string;
-  paymentMethod?: {
-    type: string;
-    last4: string;
-  };
-  invoices: {
-    id: string;
-    date: string;
-    amount: number;
-    status: "paid" | "pending" | "failed";
-  }[];
-  usageCredits: number;
-  usageLimit: number;
-  cancelAtPeriodEnd?: boolean;
-  currency: "usd" | "eur" | "gbp";
+  currentPack: PricingPlan;
+  analysesUsed: number;
+  analysesTotal: number;
+  purchases: BillingPurchase[];
 }
 
 export interface SettingsProfile {

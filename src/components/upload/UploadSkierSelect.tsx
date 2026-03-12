@@ -21,9 +21,11 @@ export function UploadSkierSelect({ file, onCancel, onContinue, submitLabel }: U
             {(file.size / (1024 * 1024)).toFixed(1)} MB
           </p>
         </div>
-        <button onClick={onCancel} className="text-muted-foreground hover:text-foreground">
-          <X className="h-4 w-4" />
-        </button>
+        {onCancel && (
+          <button onClick={onCancel} className="text-muted-foreground hover:text-foreground">
+            <X className="h-4 w-4" />
+          </button>
+        )}
       </div>
 
       <VideoSkierSelect file={file} maxTrimSeconds={20}>

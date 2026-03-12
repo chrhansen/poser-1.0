@@ -51,7 +51,7 @@ export function OverviewSection({ skiRank, themes, onThemeSelect, onMomentSelect
             <p className="mt-1 text-sm text-foreground">{themes.wentWell}</p>
           </div>
           <div className="border-t border-border pt-3 sm:border-t-0 sm:border-l sm:pl-4 sm:pt-0">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-warm">Held back score</p>
+            <p className="text-[11px] font-semibold uppercase tracking-wider text-destructive">Held back score</p>
             <p className="mt-1 text-sm text-foreground">{themes.heldBackScore}</p>
           </div>
         </div>

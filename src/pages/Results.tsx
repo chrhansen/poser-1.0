@@ -157,7 +157,7 @@ export default function ResultsPage() {
         <Section>
           <div className="mx-auto flex max-w-md flex-col items-center gap-6 text-center">
             <Loader2 className="h-10 w-10 animate-spin text-accent" />
-            <h1 className="text-2xl font-bold text-foreground">Analyzing your clip…</h1>
+            <h1 className="text-2xl font-bold text-foreground">Analyzing clip…</h1>
             <p className="text-muted-foreground">This usually takes 1–2 minutes.</p>
             <div className="w-full">
               <Progress value={result.progress ?? 0} className="h-2" />

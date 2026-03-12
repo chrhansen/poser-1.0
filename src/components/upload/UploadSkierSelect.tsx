@@ -10,7 +10,7 @@ interface UploadSkierSelectProps {
   submitLabel?: string;
 }
 
-export function UploadSkierSelect({ file, onCancel, onContinue }: UploadSkierSelectProps) {
+export function UploadSkierSelect({ file, onCancel, onContinue, submitLabel }: UploadSkierSelectProps) {
   return (
     <div className="flex flex-col gap-3">
       {/* Header */}

@@ -24,7 +24,7 @@ export function SubmetricDetail({
             <p className="text-base font-bold text-foreground">{submetric.name}</p>
             <p className="text-[10px] text-muted-foreground uppercase tracking-wider">Run-level result</p>
           </div>
-          <span className="text-xl font-bold text-warm">{submetric.score}</span>
+          <span className="text-xl font-bold text-accent-foreground">{submetric.score}</span>
         </div>
 
         {/* Explanation blocks */}

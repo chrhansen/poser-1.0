@@ -18,10 +18,10 @@ interface UploadPickContentProps {
 
 type ViewState = "pick" | "skier-select";
 
-export function UploadPickContent({ onContinue, footer }: UploadPickContentProps) {
+export function UploadPickContent({ onContinue, footer, initialFile, submitLabel }: UploadPickContentProps) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [view, setView] = useState<ViewState>("pick");
-  const [file, setFile] = useState<File | null>(null);
+  const [view, setView] = useState<ViewState>(initialFile ? "skier-select" : "pick");
+  const [file, setFile] = useState<File | null>(initialFile ?? null);
   const [dragOver, setDragOver] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 

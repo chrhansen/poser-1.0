@@ -91,7 +91,7 @@ export default function ResultsPage() {
   const handleRerun = async () => {
     if (!result) return;
     await analysisService.rerunAnalysis(result.id);
-    toast.success("Re-running analysis…");
+    toast.success("Re-running clip…");
     setResult({ ...result, status: "processing", progress: 0, failedReason: undefined });
   };
 

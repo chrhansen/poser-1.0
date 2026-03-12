@@ -201,18 +201,12 @@ export const mockMetrics: MetricsData = {
 
 // ─── Billing ────────────────────────────────────────────────────────────────
 export const mockBilling: BillingInfo = {
-  plan: mockPricingPlans[1],
-  nextBillingDate: "2026-04-01",
-  paymentMethod: { type: "visa", last4: "4242" },
-  invoices: [
-    { id: "inv_1", date: "2026-03-01", amount: 19, status: "paid" },
-    { id: "inv_2", date: "2026-02-01", amount: 19, status: "paid" },
-    { id: "inv_3", date: "2026-01-01", amount: 19, status: "paid" },
+  currentPack: mockPricingPlans[1], // Trip Pack
+  analysesUsed: 3,
+  analysesTotal: 8, // 3 free + 5 from Trip Pack
+  purchases: [
+    { id: "pur_1", date: "2026-02-15", packName: "Trip Pack", amount: 19, analyses: 5 },
   ],
-  usageCredits: 12,
-  usageLimit: 50,
-  cancelAtPeriodEnd: false,
-  currency: "usd",
 };
 
 // ─── Settings ───────────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { LayoutDashboard, BarChart3, Settings, CreditCard, HelpCircle, LogOut, PanelLeftClose, PanelLeft, Info, Tag, FileText, ChevronUp, Menu, X, Upload } from "lucide-react";
+import { LayoutDashboard, BarChart3, Settings, HelpCircle, LogOut, PanelLeftClose, Info, Tag, FileText, ChevronUp, Menu, X, Upload } from "lucide-react";
 import { NewAnalysisSheet } from "@/components/upload/NewAnalysisSheet";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/hooks/useAuth";

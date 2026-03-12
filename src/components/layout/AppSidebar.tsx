@@ -331,8 +331,9 @@ export function AppSidebar({ extraContent, mobileOpen: controlledMobileOpen, onM
         <SheetTitle className="sr-only">Navigation</SheetTitle>
         <div className="flex h-full flex-col">
           <div className="flex items-center justify-between border-b border-border px-3 py-3">
-            <Link to="/" onClick={() => setMobileOpen(false)}>
+            <Link to="/" onClick={() => setMobileOpen(false)} className="flex items-center gap-1.5">
               <img src={poserLogo} alt="poser" className="h-6 w-auto" />
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-semibold text-muted-foreground border-muted-foreground/30">Beta</Badge>
             </Link>
             <button
               onClick={() => setMobileOpen(false)}

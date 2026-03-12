@@ -184,9 +184,12 @@ export default function LandingPage() {
       <Section>
         <div id="upload" className="scroll-mt-24 mx-auto max-w-xl">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              Try Poser in under a minute
-            </h2>
+            <div className="flex items-center justify-center gap-2 mb-1">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                Try Poser in under a minute
+              </h2>
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 font-semibold text-muted-foreground border-muted-foreground/30">Beta</Badge>
+            </div>
             <p className="mt-3 text-muted-foreground">
               Start with a demo clip, or use your own.
             </p>

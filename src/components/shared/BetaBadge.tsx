@@ -20,7 +20,7 @@ export function BetaBadge({ className = "" }: { className?: string }) {
             <Badge className={`${BADGE_CLASSES} ${className}`}>Beta</Badge>
           </span>
         </TooltipTrigger>
-        <TooltipContent side="bottom" sideOffset={6} className="max-w-52 text-center">
+        <TooltipContent side="bottom" sideOffset={6} className="max-w-52 text-center font-normal">
           {TIP_TEXT}
         </TooltipContent>
       </Tooltip>

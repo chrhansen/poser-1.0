@@ -175,10 +175,10 @@ export default function ResultsPage() {
         <Section>
           <div className="mx-auto flex max-w-md flex-col items-center gap-4 text-center">
             <AlertTriangle className="h-10 w-10 text-destructive" />
-            <h1 className="text-2xl font-bold text-foreground">Analysis failed</h1>
+            <h1 className="text-2xl font-bold text-foreground">Couldn't analyze clip</h1>
             <p className="text-sm text-muted-foreground">{result.failedReason ?? "An unexpected error occurred."}</p>
             <div className="flex gap-3">
-              <Button onClick={handleRerun}><RefreshCw className="mr-2 h-4 w-4" />Re-run analysis</Button>
+              <Button onClick={handleRerun}><RefreshCw className="mr-2 h-4 w-4" />Re-run clip</Button>
               <Button variant="outline" onClick={() => setSupportOpen(true)}><HelpCircle className="mr-2 h-4 w-4" />Contact support</Button>
             </div>
             <Button variant="ghost" size="sm" className="text-destructive" onClick={() => setDeleteOpen(true)}>

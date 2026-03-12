@@ -140,7 +140,7 @@ export default function ResultsPage() {
   if (result.status === "pending") {
     return (
       <AppLayout>
-        <Section>
+        <Section compact>
           <div className="flex flex-col items-center justify-center gap-4 text-center">
             <Clock className="h-10 w-10 text-muted-foreground" />
             <h1 className="text-2xl font-bold text-foreground">Queued for analysis</h1>

@@ -139,7 +139,9 @@ export default function DashboardPage() {
   };
 
   const handleRetry = (id: string) => {
-    analysisService.rerunAnalysis(id).then(() => loadData());
+    const mockFile = new File([new Blob([""], { type: "video/mp4" })], "retry-clip.mp4", { type: "video/mp4" });
+    setRerunFile(mockFile);
+    setNewAnalysisOpen(true);
   };
 
   useEffect(() => { loadData(); }, []);

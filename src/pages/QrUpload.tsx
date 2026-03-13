@@ -70,7 +70,7 @@ export default function QrUpload() {
             </div>
             <div>
               <p className="text-base font-medium text-foreground">
-                Choose a ski video
+                Choose a ski clip
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
                 Select a clip from your camera roll. It will upload automatically.
@@ -81,7 +81,7 @@ export default function QrUpload() {
               className="w-full"
               onClick={() => inputRef.current?.click()}
             >
-              Choose video
+              Choose clip
             </Button>
             <input
               ref={inputRef}

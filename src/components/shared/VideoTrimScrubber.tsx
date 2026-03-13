@@ -209,97 +209,101 @@ export function VideoTrimScrubber({
         </span>
       </div>
 
-      {/* Track */}
+      {/* Track wrapper – padding accommodates handles that sit outside the filmstrip */}
       <div
         ref={trackRef}
-        className="relative cursor-pointer rounded-lg overflow-hidden"
-        style={{ height: BAR_HEIGHT }}
+        className="relative cursor-pointer"
+        style={{ height: BAR_HEIGHT, paddingLeft: HANDLE_W, paddingRight: HANDLE_W }}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
         onClick={handleTrackClick}
       >
-        {/* Filmstrip background */}
-        <div className="absolute inset-0 flex">
-          {frames.length > 0
-            ? frames.map((src, i) => (
-                <img
-                  key={i}
-                  src={src}
-                  alt=""
-                  className="h-full flex-1 object-cover"
-                  draggable={false}
-                />
-              ))
-            : Array.from({ length: FILMSTRIP_FRAMES }).map((_, i) => (
-                <div key={i} className="h-full flex-1 bg-secondary" />
-              ))}
+        {/* Inner filmstrip area (the "100%" reference for percentages) */}
+        <div className="relative h-full w-full overflow-hidden rounded-md">
+          {/* Filmstrip background */}
+          <div className="absolute inset-0 flex">
+            {frames.length > 0
+              ? frames.map((src, i) => (
+                  <img
+                    key={i}
+                    src={src}
+                    alt=""
+                    className="h-full flex-1 object-cover"
+                    draggable={false}
+                  />
+                ))
+              : Array.from({ length: FILMSTRIP_FRAMES }).map((_, i) => (
+                  <div key={i} className="h-full flex-1 bg-secondary" />
+                ))}
+          </div>
+
+          {/* Dimmed regions outside trim */}
+          <div
+            className="absolute inset-y-0 left-0 bg-background/70"
+            style={{ width: `${trimRange[0]}%` }}
+          />
+          <div
+            className="absolute inset-y-0 right-0 bg-background/70"
+            style={{ width: `${100 - trimRange[1]}%` }}
+          />
+
+          {/* Trim bracket border (top & bottom lines) */}
+          <div
+            className="absolute inset-y-0 pointer-events-none border-y-[3px] border-primary"
+            style={{
+              left: `${trimRange[0]}%`,
+              width: `${trimRange[1] - trimRange[0]}%`,
+            }}
+          />
+
+          {/* Playhead scrubber – inside the filmstrip */}
+          <div
+            data-handle
+            className="absolute z-30 cursor-ew-resize top-0 bottom-0"
+            style={{ left: `${playheadPct}%`, transform: "translateX(-50%)" }}
+            onPointerDown={handlePointerDown("playhead")}
+          >
+            <div className="mx-auto h-full w-[3px] rounded-full bg-white shadow-[0_0_6px_rgba(0,0,0,0.5)]" />
+            <div className="absolute -top-1 left-1/2 -translate-x-1/2 h-2.5 w-4 rounded-b-sm bg-white shadow-md" />
+          </div>
         </div>
 
-        {/* Dimmed regions outside trim */}
-        <div
-          className="absolute inset-y-0 left-0 bg-background/70"
-          style={{ width: `${trimRange[0]}%` }}
-        />
-        <div
-          className="absolute inset-y-0 right-0 bg-background/70"
-          style={{ width: `${100 - trimRange[1]}%` }}
-        />
-
-        {/* Trim bracket border (top & bottom yellow lines) */}
-        <div
-          className="absolute inset-y-0 pointer-events-none border-y-[3px] border-primary"
-          style={{
-            left: `${trimRange[0]}%`,
-            width: `${trimRange[1] - trimRange[0]}%`,
-          }}
-        />
-
-        {/* Start handle (left bracket) */}
+        {/* Start handle – sits just outside the left edge of the filmstrip */}
         <div
           data-handle
           className={cn(
-            "absolute inset-y-0 z-20 flex w-4 cursor-ew-resize items-center justify-center rounded-l-md bg-primary transition-shadow",
+            "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center rounded-l-md bg-primary transition-shadow",
             dragging === "start" && "shadow-lg shadow-primary/40"
           )}
-          style={{ left: `calc(${trimRange[0]}% - 16px)` }}
+          style={{
+            width: HANDLE_W,
+            left: `calc(${HANDLE_W}px + ${trimRange[0]}% * (100% - ${HANDLE_W * 2}px) / 100 - ${HANDLE_W}px)`,
+          }}
           onPointerDown={handlePointerDown("start")}
         >
           <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
         </div>
 
-        {/* End handle (right bracket) */}
+        {/* End handle – sits just outside the right edge */}
         <div
           data-handle
           className={cn(
-            "absolute inset-y-0 z-20 flex w-4 cursor-ew-resize items-center justify-center rounded-r-md bg-primary transition-shadow",
+            "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center rounded-r-md bg-primary transition-shadow",
             dragging === "end" && "shadow-lg shadow-primary/40"
           )}
-          style={{ left: `${trimRange[1]}%` }}
+          style={{
+            width: HANDLE_W,
+            left: `calc(${HANDLE_W}px + ${trimRange[1]}% * (100% - ${HANDLE_W * 2}px) / 100)`,
+          }}
           onPointerDown={handlePointerDown("end")}
         >
           <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
         </div>
-
-        {/* Playhead scrubber */}
-        <div
-          data-handle
-          className={cn(
-            "absolute z-30 cursor-ew-resize",
-            "top-0 bottom-0"
-          )}
-          style={{ left: `${playheadPct}%`, transform: "translateX(-50%)" }}
-          onPointerDown={handlePointerDown("playhead")}
-        >
-          {/* Vertical line */}
-          <div className="mx-auto h-full w-[3px] rounded-full bg-white shadow-[0_0_6px_rgba(0,0,0,0.5)]" />
-          {/* Top knob */}
-          <div className="absolute -top-1 left-1/2 -translate-x-1/2 h-2.5 w-4 rounded-b-sm bg-white shadow-md" />
-        </div>
       </div>
 
       {/* Time labels */}
-      <div className="mt-1.5 flex items-center justify-between text-xs text-muted-foreground">
+      <div className="mt-1.5 flex items-center justify-between text-xs text-muted-foreground" style={{ paddingLeft: HANDLE_W, paddingRight: HANDLE_W }}>
         <span>{formatTime(trimStart)}</span>
         <span className="font-medium">
           {formatTime(trimDuration)} selected

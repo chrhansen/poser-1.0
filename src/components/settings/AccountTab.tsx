@@ -160,15 +160,6 @@ export function AccountTab() {
         </div>
       </div>
 
-      {/* Notifications */}
-      <div className="rounded-xl border border-border p-6">
-        <h2 className="text-sm font-semibold text-foreground">Notifications</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Choose what emails you receive.</p>
-        <div className="mt-4 flex items-center justify-between">
-          <Label htmlFor="notif-complete">Analysis complete</Label>
-          <Switch id="notif-complete" checked={notifComplete} onCheckedChange={setNotifComplete} />
-        </div>
-      </div>
 
       {/* Save */}
       <div className="flex items-center justify-between">

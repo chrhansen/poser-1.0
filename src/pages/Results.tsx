@@ -229,6 +229,7 @@ export default function ResultsPage() {
                 <OverviewSection
                   skiRank={result.skiRank ?? 0}
                   themes={themes}
+                  duration={result.duration}
                   onThemeSelect={handleThemeSelect}
                   onMomentSelect={handleMomentSelect}
                 />

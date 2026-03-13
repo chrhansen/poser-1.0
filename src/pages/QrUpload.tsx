@@ -81,7 +81,7 @@ export default function QrUpload() {
               className="w-full"
               onClick={() => inputRef.current?.click()}
             >
-              Choose video
+              Choose clip
             </Button>
             <input
               ref={inputRef}

@@ -110,21 +110,28 @@ export function AuthDialog({
     }
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (otpValue.length !== 6) return;
+  const handleVerify = async (code: string) => {
+    if (code.length !== 6 || loading) return;
     setError("");
     setLoading(true);
     try {
-      await authService.verifyOtp(email, otpValue);
+      await authService.verifyOtp(email, code);
       onOpenChange(false);
       onSuccess?.();
     } catch (err: any) {
       setError(err?.message ?? "Invalid code. Please try again.");
+      setOtpValue("");
     } finally {
       setLoading(false);
     }
   };
+
+  // Auto-verify when 6 digits are entered
+  useEffect(() => {
+    if (step === "otp" && otpValue.length === 6) {
+      handleVerify(otpValue);
+    }
+  }, [otpValue, step]);
 
   const handleGoogle = async () => {
     setError("");

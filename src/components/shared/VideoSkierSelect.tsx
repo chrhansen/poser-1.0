@@ -236,7 +236,7 @@ export function VideoSkierSelect({
           <button
             key={det.object_id}
             onClick={() => handleSelectDetection(det.object_id)}
-            className="absolute z-10 rounded-full focus:outline-none"
+            className="absolute z-10 cursor-pointer focus:outline-none"
             style={getOverlayStyle(det)}
             aria-label={`Select ${det.label}`}
           />

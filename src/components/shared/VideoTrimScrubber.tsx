@@ -291,13 +291,13 @@ function HandleBracket({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  // Position the handle using pixel math to avoid CSS calc limitations
+  // Position the handle using pixel math
   useEffect(() => {
     const el = ref.current;
     const track = trackRef.current;
     if (!el || !track) return;
-    const innerWidth = track.clientWidth - handleW * 2;
-    const pxOffset = handleW + (pct / 100) * innerWidth;
+    const trackWidth = track.clientWidth;
+    const pxOffset = (pct / 100) * trackWidth;
     if (side === "start") {
       el.style.left = `${pxOffset - handleW}px`;
     } else {

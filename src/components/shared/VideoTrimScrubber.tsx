@@ -111,9 +111,7 @@ export function VideoTrimScrubber({
     const track = trackRef.current;
     if (!track) return 0;
     const rect = track.getBoundingClientRect();
-    const innerLeft = rect.left + HANDLE_W;
-    const innerWidth = rect.width - HANDLE_W * 2;
-    return Math.max(0, Math.min(100, ((clientX - innerLeft) / innerWidth) * 100));
+    return Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100));
   }, []);
 
   const maxPct = (maxTrimSeconds / Math.max(duration, 0.01)) * 100;
@@ -206,10 +204,9 @@ export function VideoTrimScrubber({
         onPointerLeave={handlePointerUp}
         onClick={handleTrackClick}
       >
-        {/* Filmstrip container – inset by handle width, clips thumbnails */}
+        {/* Filmstrip container – full width, handles overlap on top */}
         <div
-          className="absolute inset-y-0 overflow-hidden rounded-md"
-          style={{ left: HANDLE_W, right: HANDLE_W }}
+          className="absolute inset-0 overflow-hidden rounded-md"
         >
           {/* Filmstrip thumbnails */}
           <div className="absolute inset-0 flex">
@@ -266,7 +263,7 @@ export function VideoTrimScrubber({
       </div>
 
       {/* Time labels */}
-      <div className="mt-1.5 flex items-center justify-between text-xs text-muted-foreground" style={{ paddingLeft: HANDLE_W, paddingRight: HANDLE_W }}>
+      <div className="mt-1.5 flex items-center justify-between text-xs text-muted-foreground">
         <span>{formatTime(trimStart)}</span>
         <span className="font-medium">{formatTime(trimDuration)} selected</span>
         <span>{formatTime(trimEnd)}</span>
@@ -294,13 +291,13 @@ function HandleBracket({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  // Position the handle using pixel math to avoid CSS calc limitations
+  // Position the handle using pixel math
   useEffect(() => {
     const el = ref.current;
     const track = trackRef.current;
     if (!el || !track) return;
-    const innerWidth = track.clientWidth - handleW * 2;
-    const pxOffset = handleW + (pct / 100) * innerWidth;
+    const trackWidth = track.clientWidth;
+    const pxOffset = (pct / 100) * trackWidth;
     if (side === "start") {
       el.style.left = `${pxOffset - handleW}px`;
     } else {

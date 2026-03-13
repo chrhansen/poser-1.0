@@ -5,13 +5,11 @@ import { cn } from "@/lib/utils";
 /* ─── Types ─── */
 
 interface VideoTrimScrubberProps {
-  /** Reference to the <video> element for thumbnail generation & seeking */
   videoEl: HTMLVideoElement | null;
   duration: number;
   maxTrimSeconds: number;
   trimRange: [number, number]; // percentage 0–100
   onTrimChange: (range: [number, number]) => void;
-  /** Called when the playhead scrubber moves (percentage 0–100) */
   onPlayheadSeek: (pct: number) => void;
   className?: string;
 }
@@ -25,8 +23,8 @@ function formatTime(s: number) {
 }
 
 const FILMSTRIP_FRAMES = 12;
-const BAR_HEIGHT = 56; // px
-const HANDLE_W = 14; // px – width of each bracket handle
+const BAR_HEIGHT = 56;
+const HANDLE_W = 14;
 
 /* ─── Component ─── */
 
@@ -43,26 +41,23 @@ export function VideoTrimScrubber({
   const [frames, setFrames] = useState<string[]>([]);
   const [playheadPct, setPlayheadPct] = useState(trimRange[0]);
   const [dragging, setDragging] = useState<"start" | "end" | "playhead" | null>(null);
-  const generatingRef = useRef(false);
 
   // Keep playhead clamped within trim range
   useEffect(() => {
     setPlayheadPct((prev) => Math.max(trimRange[0], Math.min(prev, trimRange[1])));
   }, [trimRange]);
 
-  // Generate filmstrip thumbnails using a cloned video to avoid seeking conflicts
+  // Generate filmstrip thumbnails using a separate video element
   useEffect(() => {
     if (!videoEl || duration <= 0) return;
 
     let cancelled = false;
-    generatingRef.current = true;
 
-    // Create a separate video element for thumbnail capture so we don't
-    // interfere with the user-facing video's currentTime.
     const thumbVideo = document.createElement("video");
     thumbVideo.src = videoEl.currentSrc || videoEl.src;
     thumbVideo.muted = true;
     thumbVideo.preload = "auto";
+    thumbVideo.playsInline = true;
 
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
@@ -77,20 +72,13 @@ export function VideoTrimScrubber({
 
     const captureFrame = async (index: number) => {
       if (cancelled || index >= FILMSTRIP_FRAMES) {
-        if (!cancelled) {
-          setFrames(newFrames);
-          generatingRef.current = false;
-        }
+        if (!cancelled) setFrames(newFrames);
         return;
       }
-      // Offset slightly so frame 0 isn't a black pre-decoded frame
-      const time = Math.max(0.1, (index / FILMSTRIP_FRAMES) * duration);
+      const time = Math.max(0.1, ((index + 0.5) / FILMSTRIP_FRAMES) * duration);
       thumbVideo.currentTime = time;
       await new Promise<void>((resolve) => {
-        const handler = () => {
-          thumbVideo.removeEventListener("seeked", handler);
-          resolve();
-        };
+        const handler = () => { thumbVideo.removeEventListener("seeked", handler); resolve(); };
         thumbVideo.addEventListener("seeked", handler);
       });
       if (cancelled) return;
@@ -112,18 +100,17 @@ export function VideoTrimScrubber({
 
     return () => {
       cancelled = true;
-      generatingRef.current = false;
       thumbVideo.src = "";
     };
   }, [videoEl, duration]);
 
   /* ─── Pointer helpers ─── */
 
+  // Convert clientX to percentage of the filmstrip area (excludes handle padding)
   const getPct = useCallback((clientX: number) => {
     const track = trackRef.current;
     if (!track) return 0;
     const rect = track.getBoundingClientRect();
-    // Account for handle padding on each side
     const innerLeft = rect.left + HANDLE_W;
     const innerWidth = rect.width - HANDLE_W * 2;
     return Math.max(0, Math.min(100, ((clientX - innerLeft) / innerWidth) * 100));
@@ -156,22 +143,18 @@ export function VideoTrimScrubber({
       let [start, end] = trimRange;
       if (dragging === "start") {
         start = pct;
-        // Sliding window: push end if needed
         if (end - start > maxPct) {
           end = Math.min(start + maxPct, 100);
           if (end >= 100) { end = 100; start = 100 - maxPct; }
         }
-        // Don't let start pass end
         if (start > end - 1) start = end - 1;
         if (start < 0) start = 0;
       } else {
         end = pct;
-        // Sliding window: push start if needed
         if (end - start > maxPct) {
           start = Math.max(end - maxPct, 0);
           if (start <= 0) { start = 0; end = maxPct; }
         }
-        // Don't let end pass start
         if (end < start + 1) end = start + 1;
         if (end > 100) end = 100;
       }
@@ -181,14 +164,10 @@ export function VideoTrimScrubber({
     [dragging, trimRange, maxPct, getPct, onTrimChange, onPlayheadSeek]
   );
 
-  const handlePointerUp = useCallback(() => {
-    setDragging(null);
-  }, []);
+  const handlePointerUp = useCallback(() => setDragging(null), []);
 
-  // Click on track area → move playhead
   const handleTrackClick = useCallback(
     (e: React.MouseEvent) => {
-      // Only if clicking the track itself, not a handle
       if ((e.target as HTMLElement).closest("[data-handle]")) return;
       const pct = getPct(e.clientX);
       const clamped = Math.max(trimRange[0], Math.min(pct, trimRange[1]));
@@ -203,6 +182,11 @@ export function VideoTrimScrubber({
   const trimEnd = (trimRange[1] / 100) * duration;
   const trimDuration = trimEnd - trimStart;
 
+  // Convert a filmstrip percentage to a CSS left value within the padded track
+  const toTrackLeft = (pct: number) => `calc(${HANDLE_W}px + ${pct}% * (100% - ${HANDLE_W * 2}px) / 100)`;
+  // Simpler: since the filmstrip div is inside padding, we can use a style helper
+  // Actually CSS calc can't do pct*pct. We'll use a wrapper approach instead.
+
   return (
     <div className={cn("select-none", className)}>
       <div className="flex items-center gap-2 mb-2">
@@ -212,29 +196,26 @@ export function VideoTrimScrubber({
         </span>
       </div>
 
-      {/* Track wrapper – padding accommodates handles that sit outside the filmstrip */}
+      {/* Outer track – handles pointer events across the full width */}
       <div
         ref={trackRef}
         className="relative cursor-pointer"
-        style={{ height: BAR_HEIGHT, paddingLeft: HANDLE_W, paddingRight: HANDLE_W }}
+        style={{ height: BAR_HEIGHT }}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerLeave={handlePointerUp}
         onClick={handleTrackClick}
       >
-        {/* Inner filmstrip area */}
-        <div className="relative h-full w-full overflow-hidden rounded-md">
-          {/* Filmstrip background */}
+        {/* Filmstrip container – inset by handle width, clips thumbnails */}
+        <div
+          className="absolute inset-y-0 overflow-hidden rounded-md"
+          style={{ left: HANDLE_W, right: HANDLE_W }}
+        >
+          {/* Filmstrip thumbnails */}
           <div className="absolute inset-0 flex">
             {frames.length > 0
               ? frames.map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt=""
-                    className="h-full flex-1 object-cover"
-                    draggable={false}
-                  />
+                  <img key={i} src={src} alt="" className="h-full flex-1 object-cover" draggable={false} />
                 ))
               : Array.from({ length: FILMSTRIP_FRAMES }).map((_, i) => (
                   <div key={i} className="h-full flex-1 bg-secondary" />
@@ -242,22 +223,13 @@ export function VideoTrimScrubber({
           </div>
 
           {/* Dimmed regions outside trim */}
-          <div
-            className="absolute inset-y-0 left-0 bg-background/70"
-            style={{ width: `${trimRange[0]}%` }}
-          />
-          <div
-            className="absolute inset-y-0 right-0 bg-background/70"
-            style={{ width: `${100 - trimRange[1]}%` }}
-          />
+          <div className="absolute inset-y-0 left-0 bg-background/70" style={{ width: `${trimRange[0]}%` }} />
+          <div className="absolute inset-y-0 right-0 bg-background/70" style={{ width: `${100 - trimRange[1]}%` }} />
 
-          {/* Trim bracket border (top & bottom lines) */}
+          {/* Trim bracket (top & bottom border lines) */}
           <div
             className="absolute inset-y-0 pointer-events-none border-y-[3px] border-primary"
-            style={{
-              left: `${trimRange[0]}%`,
-              width: `${trimRange[1] - trimRange[0]}%`,
-            }}
+            style={{ left: `${trimRange[0]}%`, width: `${trimRange[1] - trimRange[0]}%` }}
           />
 
           {/* Playhead scrubber */}
@@ -270,49 +242,85 @@ export function VideoTrimScrubber({
             <div className="mx-auto h-full w-[3px] rounded-full bg-white shadow-[0_0_6px_rgba(0,0,0,0.5)]" />
             <div className="absolute -top-1 left-1/2 -translate-x-1/2 h-2.5 w-4 rounded-b-sm bg-white shadow-md" />
           </div>
-
-          {/* Start handle – inside the overflow-hidden area, anchored to trim start */}
-          <div
-            data-handle
-            className={cn(
-              "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center rounded-l-md bg-primary transition-shadow",
-              dragging === "start" && "shadow-lg shadow-primary/40"
-            )}
-            style={{
-              width: HANDLE_W,
-              left: `calc(${trimRange[0]}% - ${HANDLE_W}px)`,
-            }}
-            onPointerDown={handlePointerDown("start")}
-          >
-            <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
-          </div>
-
-          {/* End handle */}
-          <div
-            data-handle
-            className={cn(
-              "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center rounded-r-md bg-primary transition-shadow",
-              dragging === "end" && "shadow-lg shadow-primary/40"
-            )}
-            style={{
-              width: HANDLE_W,
-              left: `${trimRange[1]}%`,
-            }}
-            onPointerDown={handlePointerDown("end")}
-          >
-            <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
-          </div>
         </div>
+
+        {/* Start handle – positioned in the outer (non-clipped) layer */}
+        <HandleBracket
+          side="start"
+          pct={trimRange[0]}
+          trackRef={trackRef}
+          handleW={HANDLE_W}
+          active={dragging === "start"}
+          onPointerDown={handlePointerDown("start")}
+        />
+
+        {/* End handle */}
+        <HandleBracket
+          side="end"
+          pct={trimRange[1]}
+          trackRef={trackRef}
+          handleW={HANDLE_W}
+          active={dragging === "end"}
+          onPointerDown={handlePointerDown("end")}
+        />
       </div>
 
       {/* Time labels */}
       <div className="mt-1.5 flex items-center justify-between text-xs text-muted-foreground" style={{ paddingLeft: HANDLE_W, paddingRight: HANDLE_W }}>
         <span>{formatTime(trimStart)}</span>
-        <span className="font-medium">
-          {formatTime(trimDuration)} selected
-        </span>
+        <span className="font-medium">{formatTime(trimDuration)} selected</span>
         <span>{formatTime(trimEnd)}</span>
       </div>
+    </div>
+  );
+}
+
+/* ─── Handle bracket sub-component ─── */
+
+function HandleBracket({
+  side,
+  pct,
+  trackRef,
+  handleW,
+  active,
+  onPointerDown,
+}: {
+  side: "start" | "end";
+  pct: number;
+  trackRef: React.RefObject<HTMLDivElement>;
+  handleW: number;
+  active: boolean;
+  onPointerDown: (e: React.PointerEvent) => void;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  // Position the handle using pixel math to avoid CSS calc limitations
+  useEffect(() => {
+    const el = ref.current;
+    const track = trackRef.current;
+    if (!el || !track) return;
+    const innerWidth = track.clientWidth - handleW * 2;
+    const pxOffset = handleW + (pct / 100) * innerWidth;
+    if (side === "start") {
+      el.style.left = `${pxOffset - handleW}px`;
+    } else {
+      el.style.left = `${pxOffset}px`;
+    }
+  });
+
+  return (
+    <div
+      ref={ref}
+      data-handle
+      className={cn(
+        "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center bg-primary transition-shadow",
+        side === "start" ? "rounded-l-md" : "rounded-r-md",
+        active && "shadow-lg shadow-primary/40"
+      )}
+      style={{ width: handleW }}
+      onPointerDown={onPointerDown}
+    >
+      <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
     </div>
   );
 }

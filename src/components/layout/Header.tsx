@@ -54,15 +54,15 @@ export function Header() {
   return (
     <>
       <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container relative flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-xl font-bold tracking-tight text-foreground">
             <img src={poserLogo} alt="" className="h-6 w-auto" />
             poser
             <BetaBadge className="ml-1" />
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden items-center gap-8 md:flex">
+          {/* Desktop nav — absolutely centered on the full width */}
+          <nav className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => {
               const isHash = link.href.startsWith("/#");
               return isHash ? (

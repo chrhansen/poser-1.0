@@ -110,21 +110,28 @@ export function AuthDialog({
     }
   };
 
-  const handleVerify = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (otpValue.length !== 6) return;
+  const handleVerify = async (code: string) => {
+    if (code.length !== 6 || loading) return;
     setError("");
     setLoading(true);
     try {
-      await authService.verifyOtp(email, otpValue);
+      await authService.verifyOtp(email, code);
       onOpenChange(false);
       onSuccess?.();
     } catch (err: any) {
       setError(err?.message ?? "Invalid code. Please try again.");
+      setOtpValue("");
     } finally {
       setLoading(false);
     }
   };
+
+  // Auto-verify when 6 digits are entered
+  useEffect(() => {
+    if (step === "otp" && otpValue.length === 6) {
+      handleVerify(otpValue);
+    }
+  }, [otpValue, step]);
 
   const handleGoogle = async () => {
     setError("");
@@ -216,13 +223,17 @@ export function AuthDialog({
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleVerify} className="mt-4 space-y-5">
+            <div className="mt-4 space-y-5">
               <div className="flex justify-center">
                 <InputOTP
                   maxLength={6}
                   value={otpValue}
-                  onChange={(val) => setOtpValue(val)}
+                  onChange={(val) => {
+                    setOtpValue(val);
+                    setError("");
+                  }}
                   autoFocus
+                  disabled={loading}
                 >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
@@ -235,26 +246,25 @@ export function AuthDialog({
                 </InputOTP>
               </div>
 
-              {error && <p className="text-center text-sm text-destructive">{error}</p>}
+              {loading && (
+                <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Verifying…
+                </div>
+              )}
 
-              <Button
-                type="submit"
-                className="w-full h-11"
-                disabled={otpValue.length !== 6 || loading}
-              >
-                {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                Verify and continue
-              </Button>
+              {error && <p className="text-center text-sm text-destructive">{error}</p>}
 
               <button
                 type="button"
                 className="flex w-full items-center justify-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
                 onClick={goBack}
+                disabled={loading}
               >
                 <ArrowLeft className="h-3 w-3" />
                 Back
               </button>
-            </form>
+            </div>
           </>
         )}
       </DialogContent>

@@ -6,6 +6,7 @@ import { AlertTriangle, Trophy, Star, Eye } from "lucide-react";
 interface OverviewSectionProps {
   skiRank: number;
   themes: ThemeScores;
+  duration?: number;
   onThemeSelect: (key: ThemeKey) => void;
   onMomentSelect: (moment: KeyMoment) => void;
 }

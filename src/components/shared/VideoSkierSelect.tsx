@@ -113,39 +113,6 @@ export function VideoSkierSelect({
     setThumbnails(newThumbs);
   };
 
-  const handleTrimChange = useCallback(
-    (values: number[]) => {
-      let [start, end] = values;
-      const maxPct = (maxTrimSeconds / Math.max(duration, 0.01)) * 100;
-      const prev = trimRange;
-
-      // Determine which thumb moved
-      const startMoved = start !== prev[0];
-      const endMoved = end !== prev[1];
-
-      if (end - start > maxPct) {
-        // Sliding window: push the other knob along
-        if (startMoved) {
-          end = Math.min(start + maxPct, 100);
-          // If end hit the wall, clamp start too
-          if (end >= 100) { end = 100; start = 100 - maxPct; }
-        } else {
-          start = Math.max(end - maxPct, 0);
-          if (start <= 0) { start = 0; end = maxPct; }
-        }
-      }
-
-      const newRange: [number, number] = [Math.max(start, 0), Math.min(end, 100)];
-      setTrimRange(newRange);
-      if (videoRef.current && duration > 0) {
-        const movedEnd = endMoved && !startMoved;
-        const seekPct = movedEnd ? newRange[1] : newRange[0];
-        videoRef.current.currentTime = (seekPct / 100) * duration;
-      }
-    },
-    [duration, maxTrimSeconds, trimRange]
-  );
-
   const handleVideoClick = (e: React.MouseEvent<HTMLVideoElement>) => {
     if (!manualMode) return;
     const rect = e.currentTarget.getBoundingClientRect();
@@ -164,7 +131,6 @@ export function VideoSkierSelect({
   // Computed
   const trimStart = (trimRange[0] / 100) * duration;
   const trimEnd = (trimRange[1] / 100) * duration;
-  const trimDuration = trimEnd - trimStart;
   const hasSelection = selectedSkier !== null;
 
   const selectedDet = detections.find((d) => d.object_id === selectedSkier);

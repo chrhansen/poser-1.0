@@ -78,7 +78,7 @@ export function QrUploadSection() {
   const restart = () => startSession();
 
   return (
-    <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border p-6 text-center">
+    <div className="flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-border p-6 text-center">
       {/* ── Waiting ─────────────────────────────────────────── */}
       {state === "waiting" && (
         <>

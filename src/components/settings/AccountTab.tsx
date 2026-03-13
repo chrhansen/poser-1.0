@@ -32,8 +32,6 @@ export function AccountTab() {
       setUsername(p.username);
       setEmail(p.email);
       setBio(p.bio);
-      setNotifComplete(p.notifications.analysisComplete);
-      setNotifTips(p.notifications.weeklyTips);
       setAvatarPreview(p.avatarUrl);
       setLoading(false);
     });

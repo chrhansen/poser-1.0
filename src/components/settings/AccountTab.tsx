@@ -77,7 +77,7 @@ export function AccountTab() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const updated = await settingsService.updateProfile({ name, username, bio, notifications: { analysisComplete: notifComplete, weeklyTips: notifTips } });
+      const updated = await settingsService.updateProfile({ name, username, bio });
       originalRef.current = updated;
       setProfile(updated);
       setDirty(false);

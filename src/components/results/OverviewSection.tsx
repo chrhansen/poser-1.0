@@ -35,13 +35,27 @@ export function OverviewSection({ skiRank, themes, duration = 14, onThemeSelect,
   return (
     <div className="space-y-4">
       {/* SkiRank hero */}
-      <div className="rounded-2xl border border-accent/20 bg-gradient-to-br from-accent/[0.06] via-accent/[0.03] to-transparent p-6 text-center shadow-sm">
-        <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Overall technique score</p>
-        <p className="mt-2 text-5xl font-bold text-accent-foreground">{skiRank}</p>
-        <p className="mt-1 text-xs font-semibold text-accent-foreground">SkiRank</p>
-        <p className="mt-2 text-xs text-muted-foreground">
-          Strongest: <span className="font-medium text-foreground capitalize">{strongest}</span> · Main limiter: <span className="font-medium text-foreground capitalize">{weakest}</span>
-        </p>
+      <div className="rounded-2xl border border-accent/20 bg-gradient-to-br from-accent/[0.06] via-accent/[0.03] to-transparent p-6 shadow-sm">
+        <div className="flex items-center gap-4">
+          {/* Score — shifted left */}
+          <div className="flex-1 text-center">
+            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Overall technique score</p>
+            <p className="mt-2 text-5xl font-bold text-accent-foreground">{skiRank}</p>
+            <p className="mt-1 text-xs font-semibold text-accent-foreground">SkiRank</p>
+            <p className="mt-2 text-xs text-muted-foreground">
+              Strongest: <span className="font-medium text-foreground capitalize">{strongest}</span> · Main limiter: <span className="font-medium text-foreground capitalize">{weakest}</span>
+            </p>
+          </div>
+          {/* 3D model inset */}
+          <div className="hidden min-[400px]:block w-[120px] h-[120px] shrink-0">
+            <ModelViewer
+              duration={duration}
+              currentTime={0}
+              isPlaying={true}
+              className="h-full w-full border-0 bg-transparent"
+            />
+          </div>
+        </div>
       </div>
 
       {/* What stood out */}

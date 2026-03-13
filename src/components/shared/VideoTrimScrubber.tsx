@@ -206,7 +206,7 @@ export function VideoTrimScrubber({
       >
         {/* Filmstrip container – full width, handles overlap on top */}
         <div
-          className="absolute inset-0 overflow-hidden rounded-md"
+          className="absolute inset-0 overflow-hidden"
         >
           {/* Filmstrip thumbnails */}
           <div className="absolute inset-0 flex">

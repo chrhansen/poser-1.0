@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+
 import { Button } from "@/components/ui/button";
 import { settingsService } from "@/services/settings.service";
 import type { SettingsProfile } from "@/lib/types";
@@ -23,8 +23,6 @@ export function AccountTab() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
-  const [notifComplete, setNotifComplete] = useState(true);
-  const [notifTips, setNotifTips] = useState(false);
 
   useEffect(() => {
     settingsService.getProfile().then((p) => {
@@ -34,8 +32,6 @@ export function AccountTab() {
       setUsername(p.username);
       setEmail(p.email);
       setBio(p.bio);
-      setNotifComplete(p.notifications.analysisComplete);
-      setNotifTips(p.notifications.weeklyTips);
       setAvatarPreview(p.avatarUrl);
       setLoading(false);
     });
@@ -44,9 +40,9 @@ export function AccountTab() {
   useEffect(() => {
     if (!originalRef.current) return;
     const o = originalRef.current;
-    const isDirty = name !== o.name || username !== o.username || bio !== o.bio || notifComplete !== o.notifications.analysisComplete || notifTips !== o.notifications.weeklyTips;
+    const isDirty = name !== o.name || username !== o.username || bio !== o.bio;
     setDirty(isDirty);
-  }, [name, username, bio, notifComplete, notifTips]);
+  }, [name, username, bio]);
 
   useEffect(() => {
     if (!dirty) return;
@@ -81,7 +77,7 @@ export function AccountTab() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const updated = await settingsService.updateProfile({ name, username, bio, notifications: { analysisComplete: notifComplete, weeklyTips: notifTips } });
+      const updated = await settingsService.updateProfile({ name, username, bio });
       originalRef.current = updated;
       setProfile(updated);
       setDirty(false);
@@ -160,15 +156,6 @@ export function AccountTab() {
         </div>
       </div>
 
-      {/* Notifications */}
-      <div className="rounded-xl border border-border p-6">
-        <h2 className="text-sm font-semibold text-foreground">Notifications</h2>
-        <p className="mt-1 text-sm text-muted-foreground">Choose what emails you receive.</p>
-        <div className="mt-4 flex items-center justify-between">
-          <Label htmlFor="notif-complete">Analysis complete</Label>
-          <Switch id="notif-complete" checked={notifComplete} onCheckedChange={setNotifComplete} />
-        </div>
-      </div>
 
       {/* Save */}
       <div className="flex items-center justify-between">

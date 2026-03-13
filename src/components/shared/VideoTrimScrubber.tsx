@@ -222,7 +222,7 @@ export function VideoTrimScrubber({
         onPointerLeave={handlePointerUp}
         onClick={handleTrackClick}
       >
-        {/* Inner filmstrip area (the "100%" reference for percentages) */}
+        {/* Inner filmstrip area */}
         <div className="relative h-full w-full overflow-hidden rounded-md">
           {/* Filmstrip background */}
           <div className="absolute inset-0 flex">
@@ -260,7 +260,7 @@ export function VideoTrimScrubber({
             }}
           />
 
-          {/* Playhead scrubber – inside the filmstrip */}
+          {/* Playhead scrubber */}
           <div
             data-handle
             className="absolute z-30 cursor-ew-resize top-0 bottom-0"
@@ -270,38 +270,38 @@ export function VideoTrimScrubber({
             <div className="mx-auto h-full w-[3px] rounded-full bg-white shadow-[0_0_6px_rgba(0,0,0,0.5)]" />
             <div className="absolute -top-1 left-1/2 -translate-x-1/2 h-2.5 w-4 rounded-b-sm bg-white shadow-md" />
           </div>
-        </div>
 
-        {/* Start handle – sits just outside the left edge of the filmstrip */}
-        <div
-          data-handle
-          className={cn(
-            "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center rounded-l-md bg-primary transition-shadow",
-            dragging === "start" && "shadow-lg shadow-primary/40"
-          )}
-          style={{
-            width: HANDLE_W,
-            left: `calc(${HANDLE_W}px + ${trimRange[0]}% * (100% - ${HANDLE_W * 2}px) / 100 - ${HANDLE_W}px)`,
-          }}
-          onPointerDown={handlePointerDown("start")}
-        >
-          <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
-        </div>
+          {/* Start handle – inside the overflow-hidden area, anchored to trim start */}
+          <div
+            data-handle
+            className={cn(
+              "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center rounded-l-md bg-primary transition-shadow",
+              dragging === "start" && "shadow-lg shadow-primary/40"
+            )}
+            style={{
+              width: HANDLE_W,
+              left: `calc(${trimRange[0]}% - ${HANDLE_W}px)`,
+            }}
+            onPointerDown={handlePointerDown("start")}
+          >
+            <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
+          </div>
 
-        {/* End handle – sits just outside the right edge */}
-        <div
-          data-handle
-          className={cn(
-            "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center rounded-r-md bg-primary transition-shadow",
-            dragging === "end" && "shadow-lg shadow-primary/40"
-          )}
-          style={{
-            width: HANDLE_W,
-            left: `calc(${HANDLE_W}px + ${trimRange[1]}% * (100% - ${HANDLE_W * 2}px) / 100)`,
-          }}
-          onPointerDown={handlePointerDown("end")}
-        >
-          <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
+          {/* End handle */}
+          <div
+            data-handle
+            className={cn(
+              "absolute inset-y-0 z-20 flex cursor-ew-resize items-center justify-center rounded-r-md bg-primary transition-shadow",
+              dragging === "end" && "shadow-lg shadow-primary/40"
+            )}
+            style={{
+              width: HANDLE_W,
+              left: `${trimRange[1]}%`,
+            }}
+            onPointerDown={handlePointerDown("end")}
+          >
+            <div className="h-5 w-0.5 rounded-full bg-primary-foreground/80" />
+          </div>
         </div>
       </div>
 

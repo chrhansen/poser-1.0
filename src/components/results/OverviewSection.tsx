@@ -29,7 +29,7 @@ const momentIcons = {
   representative: Eye,
 };
 
-export function OverviewSection({ skiRank, themes, onThemeSelect, onMomentSelect }: OverviewSectionProps) {
+export function OverviewSection({ skiRank, themes, duration = 14, onThemeSelect, onMomentSelect }: OverviewSectionProps) {
   const { strongest, weakest } = findStrongestWeakest(themes);
 
   return (

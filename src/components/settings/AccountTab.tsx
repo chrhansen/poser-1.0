@@ -23,8 +23,6 @@ export function AccountTab() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [bio, setBio] = useState("");
-  const [notifComplete, setNotifComplete] = useState(true);
-  const [notifTips, setNotifTips] = useState(false);
 
   useEffect(() => {
     settingsService.getProfile().then((p) => {

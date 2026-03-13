@@ -119,18 +119,7 @@ export function UploadPickContent({ onContinue, footer, initialFile, submitLabel
       </div>
 
       {/* Send from phone */}
-      <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-border p-6 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-accent">
-          <Smartphone className="h-5 w-5 text-accent-foreground" />
-        </div>
-        <p className="text-sm font-medium text-foreground">Send from your phone</p>
-        <p className="text-xs text-muted-foreground max-w-xs">
-          Most ski videos live on your phone. Scan to upload there.
-        </p>
-        <div className="mt-1 flex h-28 w-28 items-center justify-center rounded-lg border border-border bg-accent">
-          <QrCode className="h-14 w-14 text-accent-foreground/60" />
-        </div>
-      </div>
+      <QrUploadSection />
 
       {footer}
     </div>

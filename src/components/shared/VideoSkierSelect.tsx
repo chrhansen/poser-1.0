@@ -78,9 +78,7 @@ export function VideoSkierSelect({
       .detectSkiers(videoRef.current)
       .then((dets) => {
         setDetections(dets);
-        if (dets.length > 0) {
-          setSelectedSkier(dets[0].object_id);
-        } else {
+        if (dets.length === 0) {
           setManualMode(true);
         }
         // After detection, capture thumbnails for each detected skier

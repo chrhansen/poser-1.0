@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Scissors } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /* ─── Types ─── */
@@ -187,12 +186,9 @@ export function VideoTrimScrubber({
 
   return (
     <div className={cn("select-none", className)}>
-      <div className="flex items-center gap-2 mb-2">
-        <Scissors className="h-3.5 w-3.5 text-muted-foreground" />
-        <span className="text-xs font-medium text-muted-foreground">
-          Trim &amp; scrub (max. {maxTrimSeconds}s)
-        </span>
-      </div>
+      <p className="text-xs font-medium text-muted-foreground mb-2">
+        Trim to active run (max. {maxTrimSeconds}s) &amp; scrub to find clear view of skier
+      </p>
 
       {/* Outer track – handles pointer events across the full width */}
       <div

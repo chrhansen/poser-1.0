@@ -40,6 +40,7 @@ export function DemoStep2Analyze({ onComplete }: DemoStep2Props) {
   const [completedRows, setCompletedRows] = useState(0);
   const [activeRow, setActiveRow] = useState(0);
   const [showSkeleton, setShowSkeleton] = useState(false);
+  const showMetrics = activeRow >= 2;
 
   useEffect(() => {
     // Show skeleton after first row starts

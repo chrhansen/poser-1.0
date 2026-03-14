@@ -40,6 +40,7 @@ export function DemoStep2Analyze({ onComplete }: DemoStep2Props) {
   const [completedRows, setCompletedRows] = useState(0);
   const [activeRow, setActiveRow] = useState(0);
   const [showSkeleton, setShowSkeleton] = useState(false);
+  const showMetrics = activeRow >= 2;
 
   useEffect(() => {
     // Show skeleton after first row starts
@@ -92,13 +93,12 @@ export function DemoStep2Analyze({ onComplete }: DemoStep2Props) {
           />
 
           {/* Skeleton overlay */}
-          {showSkeleton && (
+          {showSkeleton && !showMetrics && (
             <svg
               className="absolute inset-0 h-full w-full"
               viewBox="0 0 100 100"
               preserveAspectRatio="none"
             >
-              {/* Bones */}
               {skeletonBones.map(([a, b], i) => (
                 <motion.line
                   key={`bone-${i}`}
@@ -114,7 +114,6 @@ export function DemoStep2Analyze({ onComplete }: DemoStep2Props) {
                   transition={{ delay: i * 0.1, duration: 0.4 }}
                 />
               ))}
-              {/* Joints */}
               {skeletonPoints.map((pt, i) => (
                 <motion.circle
                   key={`joint-${i}`}
@@ -127,6 +126,139 @@ export function DemoStep2Analyze({ onComplete }: DemoStep2Props) {
                   transition={{ delay: 0.3 + i * 0.08 }}
                 />
               ))}
+            </svg>
+          )}
+
+          {/* Metrics / math overlay */}
+          {showMetrics && (
+            <svg
+              className="absolute inset-0 h-full w-full"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+            >
+              {/* Angle arc at knee */}
+              <motion.path
+                d="M 35 55 Q 37 50 39 46"
+                fill="none"
+                stroke="hsl(var(--primary))"
+                strokeWidth="0.4"
+                strokeDasharray="1 0.5"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.8 }}
+                transition={{ duration: 0.6 }}
+              />
+              <motion.path
+                d="M 33 58 A 4 4 0 0 1 37 53"
+                fill="none"
+                stroke="hsl(var(--primary))"
+                strokeWidth="0.5"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.9 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+              />
+              <motion.text
+                x="30"
+                y="52"
+                fontSize="2.8"
+                fill="hsl(var(--primary))"
+                fontFamily="monospace"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1, 0.7] }}
+                transition={{ delay: 0.4, duration: 0.6 }}
+              >
+                68°
+              </motion.text>
+
+              {/* Angle arc at hip */}
+              <motion.path
+                d="M 40 45 A 5 5 0 0 1 36 39"
+                fill="none"
+                stroke="hsl(var(--primary))"
+                strokeWidth="0.5"
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 0.9 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
+              />
+              <motion.text
+                x="42"
+                y="41"
+                fontSize="2.8"
+                fill="hsl(var(--primary))"
+                fontFamily="monospace"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 1, 0.7] }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+              >
+                43°
+              </motion.text>
+
+              {/* Vertical plumb line (COM) */}
+              <motion.line
+                x1="38" y1="28" x2="38" y2="68"
+                stroke="hsl(var(--primary))"
+                strokeWidth="0.35"
+                strokeDasharray="1.5 1"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.5 }}
+                transition={{ delay: 0.3, duration: 0.4 }}
+              />
+
+              {/* Horizontal reference line */}
+              <motion.line
+                x1="28" y1="63" x2="48" y2="63"
+                stroke="hsl(var(--primary))"
+                strokeWidth="0.3"
+                strokeDasharray="0.8 0.8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.4 }}
+                transition={{ delay: 0.6, duration: 0.4 }}
+              />
+
+              {/* Shin angle measurement */}
+              <motion.line
+                x1="35" y1="55" x2="33" y2="63"
+                stroke="hsl(var(--primary))"
+                strokeWidth="0.5"
+                strokeLinecap="round"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.7 }}
+                transition={{ delay: 0.4, duration: 0.3 }}
+              />
+              <motion.text
+                x="28"
+                y="60"
+                fontSize="2.5"
+                fill="hsl(var(--primary))"
+                fontFamily="monospace"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.9, 0.6] }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+              >
+                14°
+              </motion.text>
+
+              {/* Small ticks / measurement markers */}
+              {[30, 34, 38, 42, 46].map((x, i) => (
+                <motion.line
+                  key={`tick-${i}`}
+                  x1={x} y1="62.5" x2={x} y2="63.5"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth="0.3"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 0.5 }}
+                  transition={{ delay: 0.7 + i * 0.05 }}
+                />
+              ))}
+
+              {/* Pulsing calculation dot */}
+              <motion.circle
+                cx="38" cy="46"
+                r="1"
+                fill="hsl(var(--primary))"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.8, 0.3, 0.8], scale: [0.8, 1.2, 0.8, 1.2] }}
+                transition={{ delay: 0.5, duration: 2, repeat: Infinity }}
+              />
             </svg>
           )}
         </div>

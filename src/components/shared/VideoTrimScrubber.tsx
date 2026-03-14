@@ -163,13 +163,15 @@ export function VideoTrimScrubber({
 
   const handlePointerUp = useCallback(() => setDragging(null), []);
 
-  const handleTrackClick = useCallback(
-    (e: React.MouseEvent) => {
+  const handleTrackPointerDown = useCallback(
+    (e: React.PointerEvent) => {
       if ((e.target as HTMLElement).closest("[data-handle]")) return;
       const pct = getPct(e.clientX);
       const clamped = Math.max(trimRange[0], Math.min(pct, trimRange[1]));
       setPlayheadPct(clamped);
       onPlayheadSeek(clamped);
+      setDragging("playhead");
+      (e.target as HTMLElement).setPointerCapture(e.pointerId);
     },
     [getPct, trimRange, onPlayheadSeek]
   );

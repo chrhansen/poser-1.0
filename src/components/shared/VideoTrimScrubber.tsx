@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from "react";
-import { Scissors } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
 /* ─── Types ─── */

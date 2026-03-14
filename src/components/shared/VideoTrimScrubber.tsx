@@ -189,7 +189,7 @@ export function VideoTrimScrubber({
   return (
     <div className={cn("select-none", className)}>
       <p className="text-xs font-medium text-muted-foreground mb-2">
-        Trim to active run (max. {maxTrimSeconds}s) &amp; scrub to find clear view of skier
+        Trim clip (max. {maxTrimSeconds}s) &amp; scrub to select which skier to analyze
       </p>
 
       {/* Outer track – handles pointer events across the full width */}
